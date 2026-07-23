@@ -1,0 +1,42 @@
+:root {
+    --site-primary: #202129;
+    /*--site-secondary: #35373d;*/
+    --site-secondary: #303239;
+    --widget-primary: #ffffff10;
+    --text-normal: gainsboro;
+    --hover-nav-color: transparent;
+    font-size: 1em;
+}
+
+body {
+    /*background-image: radial-gradient(var(--site-secondary) 1px, transparent 1px);*/
+    /*background-size: 20px 20px;*/
+}
+
+.droplet_wrap {
+    position: absolute;
+}
+
+.droplet {
+    width: 6px;
+    height: 6px;
+    pointer-events: none;
+    z-index: 1;
+    margin: 1px;
+    border-radius: 2px;
+}
+
+.leading_droplet {
+    animation: zoomIn 0.5s ease-out forwards;
+}
+
+@keyframes zoomIn {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

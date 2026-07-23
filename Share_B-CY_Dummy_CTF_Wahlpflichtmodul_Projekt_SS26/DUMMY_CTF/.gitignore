@@ -1,0 +1,10 @@
+cert/*
+
+# Ignore all __pycache__ folders
+__pycache__/
+**/__pycache__/
+
+# Ignore all Python bytecode
+*.pyc
+*.pyo
+*.pyd

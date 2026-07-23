@@ -1,0 +1,8 @@
+python-dotenv>=1.1.0
+fastapi==0.115.13
+beanie==1.30.0
+httpx>=0.28.1
+motor==3.7.1
+uvicorn>=0.34.3
+fastapi-jwt>=0.3.0
+pycryptodome
