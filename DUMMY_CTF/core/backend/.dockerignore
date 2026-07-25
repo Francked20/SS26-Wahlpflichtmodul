@@ -1,0 +1,11 @@
+.web
+.git
+__pycache__/*
+.dockerignore
+.gitignore
+Dockerfile
+compose.yaml
+compose.*.yaml
+
+.venv
+.idea
