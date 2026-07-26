@@ -1,0 +1,17 @@
+# ==== TCV-CAP v1 : abgefangener DH-Handshake ====
+# Format: KEY: WERT  (eine Angabe pro Zeile, # = Kommentar)
+# Challenge: Kapitel 02 / challenge_2 / Variante 88
+CAPTURE_VERSION: 1
+SCHEME: Diffie-Hellman (multiplikativ, mod p)
+PARAM_P: 1692676396669098116602567599723762899
+PARAM_G: 2
+# --- oeffentliche Schluessel der beiden Parteien ---
+ALICE_PUBLIC_A: 548317454588408844569631727586753135
+BOB_PUBLIC_B: 1613546032184471076164334651070146794
+# --- verschluesselter Datensatz ---
+KEY_DERIVATION: HKDF-SHA256( shared_secret_bytes )  info=kapitel-02-dh-aead-v1
+SHARED_SECRET_ENCODING: big-endian, Laenge = ceil(bits(p)/8) Bytes
+RECORD_CIPHER: AES-256-GCM
+RECORD_NONCE_B64: imSRsymXNnN0d26X
+RECORD_CIPHERTEXT_B64: hhbpEPhquJFkVrIj2P5gCaOTlCv253n/p2LhqhobH+nPteui85adIEYq6fVkePPMicz4lcb48pv1p0fy9e/e9puNXnpmbAQq+RCjrvX2BJgtY2grCIJR9/qxlkxLu9P7wxy5dXKCD625vemxrhoLD8zeAroEqt6Xy5PkMQ2yjZO8SISqFmedqt88i2GzeQ3I6T6uZYAMHrP2DX8M9y62Vh/lla3vZkwbUj9tDNpE/2WJPa7XwI6+9rs7mRCqajTo0rw42g==
+# ==== Ende der Capture ====

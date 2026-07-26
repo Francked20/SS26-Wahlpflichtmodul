@@ -1,0 +1,121 @@
+"""
+Kapitel 02 — Sub-page: Challenge 3 (Die Falle).
+
+Final challenge of Akt I. Chained unlock: content gated on Challenge 2's flag
+(day_02_task_09).
+"""
+
+import reflex as rx
+from website.engine.site import AbstractSiteBuilder
+from website.engine.tasks.widget import TaskWidget
+from website.engine.task_conf import PlayerCardState, AccordionState, render_task
+from website.engine.challenge import *
+from website.unlock_settings import *
+
+from ..tasks.kap02_c23_tasks import task_02_10, task_02_11, task_02_12
+from .kap02_shared import stories, theory
+from .kap02_shared.variant import DhVariantState, index_banner, download_button
+
+
+class Kapitel_02_Challenge_3(AbstractSiteBuilder):
+    PAGE_ID = "challenge_02"
+
+    def _content(self) -> rx.Component:
+        c = self.main_color
+        return rx.vstack(
+            stories.challenge_3(),
+            theory.challenge_3_technik(c),
+            index_banner(c),
+            download_button("Challenge 3 — Capture herunterladen", DhVariantState.cap_3),
+            render_task(self.PAGE_ID, 10, "Verständnisfrage", TaskWidget(task_02_10)),
+            render_task(self.PAGE_ID, 11, "Aufgabe: Analyse", TaskWidget(task_02_11)),
+            rx.cond(
+                PlayerCardState.tasks_solved["day_02_task_11"] | PlayerCardState.enable_test_mode,
+                render_task(self.PAGE_ID, 12, "Aufgabe: Die Meisterflagge", TaskWidget(task_02_12)),
+            ),
+            rx.cond(
+                PlayerCardState.tasks_solved["day_02_task_12"] | PlayerCardState.enable_test_mode,
+                rx.box(
+                    rx.markdown(
+                        "**Geschafft — Akt I abgeschlossen!** Sie haben alle drei "
+                        "Flaggen geborgen und den diskreten Logarithmus in all "
+                        "seinen Schwächen durchdrungen: kleines p, glatte Ordnung, "
+                        "und die trügerische Sicherheit großer Zahlen über "
+                        "schwacher Struktur. Genau deshalb verwendet man in der "
+                        "Praxis sichere Primzahlen und standardisierte Gruppen."
+                    ),
+                    style={"maxWidth": "1200px", "width": "100%", "margin": "16px auto",
+                           "padding": "22px", "borderRadius": "12px",
+                           "background": "rgba(4,180,134,0.12)",
+                           "border": f"1px solid {c}", "boxSizing": "border-box"},
+                ),
+            ),
+            spacing="4", width="100%", align_items="stretch",
+        )
+
+    def _locked(self) -> rx.Component:
+        return rx.box(
+            rx.vstack(
+                rx.icon("lock", size=40, color="#EF9F27"),
+                rx.text("Diese Challenge ist noch gesperrt.",
+                        font_size="1.3em", font_weight="500"),
+                rx.text("Lösen Sie zuerst Challenge 2, um diese Challenge "
+                        "freizuschalten.", color="gray"),
+                spacing="3", align_items="center",
+            ),
+            style={"maxWidth": "800px", "width": "100%", "margin": "60px auto",
+                   "padding": "40px", "borderRadius": "16px",
+                   "background": "rgba(239,159,39,0.06)",
+                   "border": "1px solid rgba(239,159,39,0.3)",
+                   "textAlign": "center", "boxSizing": "border-box"},
+        )
+
+    def page(self) -> rx.Component:
+        return rx.vstack(
+            rx.hstack(
+                rx.heading("Challenge 3 — Die Falle", color=self.main_color, size="8",
+                           style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
+                                  "WebkitBackgroundClip": "text",
+                                  "WebkitTextFillColor": "transparent"}),
+                rx.text("🎯", size="8", align_self="center"),
+                align_items="center", width="100%", spacing="2",
+                style={"marginBottom": "24px"},
+            ),
+            rx.cond(
+                CondState.is_ready & PlayerCardState.update_day_ready[2],
+                rx.cond(
+                    CondState.event_enabled,
+                    rx.cond(
+                        PlayerCardState.tasks_solved["day_01_task_09"] | PlayerCardState.enable_test_mode,
+                        rx.cond(
+                            PlayerCardState.tasks_solved["day_02_task_09"] | PlayerCardState.enable_test_mode,
+                            self._content(),
+                            self._locked(),
+                        ),
+                        rx.vstack(rx.text(
+                            "Es müssen zuerst alle Aufgaben des vorherigen Kapitels "
+                            "gelöst werden, um dieses Kapitel freizuschalten!")),
+                    ),
+                    rx.vstack(rx.text(
+                        "Bitte warten Sie, bis der Spielleiter das Event startet!")),
+                ),
+                rx.vstack(rx.spinner()),
+            ),
+            on_mount=lambda: AccordionState.init(self.PAGE_ID, 34),
+        )
+
+    def configure(self) -> None:
+        self.url = "/challenge_02_c3"
+        self.name = "Challenge 3 — Die Falle"
+        self.icon = "target"
+        self.main_color = "#04B486"
+        self.group = "kapitel_02"
+        self.position_priority = 70
+        self.on_load = [
+            CondState.reset_check_status,
+            CondState.do_checks,
+            PlayerCardState.update_day(2),
+        ]
+        self.background_class = "black"
+        self.auth_required = True
+        self.unlock_day = unlock_always
