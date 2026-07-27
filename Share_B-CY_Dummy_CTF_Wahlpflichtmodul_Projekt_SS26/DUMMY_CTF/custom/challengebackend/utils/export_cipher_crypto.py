@@ -344,6 +344,7 @@ class VariantBytes:
     server_flight_2: bytes  # ChangeCipherSpec, Finished(server), ApplicationData(flag)
     client_random: bytes
     server_random: bytes
+    pre_master_secret: bytes
     master_secret: bytes
 
 
@@ -430,6 +431,7 @@ def craft_variant(n512: int, p512: int, q512: int, flag: bytes) -> VariantBytes:
         server_flight_2=server_flight_2,
         client_random=client_random,
         server_random=server_random,
+        pre_master_secret=pre_master_secret,
         master_secret=keys.master_secret,
     )
 

@@ -8,7 +8,8 @@ from pydantic import BaseModel
 from database import ExportCipherVariant
 from utils.security import require_challenge_api_key
 from utils.export_cipher_pool import (
-    variant_index_for_user, check_factor256, check_factor512, check_master_secret, check_flag,
+    variant_index_for_user, check_factor256, check_factor512,
+    check_pre_master_secret, check_master_secret, check_flag,
 )
 from utils.export_cipher_sender import send_variant_to_vm
 
@@ -60,7 +61,17 @@ async def check_answer(body: CheckAnswerRequest):
     elif body.dynamic_check == "export_factor512":
         correct = check_factor512(variant.q512, body.answer)
     elif body.dynamic_check == "export_master_secret":
-        correct = check_master_secret(variant.master_secret_hex, body.answer)
+        # Shared by both the pre_master_secret and master_secret tasks (see
+        # ../CLAUDE.md) - core/backend's Challenge.dynamic_check Literal only
+        # knows this one value, so both steps reuse it instead of needing a
+        # new value plumbed through the core submodule. Not exploitable: you
+        # cannot produce a valid master_secret without first having derived
+        # pre_master_secret (it's the PRF's own input), so accepting either
+        # here doesn't let a player skip the pre_master_secret step.
+        correct = (
+            check_pre_master_secret(variant.pre_master_secret_hex, body.answer)
+            or check_master_secret(variant.master_secret_hex, body.answer)
+        )
     else:
         correct = check_flag(variant.flag, body.answer)
 

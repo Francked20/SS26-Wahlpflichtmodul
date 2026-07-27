@@ -34,6 +34,7 @@ async def main():
             n256=str(variant.n256), p256=str(variant.p256), q256=str(variant.q256),
             n512=str(variant.n512), p512=str(variant.p512), q512=str(variant.q512),
             flag=variant.flag,
+            pre_master_secret_hex=variant.pre_master_secret.hex(),
             master_secret_hex=variant.master_secret.hex(),
             client_flight_1_hex=variant.client_flight_1.hex(),
             client_flight_2_hex=variant.client_flight_2.hex(),

@@ -44,6 +44,7 @@ class VariantData:
     client_flight_2: bytes
     server_flight_1: bytes
     server_flight_2: bytes
+    pre_master_secret: bytes
     master_secret: bytes
 
 
@@ -67,6 +68,7 @@ def generate_variant(index: int) -> VariantData:
         client_flight_2=variant_bytes.client_flight_2,
         server_flight_1=variant_bytes.server_flight_1,
         server_flight_2=variant_bytes.server_flight_2,
+        pre_master_secret=variant_bytes.pre_master_secret,
         master_secret=variant_bytes.master_secret,
     )
 
@@ -88,6 +90,11 @@ def check_factor512(stored_q512: str, answer: str) -> bool:
         return int(answer.strip()) == int(stored_q512)
     except ValueError:
         return False
+
+
+def check_pre_master_secret(stored_pre_master_secret_hex: str, answer: str) -> bool:
+    cleaned = answer.strip().lower().replace(" ", "").replace("0x", "")
+    return cleaned == stored_pre_master_secret_hex.lower()
 
 
 def check_master_secret(stored_master_secret_hex: str, answer: str) -> bool:

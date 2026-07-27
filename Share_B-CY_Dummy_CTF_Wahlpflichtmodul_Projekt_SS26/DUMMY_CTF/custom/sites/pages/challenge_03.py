@@ -95,71 +95,72 @@ class Kapitel_03(AbstractSiteBuilder):
                         rx.cond(
                             PlayerCardState.tasks_solved["day_03_task_00"] | PlayerCardState.enable_test_mode,
                             rx.vstack(
+                                rx.cond(
+                                    MyVariantState.loaded,
+                                    rx.box(
+                                        rx.text.strong("Deine persönliche 256-Bit-Zahl N:"),
+                                        rx.code(MyVariantState.n256, size="2", style={"wordBreak": "break-all"}),
+                                        rx.text(
+                                            "Starte jetzt deinen eigenen Paket-Mitschnitt (Wireshark) auf der "
+                                            "Trainings-VM. Klicke danach auf \"Gestartet\" - erst dann wird dein "
+                                            "persönlicher TLS-Handshake mit diesem N über die Leitung geschickt. "
+                                            "Dieser eine Mitschnitt enthält alles, was du für die restlichen "
+                                            "Aufgaben dieses Tages brauchst - lass ihn laufen und speichere ihn.",
+                                            margin_top="0.5em",
+                                        ),
+                                        rx.flex(
+                                            rx.button(
+                                                rx.cond(
+                                                    MyVariantState.capture_status == "sending",
+                                                    rx.spinner(size="2"),
+                                                    rx.icon(tag="play"),
+                                                ),
+                                                rx.cond(
+                                                    MyVariantState.capture_status == "sent",
+                                                    "Erneut senden",
+                                                    "Gestartet",
+                                                ),
+                                                on_click=MyVariantState.trigger_capture,
+                                                disabled=MyVariantState.capture_status == "sending",
+                                            ),
+                                            margin_top="0.5em",
+                                        ),
+                                        rx.cond(
+                                            MyVariantState.capture_status == "sent",
+                                            rx.callout(
+                                                "Handshake gesendet - schau in deinem Mitschnitt nach der Konversation!",
+                                                icon="check",
+                                                color_scheme="green",
+                                                margin_top="0.5em",
+                                            ),
+                                        ),
+                                        rx.cond(
+                                            MyVariantState.capture_status == "error",
+                                            rx.callout(
+                                                "Handshake konnte nicht gesendet werden - ist die Trainings-VM erreichbar?",
+                                                icon="triangle-alert",
+                                                color_scheme="red",
+                                                margin_top="0.5em",
+                                            ),
+                                        ),
+                                        style={
+                                            "maxWidth": "900px",
+                                            "width": "100%",
+                                            "margin": "16px 0",
+                                            "padding": "20px",
+                                            "borderRadius": "12px",
+                                            "background": "rgba(255, 210, 160, 0.12)",
+                                            "border": "1px solid rgba(255, 255, 255, 0.18)",
+                                        },
+                                    ),
+                                    rx.spinner(),
+                                ),
+
                                 render_task(self.PAGE_ID, 1, "Aufgabe 3.2: Traffic Capture", TaskWidget(task_03_01)),
 
                                 rx.cond(
                                     PlayerCardState.tasks_solved["day_03_task_01"] | PlayerCardState.enable_test_mode,
                                     rx.vstack(
-                                        rx.cond(
-                                            MyVariantState.loaded,
-                                            rx.box(
-                                                rx.text.strong("Deine persönliche 256-Bit-Zahl N:"),
-                                                rx.code(MyVariantState.n256, size="2", style={"wordBreak": "break-all"}),
-                                                rx.text(
-                                                    "Starte jetzt deinen eigenen Paket-Mitschnitt (Wireshark) auf der "
-                                                    "Trainings-VM. Klicke danach auf \"Gestartet\" - erst dann wird dein "
-                                                    "persönlicher TLS-Handshake mit diesem N über die Leitung geschickt, "
-                                                    "damit du eine ganz normale TLS-Konversation selbst mitschneidest.",
-                                                    margin_top="0.5em",
-                                                ),
-                                                rx.flex(
-                                                    rx.button(
-                                                        rx.cond(
-                                                            MyVariantState.capture_status == "sending",
-                                                            rx.spinner(size="2"),
-                                                            rx.icon(tag="play"),
-                                                        ),
-                                                        rx.cond(
-                                                            MyVariantState.capture_status == "sent",
-                                                            "Erneut senden",
-                                                            "Gestartet",
-                                                        ),
-                                                        on_click=MyVariantState.trigger_capture,
-                                                        disabled=MyVariantState.capture_status == "sending",
-                                                    ),
-                                                    margin_top="0.5em",
-                                                ),
-                                                rx.cond(
-                                                    MyVariantState.capture_status == "sent",
-                                                    rx.callout(
-                                                        "Handshake gesendet - schau in deinem Mitschnitt nach der Konversation!",
-                                                        icon="check",
-                                                        color_scheme="green",
-                                                        margin_top="0.5em",
-                                                    ),
-                                                ),
-                                                rx.cond(
-                                                    MyVariantState.capture_status == "error",
-                                                    rx.callout(
-                                                        "Handshake konnte nicht gesendet werden - ist die Trainings-VM erreichbar?",
-                                                        icon="triangle-alert",
-                                                        color_scheme="red",
-                                                        margin_top="0.5em",
-                                                    ),
-                                                ),
-                                                style={
-                                                    "maxWidth": "900px",
-                                                    "width": "100%",
-                                                    "margin": "16px 0",
-                                                    "padding": "20px",
-                                                    "borderRadius": "12px",
-                                                    "background": "rgba(255, 210, 160, 0.12)",
-                                                    "border": "1px solid rgba(255, 255, 255, 0.18)",
-                                                },
-                                            ),
-                                            rx.spinner(),
-                                        ),
-
                                         render_task(self.PAGE_ID, 2, "Aufgabe 3.3: 256-Bit faktorisieren", TaskWidget(task_03_02)),
 
                                         rx.cond(
@@ -179,11 +180,18 @@ class Kapitel_03(AbstractSiteBuilder):
                                                 rx.cond(
                                                     PlayerCardState.tasks_solved["day_03_task_03"] | PlayerCardState.enable_test_mode,
                                                     rx.vstack(
-                                                        render_task(self.PAGE_ID, 4, "Aufgabe 3.5: TLS Master Secret", TaskWidget(task_03_04)),
+                                                        render_task(self.PAGE_ID, 4, "Aufgabe 3.5: Pre-Master-Secret", TaskWidget(task_03_04)),
 
                                                         rx.cond(
                                                             PlayerCardState.tasks_solved["day_03_task_04"] | PlayerCardState.enable_test_mode,
-                                                            render_task(self.PAGE_ID, 5, "Aufgabe 3.6: Die Flagge", TaskWidget(task_03_05)),
+                                                            rx.vstack(
+                                                                render_task(self.PAGE_ID, 5, "Aufgabe 3.6: TLS Master Secret", TaskWidget(task_03_05)),
+
+                                                                rx.cond(
+                                                                    PlayerCardState.tasks_solved["day_03_task_05"] | PlayerCardState.enable_test_mode,
+                                                                    render_task(self.PAGE_ID, 6, "Aufgabe 3.7: Die Flagge", TaskWidget(task_03_06)),
+                                                                ),
+                                                            ),
                                                         ),
                                                     ),
                                                 ),
@@ -203,7 +211,7 @@ class Kapitel_03(AbstractSiteBuilder):
                 ),
                 rx.vstack(rx.spinner()),
             ),
-            on_mount=lambda: AccordionState.init(self.PAGE_ID, 6),
+            on_mount=lambda: AccordionState.init(self.PAGE_ID, 7),
             width="100%",
         )
 

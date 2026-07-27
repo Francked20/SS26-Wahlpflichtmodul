@@ -45,6 +45,7 @@ class ExportCipherVariant(Document):
     q512: str
 
     flag: str
+    pre_master_secret_hex: str
     master_secret_hex: str
 
     client_flight_1_hex: str

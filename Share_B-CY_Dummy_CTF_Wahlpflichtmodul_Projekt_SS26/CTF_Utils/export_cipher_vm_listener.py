@@ -53,6 +53,22 @@ def fetch_replay_data(challenge_domain: str, api_key: str, insecure: bool) -> di
     return {v["index"]: v for v in variants}
 
 
+def split_records(buf: bytes) -> list[bytes]:
+    """Splits a flight blob (several concatenated TLS records) into one
+    byte-string per record (5-byte header: content type + version + 2-byte
+    length, followed by that many fragment bytes). Sending each record in
+    its own TCP write (see `serve()`) makes every record land in its own
+    Wireshark frame instead of several being bundled into one packet, which
+    is otherwise easy to miss/mix up in the packet list."""
+    records = []
+    i = 0
+    while i < len(buf):
+        length = int.from_bytes(buf[i + 3:i + 5], "big")
+        records.append(buf[i:i + 5 + length])
+        i += 5 + length
+    return records
+
+
 def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -64,6 +80,7 @@ def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
         conn, addr = server.accept()
         try:
             conn.settimeout(2)
+            conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             index_bytes = conn.recv(2)
             if len(index_bytes) != 2:
                 print(f"Connection from {addr} closed before sending a variant index", file=sys.stderr)
@@ -75,12 +92,14 @@ def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
                 continue
             print(f"Connection from {addr}, replaying variant #{index}")
 
-            conn.sendall(bytes.fromhex(variant["server_flight_1_hex"]))
+            for record in split_records(bytes.fromhex(variant["server_flight_1_hex"])):
+                conn.sendall(record)
             try:
                 conn.recv(4096)
             except socket.timeout:
                 pass
-            conn.sendall(bytes.fromhex(variant["server_flight_2_hex"]))
+            for record in split_records(bytes.fromhex(variant["server_flight_2_hex"])):
+                conn.sendall(record)
         except OSError as e:
             print(f"Connection to {addr} failed mid-replay: {e}", file=sys.stderr)
         finally:
