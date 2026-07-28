@@ -1,3 +1,0 @@
-[submodule "core"]
-	path = core
-	url = git@gitlab.th-deg.de:tcv_ctf/tcv-ctf-recent-core.git

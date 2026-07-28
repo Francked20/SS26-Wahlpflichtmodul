@@ -24,7 +24,7 @@ class MongoDB:
     async def connect_mapper(self):
         await init_beanie(
             database=self._database,
-            document_models=[DhExportVariant],
+            document_models=[DhExportVariant, ExportCipherVariant],
         )
 
     async def disconnect(self):
@@ -59,4 +59,33 @@ class DhExportVariant(Document):
 
     class Settings:
         name = "dh_export_variants"
+        indexes = ["index"]
+
+
+class ExportCipherVariant(Document):
+    """One entry of the fixed ~100-variant pool for the day-3 export-cipher
+    (FREAK-style) challenge chain. Populated by
+    scripts/generate_export_cipher_pool.py. See utils/export_cipher_pool.py
+    for how a username is mapped to a variant index."""
+
+    index: typing.Annotated[int, Indexed(unique=True)]
+
+    n256: str
+    p256: str
+    q256: str
+
+    n512: str
+    p512: str
+    q512: str
+
+    flag: str
+    master_secret_hex: str
+
+    client_flight_1_hex: str
+    client_flight_2_hex: str
+    server_flight_1_hex: str
+    server_flight_2_hex: str
+
+    class Settings:
+        name = "export_cipher_variants"
         indexes = ["index"]

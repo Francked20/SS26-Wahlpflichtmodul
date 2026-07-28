@@ -167,7 +167,7 @@ class ChapterSelectionPage(AbstractSiteBuilder):
                                         width="100%",
                                         height="150px",
             #                            object_fit="cover",  # Stellt sicher, dass das Bild die gesamte Fläche ausfüllt
-                                        on_click=rx.redirect("/challenge_02"),
+                                        on_click=rx.redirect("/challenge_02_kurs"),
                                     ),
                                     side="top",
                                     pb="current",

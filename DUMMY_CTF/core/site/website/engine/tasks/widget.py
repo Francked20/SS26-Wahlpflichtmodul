@@ -29,6 +29,7 @@ class TaskWidgetClass(rx.ComponentState):
     answer_state: str = ""
     is_solving: bool = False
     attempted_solve: bool = False
+    revealed_secret: str = ""
 
     def set_answer_state(self, value: str) -> None:
         self.answer_state = value
@@ -160,6 +161,11 @@ class TaskWidgetClass(rx.ComponentState):
 
         if response.status_code == 401:
             return PageAuthState.to_error_page()
+
+        reveal_factor = response.json().get("reveal_factor")
+        if reveal_factor:
+            async with self:
+                self.revealed_secret = str(reveal_factor)
 
 #        return None
         return [
@@ -435,7 +441,16 @@ class TaskWidgetClass(rx.ComponentState):
                             color_scheme="red",
                             width="100%",
                         ),
-                    ),        
+                    ),
+                    rx.cond(
+                        cls.revealed_secret != "",
+                        rx.callout(
+                            f"Belohnung freigeschaltet - ein Faktor der 512-Bit-N: {cls.revealed_secret}",
+                            icon="key",
+                            color_scheme="amber",
+                            width="100%",
+                        ),
+                    ),
                     width="100%",
                 ),
                 rx.cond(

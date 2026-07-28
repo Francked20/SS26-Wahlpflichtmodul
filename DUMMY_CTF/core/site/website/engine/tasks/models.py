@@ -49,6 +49,10 @@ class TaskData(BaseModel):
 
     vm_name: typing.Optional[str] = None
     flag_type: typing.Optional[str] = None
+    dynamic_check: typing.Optional[typing.Literal[
+        "dh_factors", "dh_server_secret", "dh_master_secret", "dh_flag",
+        "export_factor256", "export_factor512", "export_master_secret", "export_flag"
+    ]] = None
 
     additional_urls: list[tuple[str, str]] = []
 

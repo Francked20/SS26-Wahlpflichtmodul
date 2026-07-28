@@ -679,7 +679,8 @@ class Challenge(Document):
     vm_name: Optional[str] = None
     flag_type: Optional[str] = None
     dynamic_check: Optional[Literal[
-        "dh_factors", "dh_server_secret", "dh_master_secret", "dh_flag"
+        "dh_factors", "dh_server_secret", "dh_master_secret", "dh_flag",
+        "export_factor256", "export_factor512", "export_master_secret", "export_flag"
     ]] = None
     points: int
     error_cost: int = 1
@@ -970,10 +971,13 @@ class Challenge(Document):
             return True
 
         try:
-            # Dynamic validation (day-4 weak-DH tasks): delegate to the
-            # challenge backend, which owns this user's DH variant.
+            # Dynamic validation (day-3 export-cipher / day-4 weak-DH tasks):
+            # delegate to the challenge backend, which owns this user's variant.
             if self.dynamic_check:
-                from utils.dh_export_client import check_dynamic_answer
+                if self.dynamic_check.startswith("export_"):
+                    from utils.export_cipher_client import check_dynamic_answer
+                else:
+                    from utils.dh_export_client import check_dynamic_answer
                 if not await check_dynamic_answer(self.dynamic_check, username, str(answer)):
                     raise ValueError()
 

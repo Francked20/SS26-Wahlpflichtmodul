@@ -74,7 +74,41 @@ async def solve_challenge(
     ch = await Challenge.get_challenge(ch_data.day, ch_data.task)
     res = await ch.check_answer(username, ch_data.solution)
 
-    return {"answer_correct": res}
+    response = {"answer_correct": res}
+
+    # Reward for correctly factoring the 256-bit practice modulus: reveal one
+    # factor of the "captured" 512-bit N (data lives in custom/challengebackend).
+    if res and ch.dynamic_check == "export_factor256":
+        from utils.export_cipher_client import get_reveal_factor
+        response["reveal_factor"] = await get_reveal_factor(username)
+
+    return response
+
+
+@router.get("/export_cipher_reveal_factor")
+async def get_export_cipher_reveal_factor_if_solved(
+        day: int,
+        task: int,
+        auth: JwtAuthorizationCredentials = Security(access_security)
+):
+    """Lets a player re-fetch their already-earned export-cipher reward after
+    a page reload - /solve's `reveal_factor` is only included once, transiently,
+    in the response to the solving request itself."""
+    username: str = auth.subject["username"].lower()
+
+    ch = await Challenge.get_challenge(day, task)
+    if ch.dynamic_check != "export_factor256":
+        raise HTTPException(status_code=400, detail="Not an export-cipher factor256 task")
+
+    rc = await RunningChallenge.find_one(
+        RunningChallenge.username == username,
+        RunningChallenge.challenge.id == ch.id,
+    )
+    if not rc or not rc.solved:
+        return {"reveal_factor": None}
+
+    from utils.export_cipher_client import get_reveal_factor
+    return {"reveal_factor": await get_reveal_factor(username)}
 
 
 @router.post("/hint")

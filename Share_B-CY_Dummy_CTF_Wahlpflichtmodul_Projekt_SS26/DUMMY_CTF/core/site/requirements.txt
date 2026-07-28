@@ -1,9 +1,0 @@
-reflex==0.8.28.post1
-reflex-chakra==0.8.2.post1
-pydantic[email]==2.12.5
-httpx==0.28.1
-requests==2.33.1
-python-dotenv==1.2.2
-beanie==2.1.0
-pymongo==4.16.0
-pyleak==0.1.17 # 0.2 is incompatible with reflex 0.8
