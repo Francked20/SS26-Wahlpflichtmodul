@@ -1,0 +1,10 @@
+{
+  "finish_time": true,
+  "day": true,
+  "task": true,
+  "points": true,
+  "tries": false,
+  "hints": false,
+  "resets": false,
+  "first_blood": true
+}

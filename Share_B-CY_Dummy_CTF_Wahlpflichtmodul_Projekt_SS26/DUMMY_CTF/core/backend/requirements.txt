@@ -1,0 +1,15 @@
+python-dotenv==1.2.2
+fastapi==0.135.3
+python-multipart==0.0.24
+beanie==2.1.0
+httpx==0.28.1
+pydantic[email]==2.12.5
+pymongo==4.16.0
+argon2-cffi==25.1.0
+authlib>=1.6.9
+pymongo>=4.13.2
+uvicorn==0.44.0
+fastapi-jwt==0.3.0
+websockets==15.0.1   #Migration auf neue websocket version (TODO: websocket_reader.py: Hier muss Migration noch angepasst werden!)
+fastapi-mail==1.6.2
+kubernetes==35.0.0

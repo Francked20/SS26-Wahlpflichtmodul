@@ -1,0 +1,7 @@
+RSA-Factorizing
+RSA-generator
+*:Zone.Identifier
+__pycache__/
+*.pyc
+.env
+certs/*.key
