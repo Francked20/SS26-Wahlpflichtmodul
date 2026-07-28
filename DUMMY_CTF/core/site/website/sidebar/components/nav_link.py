@@ -16,14 +16,34 @@ class NavDescription:
     highlight: bool = False
 
 
-def navigation_links(elements: list[NavDescription]) -> "rx.Component":
-    """returns all navigation links"""
+def _group_heading(title: str) -> "rx.Component":
+    """Big group title shown above a block of navigation links."""
+    return rx.text(
+        title,
+        class_name="sidebar_group_heading",
+        style={
+            "textTransform": "uppercase",
+            "fontSize": "0.72rem",
+            "fontWeight": "700",
+            "letterSpacing": "0.08em",
+            "opacity": "0.65",
+            "padding": "14px 16px 4px 16px",
+            "width": "100%",
+        },
+    )
+
+
+def navigation_links(elements: list[NavDescription], group_title: str = "") -> "rx.Component":
+    """returns all navigation links, optionally with a group heading on top"""
 
     highlighted = [d for d in elements if d.highlight]
     if highlighted:
         highlighted = highlighted[0]
 
+    heading = [_group_heading(group_title)] if group_title else []
+
     return rx.vstack(
+        *heading,
         *[navigation_link(d) for d in elements],
         seperator(),
         width="100%",

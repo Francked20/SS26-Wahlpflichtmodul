@@ -75,7 +75,7 @@ class Kapitel_03(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.heading(
-                "03: Export Ciphers & FREAK",
+                "Export Ciphers & FREAK",
                 color=self.main_color,
                 size="8",
                 style={
@@ -90,12 +90,12 @@ class Kapitel_03(AbstractSiteBuilder):
                 rx.cond(
                     CondState.event_enabled,
                     rx.vstack(
-                        render_task(self.PAGE_ID, 0, "Aufgabe 3.1: Einführung", TaskWidget(task_03_00)),
+                        render_task(self.PAGE_ID, 0, "Aufgabe 1: Einführung", TaskWidget(task_03_00)),
 
                         rx.cond(
                             PlayerCardState.tasks_solved["day_03_task_00"] | PlayerCardState.enable_test_mode,
                             rx.vstack(
-                                render_task(self.PAGE_ID, 1, "Aufgabe 3.2: Traffic Capture", TaskWidget(task_03_01)),
+                                render_task(self.PAGE_ID, 1, "Aufgabe 2: Traffic Capture", TaskWidget(task_03_01)),
 
                                 rx.cond(
                                     PlayerCardState.tasks_solved["day_03_task_01"] | PlayerCardState.enable_test_mode,
@@ -160,7 +160,7 @@ class Kapitel_03(AbstractSiteBuilder):
                                             rx.spinner(),
                                         ),
 
-                                        render_task(self.PAGE_ID, 2, "Aufgabe 3.3: 256-Bit faktorisieren", TaskWidget(task_03_02)),
+                                        render_task(self.PAGE_ID, 2, "Aufgabe 3: 256-Bit faktorisieren", TaskWidget(task_03_02)),
 
                                         rx.cond(
                                             PlayerCardState.tasks_solved["day_03_task_02"] | PlayerCardState.enable_test_mode,
@@ -174,16 +174,16 @@ class Kapitel_03(AbstractSiteBuilder):
                                                         width="100%",
                                                     ),
                                                 ),
-                                                render_task(self.PAGE_ID, 3, "Aufgabe 3.4: Zweiter Faktor", TaskWidget(task_03_03)),
+                                                render_task(self.PAGE_ID, 3, "Aufgabe 4: Zweiter Faktor", TaskWidget(task_03_03)),
 
                                                 rx.cond(
                                                     PlayerCardState.tasks_solved["day_03_task_03"] | PlayerCardState.enable_test_mode,
                                                     rx.vstack(
-                                                        render_task(self.PAGE_ID, 4, "Aufgabe 3.5: TLS Master Secret", TaskWidget(task_03_04)),
+                                                        render_task(self.PAGE_ID, 4, "Aufgabe 5: TLS Master Secret", TaskWidget(task_03_04)),
 
                                                         rx.cond(
                                                             PlayerCardState.tasks_solved["day_03_task_04"] | PlayerCardState.enable_test_mode,
-                                                            render_task(self.PAGE_ID, 5, "Aufgabe 3.6: Die Flagge", TaskWidget(task_03_05)),
+                                                            render_task(self.PAGE_ID, 5, "Aufgabe 6: Die Flagge", TaskWidget(task_03_05)),
                                                         ),
                                                     ),
                                                 ),
@@ -209,7 +209,9 @@ class Kapitel_03(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_03"
-        self.name = "03: Export Ciphers"
+        self.name = "Export Ciphers"
+        self.group = "2_FREAK"
+        self.position_priority = 20
         self.icon = "shield-alert"
         self.main_color = "#E63946"
         self.is_standalone = False

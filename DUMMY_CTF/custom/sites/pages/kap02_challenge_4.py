@@ -103,7 +103,7 @@ class Kapitel_02_Challenge_4(AbstractSiteBuilder):
         self.name = "Challenge 4: Der schwache Erzeuger"
         self.icon = "key"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 60
         self.on_load = [
             CondState.reset_check_status,

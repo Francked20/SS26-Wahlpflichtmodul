@@ -107,7 +107,7 @@ class Kapitel_02_Challenge_3(AbstractSiteBuilder):
         self.name = "Challenge 3: Die Falle"
         self.icon = "target"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 70
         self.on_load = [
             CondState.reset_check_status,

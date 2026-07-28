@@ -105,7 +105,7 @@ class Kapitel_02_Challenge_5(AbstractSiteBuilder):
         self.name = "Challenge 5: Logjam"
         self.icon = "unlink"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 50
         self.on_load = [
             CondState.reset_check_status,
