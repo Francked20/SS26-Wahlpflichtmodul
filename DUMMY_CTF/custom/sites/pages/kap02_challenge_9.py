@@ -1,8 +1,6 @@
 """
 Kapitel 02 — Sub-page: Challenge 9 (ElGamal, wiederverwendeter Nonce).
 
-Akt III, Teil 1. Chained unlock: content gated on Challenge 8's flag
-(day_02_task_27).
 """
 
 import reflex as rx
@@ -26,7 +24,7 @@ class Kapitel_02_Challenge_9(AbstractSiteBuilder):
             stories.challenge_9(),
             theory.challenge_9_technik(c),
             index_banner(c),
-            download_button("Challenge 9 — Capture herunterladen", DhVariantState.cap_9),
+            download_button("Challenge 9: Capture herunterladen", DhVariantState.cap_9),
             render_task(self.PAGE_ID, 28, "Verständnisfrage", TaskWidget(task_02_28)),
             render_task(self.PAGE_ID, 29, "Aufgabe: Das verräterische Zeichen", TaskWidget(task_02_29)),
             rx.cond(
@@ -41,7 +39,7 @@ class Kapitel_02_Challenge_9(AbstractSiteBuilder):
                         "wiederverwendeter Zufallswert ein sicheres "
                         "Verschlüsselungsverfahren aushebelt. Im **Finale** "
                         "(Challenge 10) treffen Sie denselben Fehler in der Welt "
-                        "der digitalen Signaturen — mit noch dramatischeren Folgen: "
+                        "der digitalen Signaturen mit noch dramatischeren Folgen: "
                         "der komplette private Schlüssel fällt."
                     ),
                     style={"maxWidth": "1200px", "width": "100%", "margin": "16px auto",
@@ -73,7 +71,7 @@ class Kapitel_02_Challenge_9(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 9 — Zweimal derselbe Würfel", color=self.main_color, size="8",
+                rx.heading("Challenge 9: Zweimal derselbe Würfel", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -106,7 +104,7 @@ class Kapitel_02_Challenge_9(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c9"
-        self.name = "Challenge 9 — Zweimal derselbe Würfel"
+        self.name = "Challenge 9: Zweimal derselbe Würfel"
         self.icon = "dice-5"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

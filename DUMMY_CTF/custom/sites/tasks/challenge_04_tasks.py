@@ -1,35 +1,25 @@
+"""Task definitions for Chapter 4 ("Schwache Diffie-Hellman-Parameter" / Logjam).
+
+Each `task_04_XX` is a `TaskData` object describing one step of the Logjam attack
+chain, from concept to captured flag:
+  4.0 intro -> 4.1 spot the 512-bit p in the capture -> 4.2 why it is breakable
+  (Pohlig-Hellman) -> 4.3 factor p-1 (yafu) -> 4.4 discrete log s -> 4.5 TLS
+  master secret -> 4.6 decrypt the flag.
+Tasks 4.3-4.6 use per-player `dynamic_check` validators (see dh_export_pool.py)
+instead of a fixed answer. All learner-facing text is intentionally in German.
+These objects are imported and rendered by the Chapter 4 site pages.
+"""
+
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, TaskHint
 
-# ============================================================================
-# Kapitel 04 — Schwache Diffie-Hellman-Parameter (Logjam)
-#
-# Gegenstück zu Jonas' Kapitel 03 (FREAK / RSA-Export). Wo FREAK einen zu
-# kleinen RSA-Schlüssel faktorisiert, greift Logjam einen zu kleinen bzw.
-# strukturell schwachen Diffie-Hellman-Parametersatz an:
-#     p = 2q + 1,  q = q_1 * q_2 * ... * q_n   (p-1 vollständig glatt)
-# -> yafu faktorisiert p-1, Pohlig-Hellman löst den diskreten Logarithmus,
-#    daraus master secret + Flagge aus dem TLS-Verkehr.
-#
-# 7 Aufgaben (day=4), Freischaltung in Kaskade:
-#   4.0 Einführung (statisch: "logjam")
-#   4.1 Capture: p ist 512 Bit (statisch: "512")
-#   4.2 Machbarkeit / Laufzeit (statisch)
-#   4.3 p-1 faktorisieren mit yafu        (dynamic_check="dh_factors")
-#   4.4 Diskreter Log via Pohlig-Hellman  (dynamic_check="dh_server_secret")
-#   4.5 TLS Master Secret                 (dynamic_check="dh_master_secret")
-#   4.6 Die Flagge                        (dynamic_check="dh_flag")
-#
-# Hinweis: die dynamic_check-Werte müssen im Literal in
-# core/backend/database/models.py ergänzt werden (analog zu Jonas'
-# export_factor256 / export_factor512 / export_master_secret / export_flag).
-# ============================================================================
 
+# Shared day_description reused by every task in this chapter.
 DAY_DESC = "Schwache Diffie-Hellman-Parameter (Logjam)"
 
 
 # ----------------------------------------------------------------------------
-# 4.0 — Einführung
+# 4.0 - Introduction
 # ----------------------------------------------------------------------------
 task_04_00 = TaskData(
     day=4,
@@ -98,7 +88,7 @@ task_04_00 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 4.1 — Capture: Schlüssellänge erkennen
+# 4.1 - Capture: identify the key size (how many bits is p?)
 # ----------------------------------------------------------------------------
 task_04_01 = TaskData(
     day=4,
@@ -154,7 +144,7 @@ task_04_01 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 4.2 — Machbarkeit / Laufzeitbegründung
+# 4.2 - Feasibility: why is it breakable? (name the algorithm)
 # ----------------------------------------------------------------------------
 task_04_02 = TaskData(
     day=4,
@@ -211,7 +201,7 @@ task_04_02 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 4.3 — p-1 faktorisieren mit yafu   (dynamic)
+# 4.3 - Factor p-1 with yafu   (dynamic check)
 # ----------------------------------------------------------------------------
 task_04_03 = TaskData(
     day=4,
@@ -276,7 +266,7 @@ task_04_03 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 4.4 — Diskreter Logarithmus via Pohlig-Hellman   (dynamic)
+# 4.4 - Discrete logarithm via Pohlig-Hellman   (dynamic check)
 # ----------------------------------------------------------------------------
 task_04_04 = TaskData(
     day=4,
@@ -345,7 +335,7 @@ task_04_04 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 4.5 — TLS Master Secret   (dynamic)
+# 4.5 - TLS master secret   (dynamic check)
 # ----------------------------------------------------------------------------
 task_04_05 = TaskData(
     day=4,
@@ -416,7 +406,7 @@ task_04_05 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 4.6 — Die Flagge   (dynamic)
+# 4.6 - The flag: derive session keys and decrypt   (dynamic check)
 # ----------------------------------------------------------------------------
 task_04_06 = TaskData(
     day=4,

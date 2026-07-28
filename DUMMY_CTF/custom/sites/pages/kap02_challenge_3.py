@@ -1,8 +1,6 @@
 """
 Kapitel 02 — Sub-page: Challenge 3 (Die Falle).
-
-Final challenge of Akt I. Chained unlock: content gated on Challenge 2's flag
-(day_02_task_09).
+Chained unlock: the content is gated on Challenge 2's flag
 """
 
 import reflex as rx
@@ -26,7 +24,7 @@ class Kapitel_02_Challenge_3(AbstractSiteBuilder):
             stories.challenge_3(),
             theory.challenge_3_technik(c),
             index_banner(c),
-            download_button("Challenge 3 — Capture herunterladen", DhVariantState.cap_3),
+            download_button("Challenge 3: Capture herunterladen", DhVariantState.cap_3),
             render_task(self.PAGE_ID, 10, "Verständnisfrage", TaskWidget(task_02_10)),
             render_task(self.PAGE_ID, 11, "Aufgabe: Analyse", TaskWidget(task_02_11)),
             rx.cond(
@@ -37,7 +35,7 @@ class Kapitel_02_Challenge_3(AbstractSiteBuilder):
                 PlayerCardState.tasks_solved["day_02_task_12"] | PlayerCardState.enable_test_mode,
                 rx.box(
                     rx.markdown(
-                        "**Geschafft — Akt I abgeschlossen!** Sie haben alle drei "
+                        "**Geschafft!** Sie haben alle drei "
                         "Flaggen geborgen und den diskreten Logarithmus in all "
                         "seinen Schwächen durchdrungen: kleines p, glatte Ordnung, "
                         "und die trügerische Sicherheit großer Zahlen über "
@@ -73,7 +71,7 @@ class Kapitel_02_Challenge_3(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 3 — Die Falle", color=self.main_color, size="8",
+                rx.heading("Challenge 3: Die Falle", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -106,7 +104,7 @@ class Kapitel_02_Challenge_3(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c3"
-        self.name = "Challenge 3 — Die Falle"
+        self.name = "Challenge 3: Die Falle"
         self.icon = "target"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

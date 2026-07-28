@@ -16,8 +16,6 @@ from utils.dh_export_pool import (
 
 router = APIRouter()
 
-# Companion to Jonas' endpoints/export_cipher.py (FREAK / RSA export).
-# Same wiring; only the crypto stage comparators differ (DH / Logjam):
 #   dh_factors        -> factor p-1 (yafu)
 #   dh_server_secret  -> discrete log of Ys (Pohlig-Hellman)
 #   dh_master_secret  -> TLS master secret
@@ -107,7 +105,14 @@ async def start_capture(index: int):
         raise HTTPException(status_code=503, detail="Training VM not configured")
 
     import asyncio
-    from utils.dh_export_sender import send_variant_to_vm
+    try:
+        from utils.dh_export_sender import send_variant_to_vm
+    except ImportError:
+        raise HTTPException(
+            status_code=503,
+            detail="Live VM capture not available (utils/dh_export_sender.py missing). "
+                   "Use the pre-generated pcap instead.",
+        )
     try:
         await send_variant_to_vm(host, int(port_str), variant)
     except (OSError, asyncio.TimeoutError, ValueError) as e:

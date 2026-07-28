@@ -1,13 +1,6 @@
 """
 Tasks for Kapitel 02 — Challenge 2 and Challenge 3 sub-pages.
 
-Same design as C1: split Wahr/Falsch concept checks, proof questions with a
-common answer (require real work but not variant-dependent), static flag.
-No backend.
-
-Continues the numbering: task_02_06 .. task_02_11.
-  Challenge 2: 06 (concept WF), 07 (concept WF), 08 (proof: #factors = 3), 09 (flag)
-  Challenge 3: 10 (concept WF), 11 (proof: unused factor = Q), 12 (flag)
 """
 
 from website.engine.tasks.models import TaskData

@@ -1,11 +1,5 @@
 """
-Tasks for Kapitel 02 — Challenge 7 (ECDH intro, Akt II part 3 / elliptic curves).
-
-Same design as C1-C6: split concept checks, a proof question with a COMMON
-answer (real work, not variant-dependent), static flag, no backend.
-
-Numbering: task_02_22 .. task_02_24.
-  Challenge 7: 22 (concept WF), 23 (proof: is A on the curve? -> Ja), 24 (flag)
+Tasks for Kapitel 02 — Challenge 7 (ECDH intro).
 
 The proof question (2.23) forces the student to implement/use the curve
 membership test y^2 == x^3 + a*x + b (mod p) on a real point from their capture.

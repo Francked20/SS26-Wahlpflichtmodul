@@ -1,8 +1,5 @@
 """
-Tasks for Kapitel 02 — Challenge 9 (ElGamal) + Challenge 10 (DSA), Akt III.
-
-Same design as C1-C8: concept check, a proof question with a COMMON answer,
-static flag, no backend.
+Tasks for Kapitel 02 — Challenge 9 (ElGamal) + Challenge 10 (DSA)
 
 Numbering: task_02_28 .. task_02_33.
   Challenge 9  (ElGamal): 28 (concept WF), 29 (proof: same c1? -> Ja), 30 (flag)

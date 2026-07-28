@@ -1,9 +1,5 @@
 """
 Kapitel 02 — Sub-page: Challenge 7 (ECDH — Diffie-Hellman auf Kurven).
-
-Akt II, Teil 3 (elliptische Kurven). Chained unlock: content gated on
-Challenge 6's flag (day_02_task_21). Introduction to ECDH: same DH idea on an
-elliptic curve, broken via BSGS because the curve order is small.
 """
 
 import reflex as rx
@@ -27,7 +23,7 @@ class Kapitel_02_Challenge_7(AbstractSiteBuilder):
             stories.challenge_7(),
             theory.challenge_7_technik(c),
             index_banner(c),
-            download_button("Challenge 7 — Capture herunterladen", DhVariantState.cap_7),
+            download_button("Challenge 7: Capture herunterladen", DhVariantState.cap_7),
             render_task(self.PAGE_ID, 22, "Verständnisfrage", TaskWidget(task_02_22)),
             render_task(self.PAGE_ID, 23, "Aufgabe: Rechnen auf der Kurve", TaskWidget(task_02_23)),
             rx.cond(
@@ -40,7 +36,7 @@ class Kapitel_02_Challenge_7(AbstractSiteBuilder):
                     rx.markdown(
                         "**Sehr gut!** Sie haben ECDH verstanden und den elliptischen "
                         "diskreten Logarithmus über eine zu kleine Kurve gebrochen. Das "
-                        "Prinzip ist dasselbe wie ganz am Anfang — nur auf einem neuen "
+                        "Prinzip ist dasselbe wie ganz am Anfang nur auf einem neuen "
                         "Spielfeld. Als Nächstes wird es raffinierter: Was passiert, "
                         "wenn die Kurve groß ist, der Angreifer Sie aber auf eine "
                         "**andere, schwache Kurve** lockt? Das ist die Invalid-Curve-"
@@ -75,7 +71,7 @@ class Kapitel_02_Challenge_7(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 7 — Kurven treten auf", color=self.main_color, size="8",
+                rx.heading("Challenge 7: Kurven treten auf", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -108,7 +104,7 @@ class Kapitel_02_Challenge_7(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c7"
-        self.name = "Challenge 7 — Kurven treten auf"
+        self.name = "Challenge 7: Kurven treten auf"
         self.icon = "spline"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

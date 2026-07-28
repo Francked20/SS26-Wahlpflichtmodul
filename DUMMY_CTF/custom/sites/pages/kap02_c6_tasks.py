@@ -1,15 +1,9 @@
 """
-Tasks for Kapitel 02 — Challenge 6 (Man-in-the-Middle, Akt II part 2).
+Tasks for Kapitel 02 — Challenge 6 (Man-in-the-Middle).
 
-Same design philosophy as C1-C5: split concept checks, proof/flag questions,
-static validation, no backend.
-
-New here: a Ja/Nein helper (_jn) for the MITM detection question. Semantically
+A Ja/Nein helper (_jn) for the MITM detection question. Semantically
 "Stimmt der Schlüssel, den Anna sieht, mit Bobs echtem überein?" is a yes/no
 question, which reads more naturally than Wahr/Falsch.
-
-Numbering: task_02_19 .. task_02_21.
-  Challenge 6: 19 (concept WF), 20 (detection Ja/Nein), 21 (flag)
 
 The flag is split across the two decrypted directions (Anna->Bob and
 Bob->Anna); the student must decrypt BOTH records with the two MITM session
@@ -69,7 +63,7 @@ task_02_19 = _wf(
     19, 5, "Challenge 6 — Verständnis",
     "Wahr oder falsch?",
     "Ein Man-in-the-Middle-Angriff auf Diffie-Hellman funktioniert selbst dann, "
-    "wenn der diskrete Logarithmus praktisch unlösbar ist — denn der Angreifer "
+    "wenn der diskrete Logarithmus praktisch unlösbar ist - denn der Angreifer "
     "bricht das DLP gar nicht, sondern führt zwei getrennte Handshakes.",
     correct_is_true=True,
 )
@@ -101,7 +95,7 @@ task_02_21 = TaskData(
         "Sitzungsschlüssel: s1 = A^m1 mod p (Richtung Anna) und s2 = B^m2 mod p "
         "(Richtung Bob). Leiten Sie aus jedem per HKDF-SHA256 einen Schlüssel "
         "ab und entschlüsseln Sie BEIDE Datensätze (RECORD_AB_* und "
-        "RECORD_BA_*). Jede Richtung enthält eine HÄLFTE der Flagge — setzen "
+        "RECORD_BA_*). Jede Richtung enthält eine HÄLFTE der Flagge - setzen "
         "Sie beide Teile zur vollständigen Flagge zusammen. Der diskrete "
         "Logarithmus wird dabei NIE gebrochen."
     ],

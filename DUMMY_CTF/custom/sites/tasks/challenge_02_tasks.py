@@ -1,27 +1,21 @@
+"""Task definitions for Chapter 2 ("Diffie-Hellman").
+
+Each `task_02_XX` is a `TaskData` object describing one exercise. The chapter
+runs a story arc across three attack challenges, alternating concept
+multiple-choice questions with hands-on capture-breaking tasks:
+  - Challenge 1: small p, discrete log by brute force / BSGS  (2.0-2.3)
+  - Challenge 2: smooth order, yafu + Pohlig-Hellman + CRT     (2.4-2.6)
+  - Challenge 3: "almost smooth" trap, PH on the smooth part only, a < M (2.7-2.9)
+Answers, questions, hints, and per-variant text are intentionally in German.
+These objects are imported and rendered by the Chapter 2 site pages.
+"""
+
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint
 
 
-# ============================================================================
-# KAPITEL 02 — Diffie-Hellman & der diskrete Logarithmus
-# VAGUE 1 : Akt I, Challenges 1-3 (klassisches DH)
-#
-# Modell (THM/HTB-Stil, OHNE Backend):
-#   - Der Studierende lädt seine persönliche Capture herunter, greift LOKAL an
-#     (faktorisieren, Pohlig-Hellman, entschlüsseln) und reicht die Flagge ein.
-#   - Validierung 100% statisch über das Framework.
-#   - Zwischenfragen mit GEMEINSAMER Antwort prüfen echtes Verständnis/Handeln,
-#     ohne variantenabhängige Werte (z.B. "Wie viele nicht-triviale Primfaktoren
-#     hat p-1?" -> 3, nur durch echtes Faktorisieren beantwortbar).
-#   - Keine Task-Randomisierung: allow_random_order=False, jede Liste hat 1 Eintrag.
-#
-# Aufgabennummerierung (task_02_XX) und Freischaltung (day_02_task_XX) laufen
-# fortlaufend über alle Aufgaben des Kapitels.
-# ============================================================================
-
-
 # ----------------------------------------------------------------------------
-# 2.0 — Einstieg: Ziel & diskreter Logarithmus (Konzept-QCM)
+# 2.0 - Concept: the Diffie-Hellman principle (multiple choice)
 # ----------------------------------------------------------------------------
 task_02_00 = TaskData(
     day=2,
@@ -60,7 +54,7 @@ task_02_00 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 2.1 — Das diskrete Logarithmusproblem (Konzept-QCM)
+# 2.1 - Concept: the discrete logarithm problem (multiple choice)
 # ----------------------------------------------------------------------------
 task_02_01 = TaskData(
     day=2,
@@ -99,12 +93,13 @@ task_02_01 = TaskData(
 )
 
 
+
 # ============================================================================
-# CHALLENGE 1 — Aufwärmen (kleines p, BSGS/Brute-Force)
+# CHALLENGE 1 - Small p (discrete log by brute force / BSGS)
 # ============================================================================
 
 # ----------------------------------------------------------------------------
-# 2.2 — Capture lesen (Beweis-Frage, gemeinsame Antwort)
+# 2.2 - Challenge 1: read the capture (find the key name for p)
 # ----------------------------------------------------------------------------
 task_02_02 = TaskData(
     day=2,
@@ -144,7 +139,7 @@ task_02_02 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 2.3 — Challenge 1: Flagge (kleines p per BSGS/Brute-Force lösen)
+# 2.3 - Challenge 1: flag (solve small p by BSGS / brute force)
 # ----------------------------------------------------------------------------
 task_02_03 = TaskData(
     day=2,
@@ -187,11 +182,11 @@ task_02_03 = TaskData(
 
 
 # ============================================================================
-# CHALLENGE 2 — Glatte Ordnung (yafu + Pohlig-Hellman + CRT)
+# CHALLENGE 2 - Smooth order (yafu + Pohlig-Hellman + CRT)
 # ============================================================================
 
 # ----------------------------------------------------------------------------
-# 2.4 — Konzept: glatte Ordnung (QCM)
+# 2.4 - Concept: smooth order (multiple choice)
 # ----------------------------------------------------------------------------
 task_02_04 = TaskData(
     day=2,
@@ -230,7 +225,7 @@ task_02_04 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 2.5 — Beweis-Frage: Anzahl nicht-trivialer Primfaktoren (gemeinsame Antwort 3)
+# 2.5 - Proof question: number of non-trivial prime factors (answer: 3)
 # ----------------------------------------------------------------------------
 task_02_05 = TaskData(
     day=2,
@@ -271,7 +266,7 @@ task_02_05 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 2.6 — Challenge 2: Flagge (Pohlig-Hellman + CRT)
+# 2.6 - Challenge 2: flag (Pohlig-Hellman + CRT)
 # ----------------------------------------------------------------------------
 task_02_06 = TaskData(
     day=2,
@@ -314,11 +309,11 @@ task_02_06 = TaskData(
 
 
 # ============================================================================
-# CHALLENGE 3 — Fast glatt (die Falle: großes p, aber a < M)
+# CHALLENGE 3 - Almost smooth (the trap: large p, but a < M)
 # ============================================================================
 
 # ----------------------------------------------------------------------------
-# 2.7 — Konzept: die Falle erkennen (QCM)
+# 2.7 - Concept: spot the trap (multiple choice)
 # ----------------------------------------------------------------------------
 task_02_07 = TaskData(
     day=2,
@@ -356,7 +351,7 @@ task_02_07 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 2.8 — Beweis-Frage: was nutzt man NICHT aus? (gemeinsame Antwort: Q)
+# 2.8 - Proof question: which factor is NOT exploited? (answer: Q)
 # ----------------------------------------------------------------------------
 task_02_08 = TaskData(
     day=2,
@@ -397,7 +392,7 @@ task_02_08 = TaskData(
 
 
 # ----------------------------------------------------------------------------
-# 2.9 — Challenge 3: Meisterflagge (PH nur auf glattem Teil, a < M)
+# 2.9 - Challenge 3: master flag (PH on the smooth part only, a < M)
 # ----------------------------------------------------------------------------
 task_02_09 = TaskData(
     day=2,

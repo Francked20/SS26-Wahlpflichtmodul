@@ -2,8 +2,6 @@
 Kapitel 02 — Sub-page: Challenge 2 (Die glatte Ordnung).
 
 Chained unlock: the content is gated on Challenge 1's flag
-(day_02_task_05). A locked page shows "Lösen Sie zuerst Challenge 1"
-(HTB Academy style: page visible in the sidebar, but content locked).
 """
 
 import reflex as rx
@@ -30,7 +28,7 @@ class Kapitel_02_Challenge_2(AbstractSiteBuilder):
             theory.challenge_2_intro(c),
             theory.challenge_2_pohlig_hellman(c),
             index_banner(c),
-            download_button("Challenge 2 — Capture herunterladen", DhVariantState.cap_2),
+            download_button("Challenge 2: Capture herunterladen", DhVariantState.cap_2),
             render_task(self.PAGE_ID, 6, "Verständnisfrage 1", TaskWidget(task_02_06)),
             render_task(self.PAGE_ID, 7, "Verständnisfrage 2", TaskWidget(task_02_07)),
             render_task(self.PAGE_ID, 8, "Aufgabe: Faktorisieren", TaskWidget(task_02_08)),
@@ -43,7 +41,7 @@ class Kapitel_02_Challenge_2(AbstractSiteBuilder):
                 rx.box(
                     rx.markdown(
                         "**Ausgezeichnet!** Challenge 2 gelöst. "
-                        "**Challenge 3 — Die Falle** ist jetzt freigeschaltet."
+                        "**Challenge 3: Die Falle** ist jetzt freigeschaltet."
                     ),
                     style={"maxWidth": "1200px", "width": "100%", "margin": "16px auto",
                            "padding": "18px", "borderRadius": "12px",
@@ -74,7 +72,7 @@ class Kapitel_02_Challenge_2(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 2 — Die glatte Ordnung", color=self.main_color, size="8",
+                rx.heading("Challenge 2: Die glatte Ordnung", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -108,7 +106,7 @@ class Kapitel_02_Challenge_2(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c2"
-        self.name = "Challenge 2 — Die glatte Ordnung"
+        self.name = "Challenge 2: Die glatte Ordnung"
         self.icon = "puzzle"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

@@ -1,41 +1,21 @@
-#!/usr/bin/env python3
-"""One-off operator script: (re)populates the DhExportVariant pool for the
-weak-DH (Logjam) challenge chain. REPLACES all existing variants - since a
-participant's variant is a deterministic function of their username (see
-utils/dh_export_pool.variant_index_for_user), rotating the pool changes what
-every in-progress participant is working on.
+"""One-off seeding script: (re)builds the fixed pool of weak-DH (Logjam)
+challenge variants in MongoDB.
 
-Companion to Jonas' generate_export_cipher_pool.py. Run inside the `challenge`
-container:
-    docker compose exec challenge python3 scripts/generate_dh_export_pool.py
-
-Requires a Beanie document `DhExportVariant` registered in database/models.py
-(alongside ExportCipherVariant). Suggested schema (all big ints stored as str):
-
-    class DhExportVariant(Document):
-        index: int
-        p: str
-        g: str
-        Ys: str
-        Yc: str
-        server_secret: str            # s (private; used only by /check_answer)
-        factors: List[str]            # prime factors of q=(p-1)/2
-        flag: str
-        master_secret_hex: str
-        client_flight_1_hex: str
-        client_flight_2_hex: str
-        server_flight_1_hex: str
-        server_flight_2_hex: str
-        class Settings:
-            name = "dh_export_variants"
-            indexes = ["index"]
+Run manually to populate the `DhExportVariant` collection that the
+`/check_answer` endpoint reads at runtime. Each variant is deterministic in its
+index (see utils.dh_export_pool.generate_variant), so re-running reproduces the
+same pool. Usage: `python scripts/generate_dh_export_pool.py`.
 """
+
 import asyncio
 import os
 import sys
 
+# Make the package root (challengebackend/) importable so `database` and
+# `utils` resolve when this script is run directly from the scripts/ folder.
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# Load DB connection settings (e.g. Mongo URI) from the .env file.
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -44,13 +24,18 @@ from utils.dh_export_pool import generate_variant, POOL_SIZE   # noqa: E402
 
 
 async def main():
+    # Connect and register the Beanie document models with Mongo.
     mongo = MongoDB()
     await mongo.connect_mapper()
 
+    # Wipe the existing pool so re-running yields a clean, deterministic set.
     await DhExportVariant.delete_all()
 
     for index in range(POOL_SIZE):
+        # Generate the full weak-DH handshake data for this pool index.
         v = generate_variant(index)
+        # Persist it. Big integers are stored as strings (Mongo has no native
+        # bignum) and byte flights are stored hex-encoded.
         await DhExportVariant(
             index=v.index,
             p=str(v.p), g=str(v.g), Ys=str(v.Ys), Yc=str(v.Yc),
@@ -65,6 +50,7 @@ async def main():
         ).insert()
         print(f"  variant {index + 1}/{POOL_SIZE} generated")
 
+    # Close the connection cleanly.
     await mongo.disconnect()
     print(f"Done: {POOL_SIZE} weak-DH variants written.")
 

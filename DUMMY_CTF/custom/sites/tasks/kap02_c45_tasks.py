@@ -1,8 +1,5 @@
 """
-Tasks for Kapitel 02 — Challenge 4 and 5 (Akt II, part 1).
-
-Same design: split Wahr/Falsch concept checks, proof questions with a common
-answer, static flag. No backend.
+Tasks for Kapitel 02 — Challenge 4 and 5.
 
 Numbering: task_02_13 .. task_02_18.
   Challenge 4 (small subgroup): 13 (WF), 14 (proof: order of g), 15 (flag)
@@ -120,7 +117,7 @@ task_02_17 = _wf(
     correct_is_true=True,
 )
 
-# 2.18 — flag (final of Akt II part 1)
+# 2.18 — flag 
 task_02_18 = TaskData(
     day=2, points=30, day_description="Diffie-Hellman",
     task_description="Challenge 5 — Die Flagge", error_cost=1,

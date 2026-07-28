@@ -1,7 +1,6 @@
 """
 Kapitel 02 — Sub-page: Challenge 4 (Der schwache Erzeuger).
 
-Akt II. Chained unlock: content gated on Challenge 3's flag (day_02_task_12).
 """
 
 import reflex as rx
@@ -25,7 +24,7 @@ class Kapitel_02_Challenge_4(AbstractSiteBuilder):
             stories.challenge_4(),
             theory.challenge_4_technik(c),
             index_banner(c),
-            download_button("Challenge 4 — Capture herunterladen", DhVariantState.cap_4),
+            download_button("Challenge 4: Capture herunterladen", DhVariantState.cap_4),
             render_task(self.PAGE_ID, 13, "Verständnisfrage", TaskWidget(task_02_13)),
             render_task(self.PAGE_ID, 14, "Aufgabe: Die Ordnung von g", TaskWidget(task_02_14)),
             rx.cond(
@@ -37,7 +36,7 @@ class Kapitel_02_Challenge_4(AbstractSiteBuilder):
                 rx.box(
                     rx.markdown(
                         "**Stark!** Challenge 4 gelöst. "
-                        "**Challenge 5 — Logjam** ist jetzt freigeschaltet."
+                        "**Challenge 5: Logjam** ist jetzt freigeschaltet."
                     ),
                     style={"maxWidth": "1200px", "width": "100%", "margin": "16px auto",
                            "padding": "18px", "borderRadius": "12px",
@@ -68,7 +67,7 @@ class Kapitel_02_Challenge_4(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 4 — Der schwache Erzeuger", color=self.main_color, size="8",
+                rx.heading("Challenge 4: Der schwache Erzeuger", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -101,7 +100,7 @@ class Kapitel_02_Challenge_4(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c4"
-        self.name = "Challenge 4 — Der schwache Erzeuger"
+        self.name = "Challenge 4: Der schwache Erzeuger"
         self.icon = "key"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

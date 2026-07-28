@@ -46,7 +46,7 @@ class Kapitel_02_Kurs(AbstractSiteBuilder):
             rx.box(
                 rx.markdown(
                     "**Bereit?** Wechseln Sie in der Seitenleiste zu "
-                    "**Challenge 1 — Aufwärmen** und bergen Sie Ihre erste Flagge."
+                    "**Challenge 1** und bergen Sie Ihre erste Flagge."
                 ),
                 style={"maxWidth": "1200px", "width": "100%", "margin": "16px auto",
                        "padding": "18px", "borderRadius": "12px",

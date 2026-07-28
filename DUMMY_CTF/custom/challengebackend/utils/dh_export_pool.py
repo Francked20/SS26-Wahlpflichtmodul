@@ -17,23 +17,22 @@ import hashlib
 import random
 from dataclasses import dataclass
 
-from dh_export_crypto import (
+from utils.dh_export_crypto import (
     craft_dh_variant, gen_weak_dh_params, generate_rsa_primes, mod_inverse, E,
 )
 
 POOL_SIZE = 100
-FLAG_PREFIX = "crypto"          # aligné sur Jonas (export_cipher_pool.py) — préfixe unique du projet
+FLAG_PREFIX = "crypto"          # project-wide flag prefix (matches export_cipher_pool.py)
 
-# Paramètres DH faibles (calibrés empiriquement : voir test_dhe_e2e).
-DH_PRIME_BITS = 512            # taille de p (discours Logjam réel)
-DH_FACTOR_BITS = 24           # taille des petits premiers de p-1 (factorisation rapide)
-RSA_CERT_PRIME_BITS = 256     # 2x256 -> certificat serveur 512 bits (comme FREAK)
+# Weak DH parameters (empirically calibrated: see test_dhe_e2e).
+DH_PRIME_BITS = 512            # size of p (real Logjam scale)
+DH_FACTOR_BITS = 24           # size of the small primes of p-1 (fast factorisation)
+RSA_CERT_PRIME_BITS = 256     # 2x256 -> 512-bit server certificate (like FREAK)
 
 
 def variant_index_for_user(username: str) -> int:
-    """Pure function username -> pool index. Identique à la logique de Jonas et
-    à l'approche stateless : lie chaque étape de la chaîne à la même entrée du
-    pool, sans persistance par utilisateur supplémentaire."""
+    """Pure function username -> pool index. Stateless: binds every step of the
+    chain to the same pool entry without extra per-user persistence."""
     digest = hashlib.sha256(username.lower().encode()).hexdigest()
     return int(digest, 16) % POOL_SIZE
 
@@ -45,9 +44,9 @@ class DhVariantData:
     g: int
     Ys: int
     Yc: int
-    server_secret: int          # s (à retrouver ; jamais exposé à l'étudiant)
-    Z: int                      # secret partagé DH
-    factors: list               # facteurs premiers de q = (p-1)/2
+    server_secret: int          # s (to be recovered; never exposed to the student)
+    Z: int                      # DH shared secret
+    factors: list               # prime factors of q = (p-1)/2
     flag: str
     client_flight_1: bytes
     client_flight_2: bytes
@@ -57,21 +56,22 @@ class DhVariantData:
 
 
 def generate_variant(index: int) -> DhVariantData:
-    # RNG déterministe par index (reproductibilité du pool).
+    """Build the full weak-DH challenge data for one pool index (deterministic)."""
+    # Deterministic RNG per index (reproducible pool).
     rng = random.Random(f"kap-dh-logjam|{index}")
 
-    # 1) paramètres DH faibles
+    # 1) weak DH parameters
     p, g, factors = gen_weak_dh_params(DH_PRIME_BITS, DH_FACTOR_BITS, rng)
 
-    # 2) clé RSA du certificat serveur (pour signer le ServerKeyExchange)
+    # 2) RSA key of the server certificate (to sign the ServerKeyExchange)
     pr, qr = generate_rsa_primes(RSA_CERT_PRIME_BITS)
     n_rsa = pr * qr
     d_rsa = mod_inverse(E, (pr - 1) * (qr - 1))
 
-    # 3) flag (préfixe aligné sur Jonas)
+    # 3) flag
     flag = f"{FLAG_PREFIX}{{logjam_weak_dh_{index:03d}_{rng.randint(100000, 999999)}}}"
 
-    # 4) handshake TLS DHE_EXPORT complet
+    # 4) complete TLS DHE_EXPORT handshake
     vb = craft_dh_variant(p, g, factors, n_rsa, d_rsa, flag.encode(), rng)
 
     return DhVariantData(
@@ -88,25 +88,23 @@ def generate_variant(index: int) -> DhVariantData:
 
 
 # --- per-stage answer comparators (pure, no DB access) ---
-# Mappent les 9 étapes du prof sur des validations serveur (dynamic_check).
+# Map the 9 exercise steps onto server-side validations (dynamic_check).
 
 def check_factors(stored_factors: list, answer: str) -> bool:
-    """Étape 5 : l'étudiant fournit les facteurs premiers de p-1 (séparés par
-    des virgules). On accepte l'ensemble des facteurs de q = (p-1)/2 (le 2 est
-    trivial et facultatif)."""
+    """Step 5: the student supplies the prime factors of p-1 (comma-separated).
+    We accept the set of factors of q = (p-1)/2 (the 2 is trivial and optional)."""
     try:
         parts = {int(x.strip()) for x in answer.replace(" ", "").split(",") if x.strip()}
     except ValueError:
         return False
     expected = {int(f) for f in stored_factors}
-    # on tolère la présence ou l'absence du facteur trivial 2
+    # tolerate the presence or absence of the trivial factor 2
     parts.discard(2)
     return parts == expected
 
 
 def check_server_secret(stored_secret: str, answer: str) -> bool:
-    """Étape 7 : l'étudiant fournit s (le log discret de Ys). Comparé modulo
-    l'ordre du sous-groupe q pour tolérer les représentants équivalents."""
+    """Step 7: the student supplies s (the discrete log of Ys)."""
     try:
         return int(answer.strip()) == int(stored_secret)
     except ValueError:
@@ -114,11 +112,11 @@ def check_server_secret(stored_secret: str, answer: str) -> bool:
 
 
 def check_master_secret(stored_master_secret_hex: str, answer: str) -> bool:
-    """Étape 8 : master secret TLS (48 octets) en hex."""
+    """Step 8: the TLS master secret (48 bytes) in hex."""
     cleaned = answer.strip().lower().replace(" ", "").replace("0x", "")
     return cleaned == stored_master_secret_hex.lower()
 
 
 def check_flag(stored_flag: str, answer: str) -> bool:
-    """Étape 9 : le flag extrait du trafic applicatif."""
+    """Step 9: the flag extracted from the application traffic."""
     return answer.strip() == stored_flag

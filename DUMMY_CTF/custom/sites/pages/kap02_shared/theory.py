@@ -76,12 +76,12 @@ schwer rückwärts.
 
 Gegeben eine Basis $a$, eine Zahl $n$ und $f_a(x) = a^x \bmod n = y$. Die
 **modulare Exponentiation** $y = a^x \bmod n$ ist effizient berechenbar. Die
-Umkehrung — zu gegebenem $y$ das $x$ finden — ist das
+Umkehrung - zu gegebenem $y$ das $x$ finden - ist das
 
 $$x \equiv \log_a y \pmod n \quad\text{(diskretes Logarithmusproblem).}$$
 
 Für große, gut gewählte Parameter kennt man kein effizientes Verfahren dafür.
-Diese Asymmetrie macht DH sicher — solange die Parameter stimmen.
+Diese Asymmetrie macht DH sicher - solange die Parameter stimmen.
             """
         ),
         accent=color,
@@ -266,7 +266,7 @@ hat per Chinesischem Restsatz eine eindeutige Lösung $a \bmod 966$. Fertig.
 
 > **Merke:** Die Komplexität des Angriffs hängt hauptsächlich vom **größten
 > primen Untergruppenfaktor** ab. Deshalb muss die Gruppenordnung einen
-> *größtmöglichen* Primteiler besitzen — und die Kenntnis der Faktorisierung
+> *größtmöglichen* Primteiler besitzen - und die Kenntnis der Faktorisierung
 > von $\varphi(p)$ ist essentiell.
 
 In Ihrer Challenge ist $p$ größer, aber das Prinzip ist identisch: erst $p-1$
@@ -292,7 +292,7 @@ flüchtiger Blick sagt: unknackbar. Doch schauen Sie genau auf $p-1$.
 
 $$p-1 = 2 \cdot q_1 \cdot q_2 \cdot q_3 \cdot Q,$$
 
-wobei die $q_i$ klein und glatt sind — aber $Q$ ein **großer Primfaktor** ist,
+wobei die $q_i$ klein und glatt sind - aber $Q$ ein **großer Primfaktor** ist,
 den Sie mit yafu **nicht** faktorisieren können.
 
 **Die Lösung: ignorieren Sie $Q$.** Wenden Sie Pohlig-Hellman nur auf den
@@ -300,7 +300,7 @@ glatten Teil $M = 2 \cdot q_1 \cdot q_2 \cdot q_3$ an. Das liefert Ihnen
 $a \bmod M$ — nicht $a$ selbst.
 
 **Warum genügt das?** Weil der geheime Exponent $a$ hier *kleiner als $M$*
-gewählt wurde. Dann gilt schlicht $a \bmod M = a$ — Sie haben $a$ vollständig,
+gewählt wurde. Dann gilt schlicht $a \bmod M = a$ - Sie haben $a$ vollständig,
 ohne $Q$ je berührt zu haben.
 
 > Die Lehre: **die Größe von $p$ war ein Ablenkungsmanöver.** Angreifbar ist
@@ -334,7 +334,7 @@ großen, nicht faktorisierbaren $R$. Der Erzeuger $g$ hat die kleine Ordnung $q$
 
 **Die Folge.** Alle öffentlichen Werte $A = g^a$ leben dann in einer winzigen
 Untergruppe mit nur $q$ Elementen. Der geheime Exponent $a$ ist nur noch
-**modulo $q$** relevant — und $q$ ist so klein, dass Sie $a \bmod q$ mit
+**modulo $q$** relevant - und $q$ ist so klein, dass Sie $a \bmod q$ mit
 Baby-Step-Giant-Step in Sekundenbruchteilen finden.
 
 **Ihr Weg:**
@@ -360,12 +360,12 @@ def challenge_5_technik(color: str) -> rx.Component:
         _h("Logjam: die absichtlich schwache Gruppe", color),
         rx.markdown(
             r"""
-Dieser Angriff hat einen realen Hintergrund — und schließt den Bogen zum
+Dieser Angriff hat einen realen Hintergrund - und schließt den Bogen zum
 **FREAK**-Angriff aus Kapitel 01.
 
 **Export-Kryptographie.** In den 1990ern beschränkten Exportgesetze die Stärke
 von Kryptographie. Systeme wurden mit absichtlich **schwachen** Parametern
-ausgeliefert — bei RSA zu kleine Module (das war FREAK), bei Diffie-Hellman zu
+ausgeliefert - bei RSA zu kleine Module (das war FREAK), bei Diffie-Hellman zu
 kleine, standardisierte Gruppen. Der reale **Logjam**-Angriff (2015) nutzte
 genau solche schwachen DH-Gruppen aus.
 
@@ -376,12 +376,12 @@ wie in Challenge 2.
 
 **Der eigentliche Clou von Logjam.** In der Realität wird dieselbe schwache
 Gruppe von **tausenden** Servern geteilt. Ein Angreifer investiert einmalig eine
-teure Vorberechnung für diese eine Gruppe — und kann danach **jede** Sitzung, die
+teure Vorberechnung für diese eine Gruppe - und kann danach **jede** Sitzung, die
 sie nutzt, quasi in Echtzeit brechen. Die gemeinsame Nutzung schwacher Standards
 ist die eigentliche Katastrophe.
 
 **Ihr Weg:** Faktorisieren Sie $p-1$ (yafu), lösen Sie per Pohlig-Hellman + CRT,
-entschlüsseln Sie. Sie kennen die Technik bereits — hier zählt das *Verständnis*
+entschlüsseln Sie. Sie kennen die Technik bereits - hier zählt das *Verständnis*
 der realen Schwachstelle.
 
 > Die Lehre: Schwache, geteilte Standard-Parameter sind eine Hintertür mit
@@ -454,7 +454,7 @@ und in gewisser Weise viel einfacher.
 **Warum Sie nichts brechen müssen.** Die Parameter sind hier bewusst
 **perfekt**: $p$ ist eine sichere Primzahl (safe prime, $p = 2q+1$ mit
 primem $q$), $g$ hat große Ordnung. Der diskrete Logarithmus ist praktisch
-unlösbar. Trotzdem lesen Sie jede Nachricht — weil Sie **aktiv** in die
+unlösbar. Trotzdem lesen Sie jede Nachricht - weil Sie **aktiv** in die
 Verbindung eingreifen.
             """
         ),
@@ -469,19 +469,19 @@ $M_1 = g^{m_1}$. Ergebnis: Sie führen **zwei getrennte Handshakes**.
 - Mit **Anna** teilen Sie den Schlüssel $s_1 = A^{m_1} = M_1^{\,a} \bmod p$.
 - Mit **Bob** teilen Sie den Schlüssel $s_2 = B^{m_2} = M_2^{\,b} \bmod p$.
 
-Anna und Bob glauben, ein gemeinsames Geheimnis zu haben — in Wahrheit reden
+Anna und Bob glauben, ein gemeinsames Geheimnis zu haben - in Wahrheit reden
 beide nur mit Ihnen. Sie entschlüsseln eine Richtung, lesen (oder verändern!)
 den Klartext, verschlüsseln neu mit dem anderen Schlüssel und leiten weiter.
 Niemand merkt etwas.
 
 **Der Nachweis (Detektion).** Woran erkennt man den Angriff überhaupt? Der
-Schlüssel, den Anna für „Bobs Schlüssel" hält, ist $M_1$ — **nicht** Bobs
+Schlüssel, den Anna für „Bobs Schlüssel" hält, ist $M_1$ - **nicht** Bobs
 echter Wert $B$. Wer $M_1$ und $B$ vergleichen kann, sieht sofort: *sie
 stimmen nicht überein.* Genau das ist die Signatur eines MITM.
 
 **Ihr Weg:** In Ihrer Capture stehen (nur für diese Übung) Mallorys
 Geheimnisse $m_1, m_2$. Berechnen Sie $s_1 = A^{m_1}$ und $s_2 = B^{m_2}$,
-leiten Sie **zwei** Schlüssel ab und entschlüsseln Sie **beide** Datensätze —
+leiten Sie **zwei** Schlüssel ab und entschlüsseln Sie **beide** Datensätze -
 Anna→Bob und Bob→Anna. Jede Richtung trägt eine **Hälfte** der Flagge.
 
 > Die Lehre: Diffie-Hellman schützt die Vertraulichkeit, aber **nicht die
@@ -557,7 +557,7 @@ def challenge_7_technik(color: str) -> rx.Component:
             r"""
 Bisher lebte alles in $(\mathbb{Z}/p\mathbb{Z})^*$: Zahlen, die man modulo $p$
 multipliziert. Elliptische Kurven bieten eine **andere Gruppe** für dasselbe
-Spiel — mit einem großen Vorteil: Für gleiche Sicherheit genügen viel kleinere
+Spiel - mit einem großen Vorteil: Für gleiche Sicherheit genügen viel kleinere
 Zahlen. Deshalb nutzt die moderne Kryptografie (TLS, Signal, Bitcoin) fast
 überall Kurven.
 
@@ -650,17 +650,17 @@ def challenge_8_technik(color: str) -> rx.Component:
         _h("Der Invalid-Curve-Angriff", color),
         rx.markdown(
             r"""
-Bislang lag die Schwäche immer in den **Parametern** — zu kleines $p$, glatte
+Bislang lag die Schwäche immer in den **Parametern** - zu kleines $p$, glatte
 Ordnung, winzige Kurve. Diesmal ist die Kurve $E$ **einwandfrei**: großer,
 primzahliger Ordnung, der elliptische Log ist unangreifbar. Die Schwäche liegt
 jetzt in der **Implementierung**.
 
 **Die entscheidende Beobachtung.** Schauen Sie sich die Additionsformeln auf
 $y^2 = x^3 + a x + b$ genau an: Zur Berechnung von $P + Q$ braucht man nur $a$,
-die Koordinaten der Punkte und $p$ — der Parameter $b$ **kommt darin gar nicht
+die Koordinaten der Punkte und $p$ - der Parameter $b$ **kommt darin gar nicht
 vor**. Das heißt: Rechnet man mit einem Punkt, der eigentlich auf einer *anderen*
 Kurve $E'(b')$ mit demselben $a$, aber anderem $b'$ liegt, merkt die Formel den
-Unterschied **nicht**. Man rechnet fröhlich weiter — nur eben in einer anderen
+Unterschied **nicht**. Man rechnet fröhlich weiter - nur eben in einer anderen
 Gruppe.
             """
         ),
@@ -669,7 +669,7 @@ Gruppe.
             r"""
 **Bobs Fehler.** Bob besitzt einen festen geheimen Schlüssel $d$ (er nutzt ihn
 wieder und wieder). Wenn ihm jemand einen Punkt $P$ schickt, berechnet er
-$R = d \cdot P$ — **ohne zu prüfen, ob $P$ überhaupt auf seiner Kurve $E$ liegt**.
+$R = d \cdot P$ - **ohne zu prüfen, ob $P$ überhaupt auf seiner Kurve $E$ liegt**.
 Genau diese fehlende Prüfung öffnet die Tür.
 
 **Der Angriff Schritt für Schritt.**
@@ -715,7 +715,7 @@ der Absender einen **frischen Zufallswert** $k$ (den *Nonce*) und bildet
 $$c_1 = g^k \bmod p, \qquad c_2 = m \cdot y^k \bmod p.$$
 
 Das Chiffrat ist das Paar $(c_1, c_2)$. Der Empfänger entschlüsselt via
-$m = c_2 \cdot (c_1^{\,x})^{-1}$. Die Sicherheit beruht — wie immer — darauf,
+$m = c_2 \cdot (c_1^{\,x})^{-1}$. Die Sicherheit beruht - wie immer - darauf,
 dass niemand aus $c_1 = g^k$ den Wert $k$ zurückrechnen kann (diskreter
 Logarithmus). Hier ist $p$ groß (256 Bit), das ist also **aussichtslos**.
 
@@ -760,10 +760,10 @@ Man würfelt einen Nonce $k$ und bildet
 $$r = (g^k \bmod p) \bmod q, \qquad s = k^{-1}\,(H(m) + x\,r) \bmod q,$$
 
 die Signatur ist $(r, s)$. Der öffentliche Schlüssel $y = g^x$ erlaubt jedem,
-die Signatur zu prüfen — aber **nicht**, $x$ zu berechnen (dazu müsste man den
+die Signatur zu prüfen  aber **nicht**, $x$ zu berechnen (dazu müsste man den
 diskreten Logarithmus lösen).
 
-**Der fatale Fehler — wieder der Nonce.** Auch $k$ muss bei jeder Signatur frisch
+**Der fatale Fehler, wieder der Nonce.** Auch $k$ muss bei jeder Signatur frisch
 und geheim sein. Werden zwei Nachrichten $m_1, m_2$ mit **demselben** $k$
 signiert, dann ist $r$ in beiden Signaturen **identisch** (denn $r$ hängt nur von
 $k$ ab). Das ist das verräterische Zeichen.

@@ -1,10 +1,5 @@
 """
 Kapitel 02 — Sub-page: Challenge 6 (Man-in-the-Middle).
-
-Akt II, Teil 2. Chained unlock: content gated on Challenge 5's flag
-(day_02_task_18). Final challenge of the chapter: an ACTIVE attack — the
-student plays Mallory and decrypts both directions without ever breaking the
-discrete log (the parameters are a 256-bit safe prime).
 """
 
 import reflex as rx
@@ -28,7 +23,7 @@ class Kapitel_02_Challenge_6(AbstractSiteBuilder):
             stories.challenge_6(),
             theory.challenge_6_technik(c),
             index_banner(c),
-            download_button("Challenge 6 — Capture herunterladen", DhVariantState.cap_6),
+            download_button("Challenge 6: Capture herunterladen", DhVariantState.cap_6),
             render_task(self.PAGE_ID, 19, "Verständnisfrage", TaskWidget(task_02_19)),
             render_task(self.PAGE_ID, 20, "Aufgabe: Nachweis des Angriffs", TaskWidget(task_02_20)),
             rx.cond(
@@ -39,7 +34,7 @@ class Kapitel_02_Challenge_6(AbstractSiteBuilder):
                 PlayerCardState.tasks_solved["day_02_task_21"] | PlayerCardState.enable_test_mode,
                 rx.box(
                     rx.markdown(
-                        "**Akt II abgeschlossen — Kapitel 02 gemeistert!** Sie haben "
+                        "**Geschafft!** Sie haben "
                         "den letzten und wichtigsten Angriff verstanden: Selbst bei "
                         "perfekten Parametern fällt Diffie-Hellman, wenn niemand die "
                         "Identität des Gegenübers prüft. Vom zu kleinen p über die "
@@ -79,7 +74,7 @@ class Kapitel_02_Challenge_6(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 6 — Der Mann in der Mitte", color=self.main_color, size="8",
+                rx.heading("Challenge 6: Der Mann in der Mitte", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -112,7 +107,7 @@ class Kapitel_02_Challenge_6(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c6"
-        self.name = "Challenge 6 — Der Mann in der Mitte"
+        self.name = "Challenge 6: Der Mann in der Mitte"
         self.icon = "venetian-mask"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

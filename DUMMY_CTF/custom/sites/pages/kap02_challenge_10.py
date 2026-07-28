@@ -1,8 +1,5 @@
 """
 Kapitel 02 — Sub-page: Challenge 10 (DSA, wiederverwendeter Nonce). FINALE.
-
-Akt III, Teil 2. Chained unlock: content gated on Challenge 9's flag
-(day_02_task_30). Last challenge of the whole chapter.
 """
 
 import reflex as rx
@@ -26,7 +23,7 @@ class Kapitel_02_Challenge_10(AbstractSiteBuilder):
             stories.challenge_10(),
             theory.challenge_10_technik(c),
             index_banner(c),
-            download_button("Challenge 10 — Capture herunterladen", DhVariantState.cap_10),
+            download_button("Challenge 10: Capture herunterladen", DhVariantState.cap_10),
             render_task(self.PAGE_ID, 31, "Verständnisfrage", TaskWidget(task_02_31)),
             render_task(self.PAGE_ID, 32, "Aufgabe: Das verräterische Zeichen", TaskWidget(task_02_32)),
             rx.cond(
@@ -37,14 +34,14 @@ class Kapitel_02_Challenge_10(AbstractSiteBuilder):
                 PlayerCardState.tasks_solved["day_02_task_33"] | PlayerCardState.enable_test_mode,
                 rx.box(
                     rx.markdown(
-                        "**Kapitel 02 vollständig gemeistert — Glückwunsch!** Sie "
+                        "**Teil vollständig gemeistert — Glückwunsch!** Sie "
                         "haben die gesamte Bandbreite der Angriffe auf "
                         "Diffie-Hellman und verwandte Verfahren durchdrungen:\n\n"
-                        "- **Akt I:** zu kleines p, glatte Ordnung, die trügerische "
+                        "- Teil zu kleines p, glatte Ordnung, die trügerische "
                         "Festung, schwacher Erzeuger und die Logjam-Export-Schwäche.\n"
-                        "- **Akt II:** der aktive Man-in-the-Middle, ECDH auf "
+                        "- Der aktive Man-in-the-Middle, ECDH auf "
                         "elliptischen Kurven und der Invalid-Curve-Angriff.\n"
-                        "- **Akt III:** der wiederverwendete Nonce bei ElGamal und "
+                        "- Der wiederverwendete Nonce bei ElGamal und "
                         "DSA — der Fehler, der die PS3 knackte.\n\n"
                         "Die rote Linie durch alles: **Ein mathematisch sicheres "
                         "Verfahren nützt nichts, wenn Parameter, Implementierung "
@@ -82,7 +79,7 @@ class Kapitel_02_Challenge_10(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 10 — Der Schlüssel fällt", color=self.main_color, size="8",
+                rx.heading("Challenge 10: Der Schlüssel fällt", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -115,7 +112,7 @@ class Kapitel_02_Challenge_10(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c10"
-        self.name = "Challenge 10 — Der Schlüssel fällt"
+        self.name = "Challenge 10: Der Schlüssel fällt"
         self.icon = "crown"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

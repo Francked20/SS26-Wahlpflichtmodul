@@ -1,3 +1,15 @@
+"""Task definitions for Chapter 1 ("Einfuehrung" / Introduction).
+
+Each `task_01_XX` is a `TaskData` object describing one exercise: its metadata
+(day, points, flags such as allow_vscode / task_type), the list of accepted
+answers, the per-variant question/download/link text, and the graded hints.
+Multiple parallel variants are provided per task (via list comprehensions) so
+each player gets a randomised instance; the answer lists line up index-for-index
+with the question/hint lists. All learner-facing text is intentionally in German.
+
+These objects are imported and rendered by the Chapter 1 site pages.
+"""
+
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint
 

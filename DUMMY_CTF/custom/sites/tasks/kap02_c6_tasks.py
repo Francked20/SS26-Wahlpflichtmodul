@@ -1,12 +1,5 @@
 """
-Tasks for Kapitel 02 — Challenge 6 (Man-in-the-Middle, Akt II part 2).
-
-Same design philosophy as C1-C5: split concept checks, proof/flag questions,
-static validation, no backend.
-
-New here: a Ja/Nein helper (_jn) for the MITM detection question. Semantically
-"Stimmt der Schlüssel, den Anna sieht, mit Bobs echtem überein?" is a yes/no
-question, which reads more naturally than Wahr/Falsch.
+Tasks for Kapitel 02 — Challenge 6 (Man-in-the-Middle).
 
 Numbering: task_02_19 .. task_02_21.
   Challenge 6: 19 (concept WF), 20 (detection Ja/Nein), 21 (flag)
@@ -66,7 +59,7 @@ def _jn(day_idx, points, desc, question, further, correct_is_yes):
 
 # 2.19 — concept: MITM works despite unbreakable DLP
 task_02_19 = _wf(
-    19, 5, "Challenge 6 — Verständnis",
+    19, 5, "Challenge 6 - Verständnis",
     "Wahr oder falsch?",
     "Ein Man-in-the-Middle-Angriff auf Diffie-Hellman funktioniert selbst dann, "
     "wenn der diskrete Logarithmus praktisch unlösbar ist — denn der Angreifer "
@@ -76,7 +69,7 @@ task_02_19 = _wf(
 
 # 2.20 — detection: does the key Anna sees match Bob's real key? (answer: Nein)
 task_02_20 = _jn(
-    20, 15, "Challenge 6 — Nachweis des Angriffs",
+    20, 15, "Challenge 6 - Nachweis des Angriffs",
     "Weisen Sie den Angriff nach.",
     "Vergleichen Sie in Ihrer Capture den Wert MALLORY_TO_ALICE_M1 (den Anna "
     "für „Bobs Schlüssel“ hält) mit BOB_PUBLIC_B (Bobs echtem öffentlichem "

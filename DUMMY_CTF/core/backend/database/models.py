@@ -678,6 +678,9 @@ class Challenge(Document):
     task_description: Optional[str] = None
     vm_name: Optional[str] = None
     flag_type: Optional[str] = None
+    dynamic_check: Optional[Literal[
+        "dh_factors", "dh_server_secret", "dh_master_secret", "dh_flag"
+    ]] = None
     points: int
     error_cost: int = 1
     allow_reset: bool
@@ -967,9 +970,16 @@ class Challenge(Document):
             return True
 
         try:
+            # Dynamic validation (day-4 weak-DH tasks): delegate to the
+            # challenge backend, which owns this user's DH variant.
+            if self.dynamic_check:
+                from utils.dh_export_client import check_dynamic_answer
+                if not await check_dynamic_answer(self.dynamic_check, username, str(answer)):
+                    raise ValueError()
+
             # RANDOM SINGLE/MULTIPLE CHOICE
             #            if self.solution_type == "multiple":
-            if self.task_type in ("multiple", "select", "input"):
+            elif self.task_type in ("multiple", "select", "input"):
 
                 if (self.master_task):
 

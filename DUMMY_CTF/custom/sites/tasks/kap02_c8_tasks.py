@@ -1,11 +1,5 @@
 """
-Tasks for Kapitel 02 — Challenge 8 (Invalid Curve Attack, Akt II part 4).
-
-Same design as C1-C7: concept check, a proof question with a COMMON answer,
-static flag, no backend.
-
-Numbering: task_02_25 .. task_02_27.
-  Challenge 8: 25 (concept WF), 26 (proof: is P_0 on the real curve E? -> Nein), 27 (flag)
+Tasks for Kapitel 02 — Challenge 8 (Invalid Curve Attack).
 
 The proof question (2.26) targets the CORE of the vulnerability: the probe point
 P_0 does NOT lie on Bob's real curve E (it lives on an invalid curve E'(b')).

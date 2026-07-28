@@ -1,8 +1,6 @@
 """
 Kapitel 02 — Sub-page: Challenge 5 (Logjam-Echo).
 
-Akt II. Chained unlock: content gated on Challenge 4's flag (day_02_task_15).
-Closes the loop with the FREAK attack from Kapitel 01.
 """
 
 import reflex as rx
@@ -26,7 +24,7 @@ class Kapitel_02_Challenge_5(AbstractSiteBuilder):
             stories.challenge_5(),
             theory.challenge_5_technik(c),
             index_banner(c),
-            download_button("Challenge 5 — Capture herunterladen", DhVariantState.cap_5),
+            download_button("Challenge 5: Capture herunterladen", DhVariantState.cap_5),
             render_task(self.PAGE_ID, 16, "Verständnisfrage 1", TaskWidget(task_02_16)),
             render_task(self.PAGE_ID, 17, "Verständnisfrage 2", TaskWidget(task_02_17)),
             rx.cond(
@@ -37,9 +35,8 @@ class Kapitel_02_Challenge_5(AbstractSiteBuilder):
                 PlayerCardState.tasks_solved["day_02_task_18"] | PlayerCardState.enable_test_mode,
                 rx.box(
                     rx.markdown(
-                        "**Akt II (Teil 1) abgeschlossen!** Sie haben den schwachen "
-                        "Erzeuger und die Logjam-Export-Schwäche bezwungen — und den "
-                        "Bogen zum FREAK-Angriff aus Kapitel 01 geschlossen. Als "
+                        "**Geschafft!** Sie haben den schwachen "
+                        "Erzeuger und die Logjam-Export-Schwäche bezwungen. Als "
                         "Nächstes: aktive Angriffe (Man-in-the-Middle) und elliptische "
                         "Kurven."
                     ),
@@ -72,7 +69,7 @@ class Kapitel_02_Challenge_5(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 5 — Logjam", color=self.main_color, size="8",
+                rx.heading("Challenge 5: Logjam", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -105,7 +102,7 @@ class Kapitel_02_Challenge_5(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c5"
-        self.name = "Challenge 5 — Logjam"
+        self.name = "Challenge 5: Logjam"
         self.icon = "unlink"
         self.main_color = "#04B486"
         self.group = "kapitel_02"

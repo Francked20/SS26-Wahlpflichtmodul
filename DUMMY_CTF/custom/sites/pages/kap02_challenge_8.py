@@ -1,9 +1,5 @@
 """
 Kapitel 02 — Sub-page: Challenge 8 (Invalid Curve Attack).
-
-Akt II, Teil 4 (elliptische Kurven, aktiver Implementierungsangriff). Chained
-unlock: content gated on Challenge 7's flag (day_02_task_24). The real curve is
-strong; the weakness is that Bob never validates incoming points.
 """
 
 import reflex as rx
@@ -27,7 +23,7 @@ class Kapitel_02_Challenge_8(AbstractSiteBuilder):
             stories.challenge_8(),
             theory.challenge_8_technik(c),
             index_banner(c),
-            download_button("Challenge 8 — Capture herunterladen", DhVariantState.cap_8),
+            download_button("Challenge 8: Capture herunterladen", DhVariantState.cap_8),
             render_task(self.PAGE_ID, 25, "Verständnisfrage", TaskWidget(task_02_25)),
             render_task(self.PAGE_ID, 26, "Aufgabe: Der falsche Punkt", TaskWidget(task_02_26)),
             rx.cond(
@@ -38,15 +34,15 @@ class Kapitel_02_Challenge_8(AbstractSiteBuilder):
                 PlayerCardState.tasks_solved["day_02_task_27"] | PlayerCardState.enable_test_mode,
                 rx.box(
                     rx.markdown(
-                        "**Akt II abgeschlossen!** Sie haben den elliptischen Teil "
-                        "gemeistert — von der Einführung in ECDH bis zum "
+                        "**Geschafft!** Sie haben den elliptischen Teil "
+                        "gemeistert von der Einführung in ECDH bis zum "
                         "Invalid-Curve-Angriff, bei dem nicht die Mathematik, "
                         "sondern die **fehlende Punktprüfung** in der Implementierung "
                         "das Einfallstor war. Merken Sie sich: Ein empfangener Punkt "
                         "muss immer gegen die erwartete Kurve geprüft werden. Im "
-                        "letzten Akt verlassen wir den reinen Schlüsselaustausch und "
+                        "weiteren Teil verlassen wir den reinen Schlüsselaustausch und "
                         "wenden uns verwandten Systemen zu: **ElGamal** und "
-                        "**digitale Signaturen (DSA)** — wo ein einziger "
+                        "**digitale Signaturen (DSA)** wo ein einziger "
                         "wiederverwendeter Zufallswert alles zum Einsturz bringt."
                     ),
                     style={"maxWidth": "1200px", "width": "100%", "margin": "16px auto",
@@ -78,7 +74,7 @@ class Kapitel_02_Challenge_8(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Challenge 8 — Der ungeprüfte Punkt", color=self.main_color, size="8",
+                rx.heading("Challenge 8: Der ungeprüfte Punkt", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
@@ -111,7 +107,7 @@ class Kapitel_02_Challenge_8(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_02_c8"
-        self.name = "Challenge 8 — Der ungeprüfte Punkt"
+        self.name = "Challenge 8: Der ungeprüfte Punkt"
         self.icon = "door-open"
         self.main_color = "#04B486"
         self.group = "kapitel_02"
