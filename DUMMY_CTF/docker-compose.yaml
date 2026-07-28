@@ -95,6 +95,9 @@ services:
       - ctf-net
     env_file:
       - .env
+    depends_on:
+      mongo:
+        condition: service_healthy
 
   webserver:
     image: caddy:2-alpine
