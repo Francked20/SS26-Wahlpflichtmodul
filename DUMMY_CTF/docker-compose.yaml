@@ -147,6 +147,21 @@ configs:
                       reverse_proxy site:8000
               }
 
+              # Beginner-Kapitel-4 (day=94) persoenliche .pcap-Downloads: ohne
+              # expliziten Content-Type liefert site:3000 hier einen leeren
+              # Header, was manche Browser dazu bringt, die Binaerdatei beim
+              # Oeffnen im neuen Tab (siehe download_button) als Text zu
+              # interpretieren und zu verhunzen. Nur dieser eine, neue Pfad-
+              # Präfix ist betroffen, alles andere unter /custom/ bleibt
+              # unveraendert.
+              @dh_export_pcap path /custom/0400/*
+              handle @dh_export_pcap {
+                      reverse_proxy site:3000
+                      header -Content-Type
+                      header Content-Type "application/octet-stream"
+                      header Content-Disposition "attachment; filename=capture.pcap"
+              }
+
         handle {
           reverse_proxy site:3000
         }
