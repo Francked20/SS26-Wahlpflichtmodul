@@ -54,6 +54,21 @@ class TaskData(BaseModel):
         "export_factor256", "export_factor512", "export_master_secret", "export_flag"
     ]] = None
 
+    # Mirrors core/backend/database/models.py's Challenge.dynamic_check - that
+    # field existed only on the backend DB model, never here on the frontend
+    # TaskData model that actually defines tasks. Pydantic silently drops
+    # unknown kwargs (default extra="ignore"), so any TaskData(dynamic_check=...)
+    # was a no-op: the value never reached Mongo, so dynamic (day-4 weak-DH /
+    # FREAK) answer checks never actually delegated to the challenge backend.
+    # Jonas independently found + fixed this exact same gap for his FREAK
+    # chapter (export_cipher) on ssl_feature/jonas_latest - his 4 literal
+    # values are merged in here too so this matches post-merge state and
+    # doesn't reintroduce a conflict on this exact field.
+    dynamic_check: typing.Optional[typing.Literal[
+        "dh_factors", "dh_server_secret", "dh_master_secret", "dh_flag",
+        "export_factor256", "export_factor512", "export_master_secret", "export_flag",
+    ]] = None
+
     additional_urls: list[tuple[str, str]] = []
 
     @model_validator(mode="after")
