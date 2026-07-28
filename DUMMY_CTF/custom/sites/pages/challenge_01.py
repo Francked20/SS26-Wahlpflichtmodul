@@ -183,7 +183,7 @@ class Kapitel_01(AbstractSiteBuilder):
                          "*Road to Diffie-Hellman* und beginne beim **Kurs** - dort "
                          "lernst du die Grundlagen, die du danach brauchst."),
                 _step(2, "**Lies die Theorie.** Jede Challenge erklärt zuerst das "
-                         "Konzept und den Angriff. Nimm dir die Zeit — das Verständnis "
+                         "Konzept und den Angriff. Nimm dir die Zeit - das Verständnis "
                          "ist der halbe Weg zur Flagge."),
                 _step(3, "**Klapp die Schritt-für-Schritt-Lösung auf**, wenn du "
                          "praktisch loslegen willst. Dort stehen die konkreten "
