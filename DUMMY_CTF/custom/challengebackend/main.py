@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from endpoints.dh_export import router as dh_export_router
 from endpoints import primes, ecbcbcwtf, ecb_oracle
 
 app = FastAPI(title="Challenge Backend")
@@ -18,3 +19,4 @@ async def ping():
 app.include_router(primes.router, prefix="/primes", tags=["primes"])
 app.include_router(ecbcbcwtf.router, prefix="/ecbcbcwtf", tags=["ecbcbcwtf"])
 app.include_router(ecb_oracle.router, prefix="/ecb_oracle", tags=["ecb_oracle"])
+app.include_router(dh_export_router, prefix="/dh_export")
