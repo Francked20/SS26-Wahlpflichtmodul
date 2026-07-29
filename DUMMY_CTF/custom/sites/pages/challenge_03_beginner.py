@@ -282,12 +282,13 @@ class Kapitel_03_Beginner(AbstractSiteBuilder):
                     r"""
 1990er-USA: Verschlüsselungssoftware durfte nicht "zu stark" exportiert
 werden. Server behielten deshalb absichtlich eine **schwache** RSA-Variante
-(**RSA_EXPORT**) für alte Clients bei - mit einem Schlüssel von nur 512 Bit
-statt der heute üblichen 2048+. 2015 zeigte die **FREAK**-Attacke: Ein
-Angreifer kann einen Client per Man-in-the-Middle auf so eine Export-Suite
-herabstufen - selbst wenn beide Seiten eigentlich starke Kryptografie
-beherrschen. Danach genügt es, den 512-Bit-Schlüssel zu faktorisieren, um
-den privaten Schlüssel - und damit die ganze Sitzung - zu rekonstruieren.
+(**RSA_EXPORT**) für alte Clients bei - mit einem viel zu kleinen Schlüssel.
+2015 zeigte die
+**FREAK**-Attacke: Ein Angreifer kann einen Client per Man-in-the-Middle
+auf so eine Export-Suite herabstufen - selbst wenn beide Seiten eigentlich
+starke Kryptografie beherrschen. Danach genügt es, den Schlüssel zu
+faktorisieren, um den privaten Schlüssel - und damit die ganze Sitzung -
+zu rekonstruieren.
 
 **Warum das wichtig ist:** FREAK betraf 2015 schätzungsweise **36% aller
 HTTPS-Server**, die Browser als "sicher" auswiesen. Ein grünes
@@ -323,10 +324,10 @@ kennen darf, und einem privaten $d$, den nur der Server kennt.
 
 Die **gesamte** Sicherheit hängt daran, dass niemand $N$ in $p$ und $q$
 zerlegen kann. Kennt man $p$ und $q$, lässt sich $d$ direkt berechnen, ganz
-ohne weiteres Faktorisieren. Bei 512 Bit dauert die Zerlegung selbst mit
-yafu ein bis zwei Tage (deshalb üben Sie an einer kleineren 256-Bit-Zahl,
-siehe Schritt 3), bei 2048+ Bit ist sie mit heutiger Technik praktisch
-unmöglich.
+ohne weiteres Faktorisieren. Bei der in Schritt 2 ermittelten Schlüsselgröße
+dauert die Zerlegung selbst mit yafu ein bis zwei Tage (deshalb üben Sie an
+einer kleineren 256-Bit-Zahl, siehe Schritt 3), bei 2048+ Bit ist sie mit
+heutiger Technik praktisch unmöglich.
                 """,
             ),
             explain_box(
@@ -351,7 +352,8 @@ alles verschlüsselt.
 Eine **Cipher Suite** ist ein Paket aus Verfahren, auf das sich Client und
 Server einigen. **RSA_EXPORT** ist eine sehr alte, absichtlich geschwächte
 Suite: Der Schlüsselaustausch läuft über RSA, aber mit einem viel zu
-kleinen Schlüssel (512 Bit statt heute üblichen 2048+).
+kleinen Schlüssel (deutlich kleiner als die heute üblichen 2048+ Bit - wie
+klein genau, finden Sie in Schritt 2 selbst heraus).
                 """,
             ),
             explain_box(

@@ -36,7 +36,7 @@ task_04b_00 = TaskData(
     answers=[Correct.create("logjam")],
     question=[
         "Sie greifen jetzt eine echte, historische Sicherheitslücke an: **Logjam** "
-        "(2015). Ein Server bietet aus Kompatibilitätsgründen eine uralte, "
+        "(2015, CVE-2015-4000). Ein Server bietet aus Kompatibilitätsgründen eine uralte, "
         "absichtlich geschwächte Diffie-Hellman-Variante an (**DHE_EXPORT**) - "
         "mit einer viel zu kleinen Primzahl $p$. Ihre Aufgabe: den TLS-"
         "Handshake mitschneiden, die Schwäche ausnutzen und die verschlüsselte "
@@ -94,7 +94,7 @@ task_04b_01 = TaskData(
         "Hex-Wert>` (der eigentliche Wert von $p$). Etwas weiter unten im "
         "selben Baum sehen Sie außerdem `Pubkey: <Hex-Wert>` - das ist der "
         "öffentliche Server-Wert, den wir mathematisch $Y_s$ nennen (in "
-        "Wireshark heißt das Feld schlicht 'Pubkey', nicht 'Ys').\n\n"
+        "Wireshark heißt das Feld schlicht 'Pubkey', nicht '$Y_s$').\n\n"
         "**Achtung Zahlenformat:** Wireshark zeigt `p` und `Pubkey` als "
         "**Hexadezimalzahl** (z.B. `933c8383...`). Weiter unten auf dieser "
         "Seite bekommen Sie dieselben Werte später auch als gewöhnliche "
@@ -184,13 +184,17 @@ task_04b_03 = TaskData(
         "DH-Parameter\") - direkt als Zahl zum Kopieren, kein erneutes "
         "Wireshark-Gefummel nötig.\n\n"
         "**Schritt für Schritt (im Terminal, z.B. in der Kali-Umgebung dieser "
-        "Aufgabe):**\n\n"
+        "Aufgabe):** Ziehen Sie zuerst 1 von $p$ ab - das geht bei einer so "
+        "langen Zahl im Kopf (einfach die letzte Ziffer um 1 verringern), "
+        "kein Taschenrechner nötig. Das Ergebnis faktorisieren Sie dann mit "
+        "yafu:\n\n"
         "```bash\n"
-        "# 1. p-1 ausrechnen (Python als Taschenrechner):\n"
-        "python3 -c \"p = <IHR_P>; print(p - 1)\"\n\n"
-        "# 2. Das Ergebnis mit yafu faktorisieren:\n"
-        "yafu \"factor(<ERGEBNIS_AUS_SCHRITT_1>)\"\n"
+        "echo \"factor(<IHR_P_MINUS_1>)\" | yafu\n"
         "```\n\n"
+        "**Wichtig:** yafu als reines Kommandozeilen-Argument "
+        "(`yafu \"factor(...)\"`) funktioniert **nicht** - es beendet sich "
+        "sofort, ohne zu rechnen. Der Ausdruck muss per `echo ... | yafu` an "
+        "die Standardeingabe übergeben werden.\n\n"
         "yafu druckt am Ende eine Liste aller Primfaktoren. Weil $p-1$ hier "
         "**absichtlich glatt** ist (nur kleine Faktoren, keiner davon riesig), "
         "ist yafu in wenigen Sekunden fertig - bei einer 'normalen' Zahl "
@@ -211,7 +215,7 @@ task_04b_03 = TaskData(
     placeholder_text=["q1,q2,q3,..."],
     hints=[
         TaskHint.create(0, "Erst p-1 ausrechnen, DANN faktorisieren - nicht p selbst (p ist eine Primzahl, die lässt sich nicht weiter zerlegen).", 0.7),
-        TaskHint.create(0, "yafu-Aufruf: `yafu \"factor(N)\"` mit N = Ihrem ausgerechneten p-1. Kein yafu verfügbar? `sympy.factorint(p - 1)` reicht hier genauso.", 0.5),
+        TaskHint.create(0, "yafu-Aufruf: `echo \"factor(N)\" | yafu` mit N = Ihrem ausgerechneten p-1 (NICHT als reines Kommandozeilen-Argument). Kein yafu verfügbar? `sympy.factorint(p - 1)` reicht hier genauso.", 0.5),
         TaskHint.create(0, "Selbstkontrolle: Produkt aller gefundenen Faktoren muss exakt p-1 ergeben (mit Python leicht nachrechenbar: `import math; math.prod([...])`).", 0.3),
         TaskHint.create(0, "Format: Dezimalzahlen mit Komma getrennt, z.B. 2,1009,3221,50021", 0.15),
     ],
@@ -321,9 +325,9 @@ task_04b_06 = TaskData(
         "Flagge steckt im letzten Datensatz."
     ],
     question_further=[
-        "Das komplette, fertige Skript (keine Lücke mehr - hier ist nur noch "
-        "wichtig, dass Sie es verstehen und ausführen) steht im Kasten "
-        "'Schritt 7' oben."
+        "Das komplette, fertige Skript (keine Lücke mehr, nur noch "
+        "`finished_ciphertext` und `application_data_ciphertext` aus Ihrem "
+        "Capture einsetzen) steht im Kasten 'Schritt 7' oben."
     ],
     placeholder_text=["crypto{...}"],
     hints=[

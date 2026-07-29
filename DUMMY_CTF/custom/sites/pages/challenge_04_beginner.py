@@ -263,9 +263,9 @@ class Kapitel_04_Beginner(AbstractSiteBuilder):
 1990er-USA: Verschlüsselungssoftware durfte nicht "zu stark" exportiert
 werden. Server behielten deshalb absichtlich eine **schwache**
 Diffie-Hellman-Variante (**DHE_EXPORT**) für alte Clients bei. 2015 zeigte
-die **Logjam**-Attacke: Diese Export-Variante lässt sich noch heute brechen
- - und mit einem Trick sogar Verbindungen angreifen, die eigentlich starkes
-DH benutzen wollten.
+die **Logjam**-Attacke: Diese Export-Variante lässt sich noch heute brechen -
+und mit einem Trick sogar Verbindungen angreifen, die eigentlich starkes DH
+benutzen wollten.
 
 **Warum das wichtig ist:** Ein grünes Schloss-Symbol im Browser ("https")
 sagt nur "es ist irgendwie verschlüsselt" - nicht "es ist sicher
@@ -338,7 +338,8 @@ Eine **Cipher Suite** ist ein Paket aus Verfahren, auf das sich Client und
 Server einigen (z.B. "Schlüsselaustausch per DH, Verschlüsselung per RC4,
 Absicherung per MD5"). **DHE_EXPORT** ist eine sehr alte, absichtlich
 geschwächte Suite: Sie benutzt Diffie-Hellman, aber mit einer viel zu
-kleinen Primzahl $p$ (hier 512 Bit statt heute üblichen 2048+).
+kleinen Primzahl $p$ (deutlich kleiner als die heute üblichen 2048+ Bit -
+wie klein genau, finden Sie in Schritt 2 selbst heraus).
                 """,
             ),
             explain_box(
@@ -422,13 +423,9 @@ nicht von Hand programmieren.
                                         h("Schritt 4 - p-1 faktorisieren (yafu)", c),
                                         rx.markdown(
                                             r"""
-Kein Code hier - nur ein externes Werkzeug. Öffnen Sie ein Terminal (z.B.
-über den "Kali"-Button bei der Aufgabe unten):
-
-```bash
-python3 -c "p = <IHR_P_VON_OBEN>; print(p - 1)"
-yafu "factor(<ERGEBNIS>)"
-```
+Kein Code hier - nur ein externes Werkzeug (Terminal, z.B. über den
+"Kali"-Button bei der Aufgabe unten). Den genauen Befehl und alle Details
+finden Sie direkt in der Aufgabe unten.
 
 Schreiben Sie sich die gefundenen Primfaktoren auf (ohne die 2, die brauchen
 Sie separat) - die brauchen Sie im nächsten Schritt.
@@ -607,9 +604,8 @@ Weiter im Filter `tls.handshake or tls.app_data`: Suchen Sie das **eine**
 Paket vom Server, dessen Info-Spalte mit **"Change Cipher Spec"** beginnt
 (meist steht dort in einer Zeile gleich noch mehr, z.B. "..., Encrypted
 Handshake Message, Application Data" - das ist alles **ein einziges
-Paket**, keine drei verschiedenen). Anklicken und im Detail-Baum aufklappen
- - Sie sehen dort **drei separate** `TLSv1 Record Layer`-Einträge
-untereinander:
+Paket**, keine drei verschiedenen). Anklicken und im Detail-Baum aufklappen -
+Sie sehen dort **drei separate** `TLSv1 Record Layer`-Einträge untereinander:
 
 1. `TLSv1 Record Layer: Change Cipher Spec` - **ignorieren**, nichts zu tun.
 2. `TLSv1 Record Layer: Handshake Protocol: Encrypted Handshake Message` →
@@ -626,8 +622,10 @@ untereinander:
                                                                 h("Schritt 7 - Flagge entschlüsseln (Teil 3/3, direkt anhängen)", c),
                                                                 rx.markdown(
                                                                     r"""
-Hier gibt es **keine Lücke mehr** - nur noch fertigen Code, der alles
-zusammenführt. Lesen Sie ihn trotzden einmal durch, bevor Sie ihn ausführen:
+Hier gibt es **keine Lücke mehr**, nur noch fertigen Code. Sie müssen
+lediglich `finished_ciphertext` und `application_data_ciphertext` aus Ihrem
+Capture (siehe Kasten oben) einsetzen. Lesen Sie den Rest trotzdem einmal
+durch, bevor Sie ihn ausführen:
 
 ```python
 key_block = tls10_prf(master_secret, b"key expansion", server_random + client_random, 42)

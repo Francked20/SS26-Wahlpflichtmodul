@@ -20,6 +20,25 @@ from database import DhExportVariant
 
 CONNECT_TIMEOUT_SECONDS = 5
 READ_TIMEOUT_SECONDS = 2
+IDLE_TIMEOUT_SECONDS = 0.3
+
+
+async def _drain_until_idle(reader: asyncio.StreamReader, idle_timeout: float = IDLE_TIMEOUT_SECONDS) -> None:
+    """Keeps reading until nothing arrives for `idle_timeout` seconds. Used
+    instead of a single read() before sending client_flight_2: the listener
+    sends server_flight_1 as several separately-paced records (see
+    dh_export_vm_listener.py's split_records()/time.sleep()), so a single
+    read only catches whichever records had arrived by then. Without waiting
+    for the whole flight, client_flight_2 can go out before ServerKeyExchange/
+    ServerHelloDone have arrived - impossible in a real handshake, and
+    visible as an out-of-order Client Key Exchange in Wireshark."""
+    while True:
+        try:
+            data = await asyncio.wait_for(reader.read(4096), timeout=idle_timeout)
+        except asyncio.TimeoutError:
+            return
+        if not data:
+            return
 
 
 async def send_variant_to_vm(host: str, port: int, variant: DhExportVariant) -> None:
@@ -46,13 +65,9 @@ async def send_variant_to_vm(host: str, port: int, variant: DhExportVariant) -> 
         await asyncio.sleep(0.05)
         writer.write(bytes.fromhex(variant.client_flight_1_hex))
         await writer.drain()
-        # Not a reliable pacing mechanism on its own (see listener - it
-        # replies almost immediately after the index, not after a real
-        # round-trip), same coalescing risk as above, same fix.
-        try:
-            await asyncio.wait_for(reader.read(4096), timeout=READ_TIMEOUT_SECONDS)
-        except asyncio.TimeoutError:
-            pass
+        # Wait for the listener to go quiet, not just for the first byte -
+        # server_flight_1 arrives as several separately-paced records.
+        await _drain_until_idle(reader)
         await asyncio.sleep(0.05)
 
         writer.write(bytes.fromhex(variant.client_flight_2_hex))
