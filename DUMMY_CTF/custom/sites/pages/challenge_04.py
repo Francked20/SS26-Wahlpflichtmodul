@@ -75,12 +75,30 @@ class Kapitel_04(AbstractSiteBuilder):
                     spacing="1", margin_top="0.5em", align_items="start", width="100%",
                 ),
                 rx.text(
-                    "Starte jetzt deinen eigenen Paket-Mitschnitt (Wireshark) auf der "
-                    "Trainings-VM. Klicke danach auf \"Gestartet\" - erst dann wird dein "
-                    "persönlicher DHE_EXPORT-Handshake mit genau diesen Parametern über die "
-                    "Leitung geschickt, damit du ihn selbst mitschneidest. Alternativ kannst "
-                    "du dein Capture direkt als .pcap herunterladen.",
+                    "So schneidest du deinen persönlichen Handshake selbst mit - alles "
+                    "läuft lokal auf der Trainings-VM:",
                     margin_top="0.75em",
+                ),
+                rx.vstack(
+                    rx.text(
+                        "1. Öffne Wireshark auf der VM und starte einen Mitschnitt auf der "
+                        "Netzwerk-Schnittstelle der VM (z.B. eth1)."
+                    ),
+                    rx.hstack(
+                        rx.text("2. Setze den Anzeigefilter:"),
+                        rx.code("tcp.port == 4434", size="2"),
+                    ),
+                    rx.text(
+                        "3. Klicke erst DANN unten auf \"Gestartet\" - jetzt wird dein "
+                        "persönlicher DHE_EXPORT-Handshake mit genau den oben gezeigten "
+                        "Parametern über die Leitung geschickt und landet in deinem Mitschnitt."
+                    ),
+                    rx.text(
+                        "4. Die für die Aufgaben nötigen Werte (p, g, Ys, Yc, "
+                        "client_random, server_random) liest du direkt aus diesem Mitschnitt "
+                        "ab - siehe die Anleitung in den einzelnen Aufgaben.",
+                    ),
+                    spacing="1", margin_top="0.5em", align_items="start", width="100%",
                 ),
                 rx.flex(
                     rx.button(
@@ -102,7 +120,8 @@ class Kapitel_04(AbstractSiteBuilder):
                 rx.cond(
                     MyDhVariantState.capture_status == "sent",
                     rx.callout(
-                        "Handshake gesendet - schau in deinem Mitschnitt nach der DHE-Konversation!",
+                        "Handshake gesendet - in deinem laufenden Wireshark-Mitschnitt "
+                        "(Filter tcp.port == 4434) siehst du jetzt die DHE_EXPORT-Konversation.",
                         icon="check", color_scheme="green", margin_top="0.5em",
                     ),
                 ),
