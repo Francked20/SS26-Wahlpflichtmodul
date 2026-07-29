@@ -653,7 +653,9 @@ fortlaufender Strom, kein Neustart pro Datensatz.
 
     def configure(self) -> None:
         self.url = "/challenge_03_beginner"
-        self.name = "03b: Export Ciphers (Beginner Walkthrough)"
+        self.name = "Export Ciphers (Beginner)"
+        self.group = "3_Beginner"
+        self.position_priority = 20
         self.icon = "unlock"
         self.main_color = "#04B486"
         self.on_load = [
