@@ -79,7 +79,7 @@ class Kapitel_03(AbstractSiteBuilder):
                 color=self.main_color,
                 size="8",
                 style={
-                    "background": "linear-gradient(90deg, #E63946, #F1A208)",
+                    "background": "linear-gradient(90deg, #04B486, #00FFFF)",
                     "WebkitBackgroundClip": "text",
                     "WebkitTextFillColor": "transparent",
                     "marginBottom": "24px",
@@ -143,13 +143,15 @@ class Kapitel_03(AbstractSiteBuilder):
                                             ),
                                         ),
                                         style={
-                                            "maxWidth": "900px",
+                                            "maxWidth": "1200px",
                                             "width": "100%",
-                                            "margin": "16px 0",
-                                            "padding": "20px",
+                                            "margin": "16px auto",
+                                            "padding": "18px",
                                             "borderRadius": "12px",
-                                            "background": "rgba(255, 210, 160, 0.12)",
-                                            "border": "1px solid rgba(255, 255, 255, 0.18)",
+                                            "color": "#F2F2F2",
+                                            "background": "rgba(255, 255, 255, 0.04)",
+                                            "border": f"1px solid {self.main_color}55",
+                                            "borderLeft": f"4px solid {self.main_color}",
                                         },
                                     ),
                                     rx.spinner(),
@@ -220,7 +222,7 @@ class Kapitel_03(AbstractSiteBuilder):
         self.group = "2_FREAK"
         self.position_priority = 20
         self.icon = "shield-alert"
-        self.main_color = "#E63946"
+        self.main_color = "#04B486"
         self.is_standalone = False
         self.hide_sidebar = False
         self.on_load = [
