@@ -16,7 +16,14 @@ generic/forkable, so anything challenge-specific belongs here, not there.
   (`DhExportVariant`/`ExportCipherVariant`, both registered in
   `connect_mapper()`); `primes.py`/`ecbcbcwtf.py`/`ecb_oracle.py` remain fully
   stateless.
-- `lifespan.py` — connects Mongo at startup, disconnects at shutdown.
+- `lifespan.py` — connects Mongo at startup, disconnects at shutdown. It only
+  connects — it never seeds the `ExportCipherVariant`/`DhExportVariant`
+  pools. After any Mongo reset (wiped/recreated volume, dropped database),
+  both pool collections come back empty and must be repopulated manually via
+  `scripts/generate_export_cipher_pool.py` and `scripts/generate_dh_export_pool.py`
+  (see below) — until then, `/variant/{username}` has nothing to return (the
+  "Gestartet" button's N stays empty) and every `dynamic_check` answer check
+  for day 3/4 fails, since there's no variant to check against.
 - Most challenge endpoints have **no auth**: each route validates the
   player's submitted value server-side (primality test, correct decryption,
   etc.) and only returns a flag if the check passes. The dh-export and

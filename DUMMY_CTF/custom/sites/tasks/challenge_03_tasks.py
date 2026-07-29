@@ -81,24 +81,27 @@ task_03_01 = TaskData(
     task_type="input",
     answers=[Correct.create("512")],
     question=[
-        "Auf der Trainings-VM läuft periodisch ein simulierter TLS-Handshake mit einer "
-        "RSA_EXPORT-Cipher Suite (`TLS_RSA_EXPORT_WITH_RC4_40_MD5`). Öffne Wireshark auf der "
-        "VM, und suche dir eine `Certificate`-Nachricht heraus. "
+        "Oben auf dieser Seite siehst du deine persönliche 256-Bit-Zahl $N$ und einen "
+        "\"Gestartet\"-Button. Starte zuerst deinen eigenen Paket-Mitschnitt (Wireshark) auf "
+        "der Trainings-VM, klicke danach auf \"Gestartet\" - erst dann schickt der Server dir "
+        "einen simulierten TLS-Handshake mit einer RSA_EXPORT-Cipher Suite "
+        "(`TLS_RSA_EXPORT_WITH_RC4_40_MD5`). Suche in deinem Mitschnitt eine "
+        "`Certificate`-Nachricht heraus."
     ],
     question_further=[
-        "**Tipp:** Klicke die Certificate-Nachricht im Detail-Panel auf: "
-        "`Handshake Protocol: Certificate → Certificate → subjectPublicKeyInfo → RSAPublicKey → modulus`. "
-        "Wireshark zeigt dir dort direkt die Bitlänge des Modulus an - genau danach fragen wir hier.\n\n"
-        "**Wichtig für die nächsten Aufgaben:** Ab Aufgabe 3.3 arbeitest du nicht mehr mit einer "
-        "beliebigen live mitgeschnittenen Verbindung, sondern mit deinem **persönlichen** Capture "
-        "(\"Gestartet\"-Button erscheint oben auf dieser Seite, sobald du diese Aufgabe gelöst hast - "
-        "starte deinen eigenen Mitschnitt, bevor du klickst) - nur darin passen N, die Zufallswerte "
-        "und der Faktor aus Aufgabe 3.3 tatsächlich zusammen.\n\n"
+        "**Wichtig für die nächsten Aufgaben:** Dieser Mitschnitt ist bereits dein "
+        "**persönlicher** Capture - er bleibt für den Rest dieses Kapitels relevant, ab "
+        "Aufgabe 3 passen N, die Zufallswerte und der Faktor nur darin zusammen. Schickst "
+        "du dir über \"Erneut senden\" einen neuen Handshake, ersetzt das die Konversation - "
+        "nimm dann auch einen neuen Mitschnitt auf.\n\n"
         "**Wie viele Bit hat der RSA-Schlüssel, den der Server hier anbietet?**"
     ],
     placeholder_text=["z.B. 2048"],
     hints=[
         TaskHint.create(0, "Filtere nach tls.handshake um eine Verbindung zu finden."),
+        TaskHint.create(0, "Klicke die Certificate-Nachricht im Detail-Panel auf: "
+        "Handshake Protocol: Certificate → Certificate → subjectPublicKeyInfo → RSAPublicKey → modulus. "
+        "Wireshark zeigt dir dort direkt die Bitlänge des Modulus an.", 1),
         TaskHint.create(0, "Das ist genau die Schlüsselgröße, die FREAK überhaupt erst ausnutzbar macht.", 1),
         TaskHint.create(0, "Es ist eine sehr runde Zahl, ein Vielfaches von 128.", 1),
         TaskHint.create(0, "Die Antwort lautet: 512", 1),
@@ -175,20 +178,17 @@ task_03_03 = TaskData(
     dynamic_check="export_factor512",
     answers=[Correct.create("dynamic")],
     question=[
-        "Du kennst jetzt einen Faktor $p$ des echten 512-Bit-Moduls $N$ - er wurde dir nach "
-        "der letzten Aufgabe angezeigt. $N$ selbst siehst du im Zertifikat aus **deinem "
-        "persönlichen Capture** (\"Gestartet\"-Button oben auf dieser Seite - nicht aus einer "
-        "beliebigen live mitgeschnittenen Verbindung, siehe Hinweis in Aufgabe 3.2)."
+        "Du kennst jetzt einen Faktor $p$ des echten 512-Bit-Moduls $N$ - er wurde dir oben "
+        "als Belohnung für Aufgabe 3 freigeschaltet. $N$ selbst findest du im Zertifikat "
+        "deines persönlichen Captures aus Aufgabe 2."
     ],
     question_further=[
-        "**Tipp:** verwende Python oder einen Taschenrechner, der BigIntegers unterstützt."
-        "reicht völlig: `q = N // p` und `assert N % p == 0` zur Kontrolle.\n\n"
         "Gib den fehlenden Faktor $q$ ein."
     ],
     placeholder_text=["q"],
     hints=[
-        TaskHint.create(0, "N steht im Zertifikat (Certificate-Handshake-Nachricht) in deinem persönlichen Capture-Download, nicht in einer zufälligen Live-Verbindung.", 1),
-        TaskHint.create(0, "q = N // p - eine einzige Ganzzahldivision.", 1),
+        TaskHint.create(0, "N steht im Zertifikat (Certificate-Handshake-Nachricht) deines persönlichen Captures aus Aufgabe 2.", 1),
+        TaskHint.create(0, "q = N // p - eine einzige Ganzzahldivision. Python oder ein Taschenrechner mit BigInteger-Unterstützung reicht.", 1),
     ],
     download_text=[""],
     download_path=[""],
@@ -198,7 +198,53 @@ task_03_03 = TaskData(
 
 task_03_04 = TaskData(
     day=3,
-    points=25,
+    points=10,
+    day_description="Export Ciphers & FREAK",
+    task_description="Das Pre-Master-Secret entschlüsseln",
+    error_cost=1,
+    allow_reset=False,
+    allow_random_order=False,
+    allow_download=False,
+    allow_link=False,
+    allow_vscode=False,
+    injectible=False,
+    allow_kali=False,
+    allow_cyber_range=False,
+    master_task=False,
+    task_type="input",
+    answers=[Correct.create("48")],
+    question=[
+        "Du hast jetzt $p$ und $q$ und damit den privaten Schlüssel des Servers "
+        "($d \\equiv e^{-1} \\pmod{(p-1)(q-1)}$, $e = 65537$). Zeit, die Session zu brechen - "
+        "als Erstes entschlüsselst du das **pre_master_secret**."
+    ],
+    question_further=[
+        "**Schritt für Schritt (RFC 2246 §7.4.7.1):**\n\n"
+        "1. Entschlüssle in deinem persönlichen Capture die verschlüsselten Bytes aus der "
+        "`ClientKeyExchange`-Nachricht mit deinem privaten Schlüssel: $m = c^d \\bmod N$.\n"
+        "2. `m` ist als Bytes noch mit PKCS#1-v1.5-Padding versehen: "
+        "`0x00 0x02 [zufällige Bytes ≠ 0] 0x00 [Nachricht]`. Alles bis einschließlich des "
+        "ersten `0x00` nach dem `0x02` entfernen - der Rest ist das pre_master_secret.\n\n"
+        "**Kontrolle:** Die ersten 2 Byte des Ergebnisses sollten `03 01` sein (die "
+        "TLS-Versionsnummer aus RFC 2246 §7.4.7.1) - stimmt das nicht, ist beim Padding oder "
+        "bei $d$ etwas schiefgelaufen.\n\n"
+        "**Wie viele Byte hat das fertige pre_master_secret (nach Entfernen des Paddings)?**"
+    ],
+    placeholder_text=["z.B. 48"],
+    hints=[
+        TaskHint.create(0, "RFC 2246 §7.4.7.1 beschreibt exakt das Byte-Layout der ClientKeyExchange-Nachricht.", 1),
+        TaskHint.create(0, "PKCS#1-v1.5-Padding beim Entschlüsseln: 0x00 0x02 [zufällige Bytes] 0x00 [Nachricht] - der Teil nach der 0x00-Trennung ist deine gesuchte Nachricht.", 1),
+        TaskHint.create(0, "Die Länge ist bei jeder Capture gleich - RFC 2246 legt sie fest, unabhängig von p, q oder N.", 1),
+    ],
+    download_text=[""],
+    download_path=[""],
+    link_text=[""],
+    link_path=[""],
+)
+
+task_03_05 = TaskData(
+    day=3,
+    points=20,
     day_description="Export Ciphers & FREAK",
     task_description="Das TLS Master Secret berechnen",
     error_cost=2,
@@ -215,32 +261,30 @@ task_03_04 = TaskData(
     dynamic_check="export_master_secret",
     answers=[Correct.create("dynamic")],
     question=[
-        "Du hast jetzt $p$ und $q$ und damit den privaten Schlüssel des Servers "
-        "($d \\equiv e^{-1} \\pmod{(p-1)(q-1)}$, $e = 65537$). Zeit, die Session zu brechen."
+        "Du hast jetzt das pre_master_secret. Daraus berechnest du das eigentliche TLS "
+        "**Master Secret** - dasselbe gemeinsame Geheimnis, das auch Server und Client im "
+        "echten Handshake berechnet haben."
     ],
     question_further=[
-        "**Schritt für Schritt (RFC 2246 §6.1, §7.4.7.1):**\n\n"
-        "1. Entschlüssle in deinem persönlichen Capture die `ClientKeyExchange`-Nachricht mit "
-        "deinem privaten Schlüssel (RSA/PKCS#1 v1.5) → das ergibt das 48-Byte "
-        "**pre_master_secret**.\n"
-        "2. Extrahiere `client_random` (aus `ClientHello`) und `server_random` (aus "
+        "**Schritt für Schritt (RFC 2246 §6.1):**\n\n"
+        "1. Extrahiere `client_random` (aus `ClientHello`) und `server_random` (aus "
         "`ServerHello`) - je 32 Byte.\n"
-        "3. `master_secret = PRF(pre_master_secret, \"master secret\", client_random + "
+        "2. `master_secret = PRF(pre_master_secret, \"master secret\", client_random + "
         "server_random)[0:48]`\n\n"
         "Die TLS-1.0-PRF ist `P_MD5(secret[:24], seed) XOR P_SHA1(secret[24:], seed)` mit "
         "`P_hash(secret,seed) = HMAC(secret, A(1)+seed) + HMAC(secret, A(2)+seed) + ...` und "
         "`A(0)=seed, A(i)=HMAC(secret,A(i-1))` - alles mit Python-Bordmitteln (`hmac`, "
         "`hashlib`) machbar, siehe RFC 2246 §6.1 für die exakte Definition.\n\n"
-        "**Tipp:** Achte auf Byte- vs. Hex-Darstellung - gib das Master Secret als "
-        "Hex-String (96 Zeichen) ein.\n\n"
-        "**Tipp:** In Wireshark unter *Preferences → Protocols → TLS → (Pre)-Master-Secret "
-        "log filename* kannst du dein berechnetes Master Secret eintragen lassen und prüfen, "
-        "ob Wireshark die Anwendungsdaten damit entschlüsselt."
+        "**Achtung:** gib das Master Secret als Hex-String (96 Zeichen) ein.\n\n"
+        "**Kontrolle in Wireshark:** Trag dein Master Secret unter *Preferences → Protocols "
+        "→ TLS → (Pre)-Master-Secret log filename* in eine Textdatei ein, als Zeile "
+        "`CLIENT_RANDOM <client_random_hex> <master_secret_hex>` (client_random aus deiner "
+        "eigenen `ClientHello`, 32 Byte Hex). Stimmt dein Master Secret, entschlüsselt "
+        "Wireshark danach die Anwendungsdaten - ein guter Check, bevor du in der nächsten "
+        "Aufgabe von Hand weiterrechnest."
     ],
     placeholder_text=["Master Secret als Hex..."],
     hints=[
-        TaskHint.create(0, "RFC 2246 §7.4.7.1 beschreibt exakt das Byte-Layout der ClientKeyExchange-Nachricht.", 1),
-        TaskHint.create(0, "PKCS#1-v1.5-Padding beim Entschlüsseln: 0x00 0x02 [zufällige Bytes] 0x00 [Nachricht] - der Teil nach der 0x00-Trennung ist deine gesuchte Nachricht.", 1),
         TaskHint.create(0, "Die TLS-1.0-PRF kombiniert MD5 und SHA1 über HMAC - beide Hashes sind in Pythons hashlib enthalten.", 1),
     ],
     download_text=[""],
@@ -249,7 +293,7 @@ task_03_04 = TaskData(
     link_path=[""],
 )
 
-task_03_05 = TaskData(
+task_03_06 = TaskData(
     day=3,
     points=15,
     day_description="Export Ciphers & FREAK",
@@ -288,15 +332,16 @@ task_03_05 = TaskData(
         "länge + Klartext))` - die Flagge steckt im letzten, größten `ApplicationData`-Record.\n\n"
         "**Tipp:** Die Server→Client-Records (inkl. der Flagge) benutzen den "
         "`server_write_key`, nicht den `client_write_key`.\n\n"
-        "**Tipp:** Wenn dein Master Secret aus der vorigen Aufgabe stimmt, klappt auch die "
-        "Wireshark-Entschlüsselung (siehe Tipp dort) - eine gute Kontrolle, bevor du hier "
-        "von Hand weiterrechnest."
+        "**Tipp (Shortcut):** Mit deinem Master Secret aus der vorigen Aufgabe kommst du "
+        "auch über Wireshark schnell ans Ziel. Wireshark kann dir die Anwendungsdaten "
+        "entschlüsseln."
     ],
     placeholder_text=["crypto{...}"],
     hints=[
         TaskHint.create(0, "Die Byte-Reihenfolge in Schritt 1 (server_random + client_random) unterscheidet sich von der Master-Secret-Berechnung!", 1),
         TaskHint.create(0, "Nur 5 Byte des extrahierten write_key sind tatsächlich geheim - der Rest der 16 Byte kommt erst durch die PRF in Schritt 3 dazu.", 1),
         TaskHint.create(0, "Die Flagge liegt im letzten TLS-Record des Captures, Content Type 23 (Application Data).", 1),
+        TaskHint.create(0, "Shortcut: Rechtsklick auf ein Paket der Verbindung → Follow → TLS Stream zeigt dir die komplette entschlüsselte Konversation in einem Fenster - die Flagge steht da direkt drin (setzt ein korrekt eingetragenes Master Secret voraus, siehe Tipp oben).", 1),
     ],
     download_text=[""],
     download_path=[""],
