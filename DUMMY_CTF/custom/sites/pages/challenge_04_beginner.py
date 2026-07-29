@@ -402,6 +402,11 @@ $$g_i = g^{(p-1)/q} \bmod p, \qquad h_i = Y_s^{(p-1)/q} \bmod p.$$
 In dieser kleinen Untergruppe findet man dann leicht $x_i$ mit
 $g_i^{x_i} = h_i$ - das ist $s \bmod q$. Genau diese beiden Zeilen füllen
 Sie später in Schritt 5 aus.
+
+**In Python:** `pow(basis, exponent, modulus)` berechnet die modulare
+Potenz in einem Aufruf (kein `**` gefolgt von `%` nötig). Achtung bei
+$(p-1)/q$: Das muss eine **Ganzzahldivision** (`//`) sein, sonst liefert
+Python bei so großen Zahlen einen ungenauen Float.
                                 """,
                             ),
                             explain_box(
