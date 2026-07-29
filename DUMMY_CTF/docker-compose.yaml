@@ -162,6 +162,15 @@ configs:
                       header Content-Disposition "attachment; filename=capture.pcap"
               }
 
+              # Beginner-Kapitel-3 (day=95), gleicher Grund wie 0400 oben.
+              @export_cipher_pcap path /custom/0300/*
+              handle @export_cipher_pcap {
+                      reverse_proxy site:3000
+                      header -Content-Type
+                      header Content-Type "application/octet-stream"
+                      header Content-Disposition "attachment; filename=capture.pcap"
+              }
+
         handle {
           reverse_proxy site:3000
         }

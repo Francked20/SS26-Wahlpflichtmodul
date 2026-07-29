@@ -30,9 +30,13 @@ async def get_variant(username: str):
     function of username) and their practice 256-bit modulus to factor with
     YAFU - unauthenticated like this service's other player-facing endpoints
     (e.g. primes.py); knowing another player's N/variant index doesn't help
-    solve YOUR OWN (differently-indexed) challenge."""
+    solve YOUR OWN (differently-indexed) challenge. n512 is the real RSA
+    modulus - public by definition (part of the public key), so exposing it
+    here (mirroring dh_export.py's p/g/Ys) is not a leak; it lets the
+    Beginner page show it as decimal without requiring a manual Wireshark
+    hex->decimal conversion."""
     variant = await _get_variant_for_user(username)
-    return {"index": variant.index, "n256": variant.n256}
+    return {"index": variant.index, "n256": variant.n256, "n512": variant.n512}
 
 
 @router.get("/reveal_factor/{username}", dependencies=[Depends(require_challenge_api_key)])

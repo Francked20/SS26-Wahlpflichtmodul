@@ -12,7 +12,15 @@ own static-answer task — "how many bytes is the decrypted pre_master_secret"
 — ahead of the `export_master_secret` dynamic-check task, since there's no
 per-player-stored pre_master_secret to check dynamically against, only the
 final `master_secret`); `challenge_04_tasks.py` = day 4 / 7 tasks
-(weak-Diffie-Hellman). Each task is a module-level `TaskData(...)` instance
+(weak-Diffie-Hellman). `challenge_03_beginner_tasks.py` (day=95, 6 tasks,
+`task_03b_00`..`task_03b_05`) and `challenge_04_beginner_tasks.py` (day=94,
+7 tasks) are beginner-walkthrough versions of the same two chains, imported
+by `../pages/challenge_03_beginner.py`/`challenge_04_beginner.py` — own day
+numbers so beginner and advanced versions are solvable independently, same
+`dynamic_check` values as their advanced counterparts (same backend variant
+pool, same answer checks), just far more explanatory `question`/
+`question_further` text and `allow_reset=False` (matching the advanced
+chains' convention, unlike an earlier draft). Each task is a module-level `TaskData(...)` instance
 (model defined in `core/site/website/engine/tasks/models.py`), imported by
 the matching page in `../pages/` and rendered there via
 `render_task(...)`/`TaskWidget(...)`.

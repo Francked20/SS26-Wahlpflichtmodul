@@ -51,6 +51,33 @@ Registered automatically — `core/site/website/app.py` scans `CTF_WEBSITE_FOLDE
   `custom/challengebackend`'s `dh_export` router instead of `export_cipher`),
   but has no reveal-on-solve reward UI.
 
+- **challenge_03_beginner.py** — `/challenge_03_beginner`, `PAGE_ID =
+  "challenge_03_beginner"`, own `day=95` task namespace (see
+  `../tasks/CLAUDE.md`). Beginner-friendly walkthrough of the same day-3
+  FREAK/export-cipher attack as `challenge_03.py` (same crypto, same
+  variant pool/backend endpoints, unmodified) but with a "Was ist X?"
+  `explain_box()` per concept, heavy step-by-step Wireshark instructions,
+  and only 1-2 real conceptual gaps left in the provided code skeletons
+  (everything else given). Own local UI helpers (`box`/`h`/`explain_box`/
+  `checkpoint`/`success_box`/`pcap_download_button`, not shared with
+  `challenge_03.py` — separate file, separate small helper set, see
+  `kap02_shared/`'s note above on when sharing is/isn't worth it) and its
+  own `BeginnerExportCipherState` (mirrors `MyVariantState`, calls the same
+  unmodified `/export_cipher/variant/{username}` and
+  `/export_cipher/{index}/start_capture` endpoints — `/variant/{username}`
+  additionally returns `n512`, added for this page, see
+  `../../challengebackend/CLAUDE.md`). Sidebar `group = "3_Beginner"`,
+  `position_priority = 20`.
+
+- **challenge_04_beginner.py** — `/challenge_04_beginner`, `PAGE_ID =
+  "challenge_04_beginner"`, own `day=94` task namespace. Same
+  beginner-walkthrough pattern as `challenge_03_beginner.py` above, but for
+  the day-4 weak-Diffie-Hellman/Logjam chain (`challenge_04.py`'s
+  underlying crypto/backend, unmodified) — own `BeginnerDhVariantState`,
+  own local UI helpers (separate copy, not shared with the export-cipher
+  beginner page). Sidebar `group = "3_Beginner"`, `position_priority = 10`
+  (sorts above the export-cipher beginner page within the same group).
+
 - **convo_01.py** / **convo_02.py** — `/char_01`, `/char_02`. Narrative/story
   pages ("Konversation") linked from the challenge pages.
 

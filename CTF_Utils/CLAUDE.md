@@ -54,7 +54,26 @@ Standalone admin/ops scripts run *against* a running `DUMMY_CTF` deployment
   matching variant's server flights (not a round-robin guess) — needed
   because triggers are now on-demand/per-player rather than one shared
   sequential loop. Stdlib-only (`urllib`/`socket`) so it needs nothing
-  installed on the VM beyond Python 3.
+  installed on the VM beyond Python 3. Waits for (and discards) some bytes
+  from the sender before replying with `server_flight_1` — without this, it
+  replies immediately after just the 2-byte index, before the sender's
+  ClientHello has even arrived, so a live Wireshark capture shows the
+  server "speaking" before the client, which can't happen in a real TLS
+  handshake (purely a capture-realism fix, doesn't affect correctness).
+
+- **dh_export_vm_listener.py** — day-4 weak-Diffie-Hellman counterpart to
+  `export_cipher_vm_listener.py` above, same shape (`GET /dh_export/vm_replay_data`,
+  same env var, same 2-byte index preamble, same wait-before-replying fix).
+  Splits each flight into individual TLS records before sending (see its
+  `split_records()`) with a short `time.sleep()` between each send, plus
+  `TCP_NODELAY` on the accepted socket — needed because sending multiple
+  small blobs back-to-back without a real time gap lets the OS (or, for
+  local dev, Docker Desktop's vpnkit relay to the LAN) coalesce them into
+  one TCP segment, shifting a later record's TLS header away from the start
+  of that segment and breaking Wireshark's heuristic TLS dissection of it
+  (`TCP_NODELAY` alone was not sufficient in testing). The corresponding fix
+  on the sending side is in `custom/challengebackend/utils/dh_export_sender.py`
+  (see `DUMMY_CTF/custom/challengebackend/CLAUDE.md`).
 
 - **pcap_generator.py** — proof-of-concept, not wired into the challenge flow
   yet. Offline alternative to `export_cipher_vm_listener.py`'s live capture:
@@ -72,11 +91,11 @@ Standalone admin/ops scripts run *against* a running `DUMMY_CTF` deployment
 - **dh_pcap_generator.py** — the day-4 weak-Diffie-Hellman (Logjam-style)
   counterpart to `pcap_generator.py` above: same offline-alternative /
   proof-of-concept role, but reads the `dh_export_variants` Mongo collection
-  and its docstring references a `dh_export_vm_listener.py` companion script
-  (mirroring `export_cipher_vm_listener.py`) that does not actually exist in
-  this repo yet — the day-4 chain's `POST /dh_export/{index}/start_capture`
-  has no listener to send captures to, and `DH_EXPORT_VM_HOST`/`_PORT` aren't
-  set in `.env` either (see `DUMMY_CTF/CLAUDE.md`).
+  directly instead of going through `dh_export_vm_listener.py` above (which
+  does now exist, despite this script's own docstring still implying
+  otherwise). `DH_EXPORT_VM_HOST`/`_PORT` still aren't set in `.env` by
+  default (see `DUMMY_CTF/CLAUDE.md`) — set them once the listener is
+  running somewhere reachable to enable the day-4 live-capture path.
 
 - **Wahlpflichtmodul_Projekt_Dummy_CTF_User_Inserts.txt** — event-specific
   companion to `Beispiel_Dummy_CTF_User_Inserts.txt`/`user_inserts_helper.py`
