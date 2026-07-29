@@ -91,7 +91,7 @@ class Kapitel_02_Kurs(AbstractSiteBuilder):
         self.name = "Kurs: Grundlagen"
         self.icon = "book-open"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 100   # highest = top of the group
         self.on_load = [
             CondState.reset_check_status,

@@ -126,7 +126,7 @@ class Kapitel_04(AbstractSiteBuilder):
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.heading(
-                "04: Schwaches Diffie-Hellman (Logjam)",
+                "Schwaches Diffie-Hellman (Logjam)",
                 color=self.main_color, size="8",
                 style={
                     "background": "linear-gradient(90deg, #04B486, #00FFFF)",
@@ -140,38 +140,38 @@ class Kapitel_04(AbstractSiteBuilder):
                 rx.cond(
                     CondState.event_enabled,
                     rx.vstack(
-                        render_task(self.PAGE_ID, 0, "Aufgabe 4.1: Einführung", TaskWidget(task_04_00)),
+                        render_task(self.PAGE_ID, 0, "Aufgabe 1: Einführung", TaskWidget(task_04_00)),
 
                         rx.cond(
                             PlayerCardState.tasks_solved["day_04_task_00"] | PlayerCardState.enable_test_mode,
                             rx.vstack(
-                                render_task(self.PAGE_ID, 1, "Aufgabe 4.2: Traffic Capture", TaskWidget(task_04_01)),
+                                render_task(self.PAGE_ID, 1, "Aufgabe 2: Traffic Capture", TaskWidget(task_04_01)),
 
                                 rx.cond(
                                     PlayerCardState.tasks_solved["day_04_task_01"] | PlayerCardState.enable_test_mode,
                                     rx.vstack(
-                                        render_task(self.PAGE_ID, 2, "Aufgabe 4.3: Machbarkeit", TaskWidget(task_04_02)),
+                                        render_task(self.PAGE_ID, 2, "Aufgabe 3: Machbarkeit", TaskWidget(task_04_02)),
 
                                         rx.cond(
                                             PlayerCardState.tasks_solved["day_04_task_02"] | PlayerCardState.enable_test_mode,
                                             rx.vstack(
                                                 self._capture_panel(),
 
-                                                render_task(self.PAGE_ID, 3, "Aufgabe 4.4: p-1 faktorisieren", TaskWidget(task_04_03)),
+                                                render_task(self.PAGE_ID, 3, "Aufgabe 4: p-1 faktorisieren", TaskWidget(task_04_03)),
 
                                                 rx.cond(
                                                     PlayerCardState.tasks_solved["day_04_task_03"] | PlayerCardState.enable_test_mode,
                                                     rx.vstack(
-                                                        render_task(self.PAGE_ID, 4, "Aufgabe 4.5: Diskreter Logarithmus", TaskWidget(task_04_04)),
+                                                        render_task(self.PAGE_ID, 4, "Aufgabe 5: Diskreter Logarithmus", TaskWidget(task_04_04)),
 
                                                         rx.cond(
                                                             PlayerCardState.tasks_solved["day_04_task_04"] | PlayerCardState.enable_test_mode,
                                                             rx.vstack(
-                                                                render_task(self.PAGE_ID, 5, "Aufgabe 4.6: TLS Master Secret", TaskWidget(task_04_05)),
+                                                                render_task(self.PAGE_ID, 5, "Aufgabe 6: TLS Master Secret", TaskWidget(task_04_05)),
 
                                                                 rx.cond(
                                                                     PlayerCardState.tasks_solved["day_04_task_05"] | PlayerCardState.enable_test_mode,
-                                                                    render_task(self.PAGE_ID, 6, "Aufgabe 4.7: Die Flagge", TaskWidget(task_04_06)),
+                                                                    render_task(self.PAGE_ID, 6, "Aufgabe 7: Die Flagge", TaskWidget(task_04_06)),
                                                                 ),
                                                             ),
                                                         ),
@@ -199,7 +199,9 @@ class Kapitel_04(AbstractSiteBuilder):
 
     def configure(self) -> None:
         self.url = "/challenge_04"
-        self.name = "04: Schwaches Diffie-Hellman"
+        self.name = "Schwaches Diffie-Hellman"
+        self.group = "2_FREAK"
+        self.position_priority = 10
         self.icon = "key-round"
         self.main_color = "#04B486"
         self.is_standalone = False

@@ -115,7 +115,7 @@ class Kapitel_02_Challenge_10(AbstractSiteBuilder):
         self.name = "Challenge 10: Der Schlüssel fällt"
         self.icon = "crown"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 5
         self.on_load = [
             CondState.reset_check_status,

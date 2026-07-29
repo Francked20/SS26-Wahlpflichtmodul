@@ -110,7 +110,7 @@ class Kapitel_02_Challenge_6(AbstractSiteBuilder):
         self.name = "Challenge 6: Der Mann in der Mitte"
         self.icon = "venetian-mask"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 40
         self.on_load = [
             CondState.reset_check_status,

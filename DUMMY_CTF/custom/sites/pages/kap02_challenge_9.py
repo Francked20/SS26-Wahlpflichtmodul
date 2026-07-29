@@ -107,7 +107,7 @@ class Kapitel_02_Challenge_9(AbstractSiteBuilder):
         self.name = "Challenge 9: Zweimal derselbe Würfel"
         self.icon = "dice-5"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 10
         self.on_load = [
             CondState.reset_check_status,

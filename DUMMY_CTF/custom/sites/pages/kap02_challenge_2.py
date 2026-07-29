@@ -109,7 +109,7 @@ class Kapitel_02_Challenge_2(AbstractSiteBuilder):
         self.name = "Challenge 2: Die glatte Ordnung"
         self.icon = "puzzle"
         self.main_color = "#04B486"
-        self.group = "kapitel_02"
+        self.group = "1_ROAD TO DIFFIE-HELLMAN"
         self.position_priority = 80
         self.on_load = [
             CondState.reset_check_status,
