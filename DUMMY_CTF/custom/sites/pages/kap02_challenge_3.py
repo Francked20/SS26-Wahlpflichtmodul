@@ -13,6 +13,8 @@ from website.unlock_settings import *
 from ..tasks.kap02_c23_tasks import task_02_10, task_02_11, task_02_12
 from .kap02_shared import stories, theory
 from .kap02_shared.variant import DhVariantState, index_banner, download_button
+from .kap02_shared.muster import muster_panel
+from .kap02_shared.kap02_muster_codes import MUSTER_C3
 
 
 class Kapitel_02_Challenge_3(AbstractSiteBuilder):
@@ -25,6 +27,8 @@ class Kapitel_02_Challenge_3(AbstractSiteBuilder):
             theory.challenge_3_technik(c),
             index_banner(c),
             download_button("Challenge 3: Capture herunterladen", DhVariantState.cap_3),
+            # Muster-Löser + SageCell
+            muster_panel(c, MUSTER_C3),
             render_task(self.PAGE_ID, 10, "Verständnisfrage", TaskWidget(task_02_10)),
             render_task(self.PAGE_ID, 11, "Aufgabe: Analyse", TaskWidget(task_02_11)),
             rx.cond(

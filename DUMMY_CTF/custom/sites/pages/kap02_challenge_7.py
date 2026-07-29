@@ -12,6 +12,8 @@ from website.unlock_settings import *
 from ..tasks.kap02_c7_tasks import task_02_22, task_02_23, task_02_24
 from .kap02_shared import stories, theory
 from .kap02_shared.variant import DhVariantState, index_banner, download_button
+from .kap02_shared.muster import muster_panel
+from .kap02_shared.kap02_muster_codes import MUSTER_C7
 
 
 class Kapitel_02_Challenge_7(AbstractSiteBuilder):
@@ -24,6 +26,8 @@ class Kapitel_02_Challenge_7(AbstractSiteBuilder):
             theory.challenge_7_technik(c),
             index_banner(c),
             download_button("Challenge 7: Capture herunterladen", DhVariantState.cap_7),
+            # Muster-Löser + SageCell
+            muster_panel(c, MUSTER_C7),
             render_task(self.PAGE_ID, 22, "Verständnisfrage", TaskWidget(task_02_22)),
             render_task(self.PAGE_ID, 23, "Aufgabe: Rechnen auf der Kurve", TaskWidget(task_02_23)),
             rx.cond(

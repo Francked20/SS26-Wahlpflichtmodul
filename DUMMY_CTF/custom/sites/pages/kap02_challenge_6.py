@@ -12,6 +12,8 @@ from website.unlock_settings import *
 from ..tasks.kap02_c6_tasks import task_02_19, task_02_20, task_02_21
 from .kap02_shared import stories, theory
 from .kap02_shared.variant import DhVariantState, index_banner, download_button
+from .kap02_shared.muster import muster_panel
+from .kap02_shared.kap02_muster_codes import MUSTER_C6
 
 
 class Kapitel_02_Challenge_6(AbstractSiteBuilder):
@@ -24,6 +26,8 @@ class Kapitel_02_Challenge_6(AbstractSiteBuilder):
             theory.challenge_6_technik(c),
             index_banner(c),
             download_button("Challenge 6: Capture herunterladen", DhVariantState.cap_6),
+            # Muster-Löser + SageCell
+            muster_panel(c, MUSTER_C6),
             render_task(self.PAGE_ID, 19, "Verständnisfrage", TaskWidget(task_02_19)),
             render_task(self.PAGE_ID, 20, "Aufgabe: Nachweis des Angriffs", TaskWidget(task_02_20)),
             rx.cond(

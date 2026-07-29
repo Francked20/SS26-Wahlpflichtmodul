@@ -16,6 +16,8 @@ from ..tasks.kap02_c23_tasks import (
 )
 from .kap02_shared import stories, theory
 from .kap02_shared.variant import DhVariantState, index_banner, download_button
+from .kap02_shared.muster import muster_panel
+from .kap02_shared.kap02_muster_codes import MUSTER_C2
 
 
 class Kapitel_02_Challenge_2(AbstractSiteBuilder):
@@ -29,6 +31,8 @@ class Kapitel_02_Challenge_2(AbstractSiteBuilder):
             theory.challenge_2_pohlig_hellman(c),
             index_banner(c),
             download_button("Challenge 2: Capture herunterladen", DhVariantState.cap_2),
+            # Muster-Löser + SageCell
+            muster_panel(c, MUSTER_C2),
             render_task(self.PAGE_ID, 6, "Verständnisfrage 1", TaskWidget(task_02_06)),
             render_task(self.PAGE_ID, 7, "Verständnisfrage 2", TaskWidget(task_02_07)),
             render_task(self.PAGE_ID, 8, "Aufgabe: Faktorisieren", TaskWidget(task_02_08)),

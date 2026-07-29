@@ -12,6 +12,8 @@ from website.unlock_settings import *
 from ..tasks.kap02_c8_tasks import task_02_25, task_02_26, task_02_27
 from .kap02_shared import stories, theory
 from .kap02_shared.variant import DhVariantState, index_banner, download_button
+from .kap02_shared.muster import muster_panel
+from .kap02_shared.kap02_muster_codes import MUSTER_C8
 
 
 class Kapitel_02_Challenge_8(AbstractSiteBuilder):
@@ -24,6 +26,8 @@ class Kapitel_02_Challenge_8(AbstractSiteBuilder):
             theory.challenge_8_technik(c),
             index_banner(c),
             download_button("Challenge 8: Capture herunterladen", DhVariantState.cap_8),
+            # Muster-Löser + SageCell
+            muster_panel(c, MUSTER_C8),
             render_task(self.PAGE_ID, 25, "Verständnisfrage", TaskWidget(task_02_25)),
             render_task(self.PAGE_ID, 26, "Aufgabe: Der falsche Punkt", TaskWidget(task_02_26)),
             rx.cond(

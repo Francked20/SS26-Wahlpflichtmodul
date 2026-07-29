@@ -12,6 +12,8 @@ from website.unlock_settings import *
 from ..tasks.kap02_c910_tasks import task_02_31, task_02_32, task_02_33
 from .kap02_shared import stories, theory
 from .kap02_shared.variant import DhVariantState, index_banner, download_button
+from .kap02_shared.muster import muster_panel
+from .kap02_shared.kap02_muster_codes import MUSTER_C10
 
 
 class Kapitel_02_Challenge_10(AbstractSiteBuilder):
@@ -24,6 +26,8 @@ class Kapitel_02_Challenge_10(AbstractSiteBuilder):
             theory.challenge_10_technik(c),
             index_banner(c),
             download_button("Challenge 10: Capture herunterladen", DhVariantState.cap_10),
+            # Muster-Löser + SageCell
+            muster_panel(c, MUSTER_C10),
             render_task(self.PAGE_ID, 31, "Verständnisfrage", TaskWidget(task_02_31)),
             render_task(self.PAGE_ID, 32, "Aufgabe: Das verräterische Zeichen", TaskWidget(task_02_32)),
             rx.cond(
