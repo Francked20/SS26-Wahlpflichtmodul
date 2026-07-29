@@ -177,20 +177,20 @@ class Kapitel_04_Beginner(AbstractSiteBuilder):
                 rx.markdown(
                     "Das ist Ihr persönlicher, für Sie einzigartiger Mitschnitt (abhängig "
                     "von Ihrem Benutzernamen). Sie haben **zwei gleichwertige Wege**, ihn zu "
-                    "bekommen — wählen Sie einen:"
+                    "bekommen - wählen Sie einen:"
                 ),
                 rx.vstack(
-                    rx.text.strong("Option 1 — Herunterladen:"),
+                    rx.text.strong("Option 1 - Herunterladen:"),
                     pcap_download_button("Meine Capture herunterladen (.pcap)", BeginnerDhVariantState.pcap_url),
                     spacing="2", align_items="center", width="100%", margin_top="0.75em",
                 ),
                 rx.vstack(
-                    rx.text.strong("Option 2 — Live mitschneiden:"),
+                    rx.text.strong("Option 2 - Live mitschneiden:"),
                     rx.text(
                         "Bevor Sie klicken: Öffnen Sie zuerst Wireshark in Ihrer "
                         "Kali-Umgebung, wählen Sie oben in der Liste das passende Netzwerk-"
                         "Interface aus und starten Sie den Mitschnitt (blaues Hai-Flossen-"
-                        "Symbol bzw. Strg+E) — erst danach unten auf 'Live-Mitschnitt starten' "
+                        "Symbol bzw. Strg+E) - erst danach unten auf 'Live-Mitschnitt starten' "
                         "klicken, sonst ist der Handshake schon vorbei, bevor Wireshark "
                         "mitschneidet.",
                         size="2", color="#cccccc",
@@ -235,7 +235,7 @@ class Kapitel_04_Beginner(AbstractSiteBuilder):
                     spacing="1", margin_top="0.5em", align_items="start", width="100%",
                 ),
                 rx.text(
-                    "Diese drei Werte gelten NUR für Sie — kopieren Sie sie direkt in Ihr "
+                    "Diese drei Werte gelten NUR für Sie - kopieren Sie sie direkt in Ihr "
                     "Python-Skript, kein erneutes Wireshark-Ablesen nötig.",
                     margin_top="0.75em",
                 ),
@@ -243,7 +243,7 @@ class Kapitel_04_Beginner(AbstractSiteBuilder):
                     "⚠️ Falls Sie dieselben Werte zum Vergleich auch in Wireshark nachschauen: "
                     "Wireshark zeigt p/g/Pubkey als Hexadezimalzahl (Basis 16, z.B. "
                     "\"933c8383...\"), hier oben stehen sie als Dezimalzahl (Basis 10, die "
-                    "übliche Schreibweise). Das ist dieselbe Zahl, nur anders dargestellt — "
+                    "übliche Schreibweise). Das ist dieselbe Zahl, nur anders dargestellt - "
                     "keine zwei verschiedenen Werte! Umrechnen in Python: "
                     "int(\"933c8383...\", 16).",
                     margin_top="0.5em", size="2", color="#cccccc",
@@ -264,14 +264,14 @@ class Kapitel_04_Beginner(AbstractSiteBuilder):
 werden. Server behielten deshalb absichtlich eine **schwache**
 Diffie-Hellman-Variante (**DHE_EXPORT**) für alte Clients bei. 2015 zeigte
 die **Logjam**-Attacke: Diese Export-Variante lässt sich noch heute brechen
-— und mit einem Trick sogar Verbindungen angreifen, die eigentlich starkes
+ - und mit einem Trick sogar Verbindungen angreifen, die eigentlich starkes
 DH benutzen wollten.
 
 **Warum das wichtig ist:** Ein grünes Schloss-Symbol im Browser ("https")
-sagt nur "es ist irgendwie verschlüsselt" — nicht "es ist sicher
+sagt nur "es ist irgendwie verschlüsselt" - nicht "es ist sicher
 verschlüsselt". 2015 betraf Logjam schätzungsweise **8% der Top-1-Million-
 HTTPS-Server weltweit**: Ein Angreifer im selben Netzwerk (z.B. offenes
-WLAN) konnte mitlesen, was eigentlich privat sein sollte — Passwörter,
+WLAN) konnte mitlesen, was eigentlich privat sein sollte - Passwörter,
 Nachrichten, alles. Genau das machen Sie hier nach, mit denselben
 Techniken, gegen einen absichtlich verwundbaren Übungsserver.
 
@@ -279,7 +279,7 @@ Techniken, gegen einen absichtlich verwundbaren Übungsserver.
 den DH-Parametern ausnutzen, das gemeinsame Geheimnis rekonstruieren und die
 verschlüsselte Nachricht lesen.
 
-Das ist die aufwendigste Challenge in diesem Kurs — dafür ist hier für
+Das ist die aufwendigste Challenge in diesem Kurs - dafür ist hier für
 **jeden** Schritt eine komplette, lauffähige Skript-Vorlage vorbereitet.
 Sie müssen nie mehr als eine kleine, klar markierte Lücke selbst ausfüllen.
                     """
@@ -289,26 +289,26 @@ Sie müssen nie mehr als eine kleine, klar markierte Lücke selbst ausfüllen.
             explain_box(
                 "Diffie-Hellman?",
                 r"""
-Diffie-Hellman (DH) ist ein Verfahren, mit dem sich zwei Seiten — ohne sich
-vorher zu kennen und über eine öffentlich mitlesbare Leitung — auf ein
+Diffie-Hellman (DH) ist ein Verfahren, mit dem sich zwei Seiten - ohne sich
+vorher zu kennen und über eine öffentlich mitlesbare Leitung - auf ein
 **gemeinsames Geheimnis** einigen können. Grundidee:
 
 1. Beide einigen sich öffentlich auf eine Primzahl $p$ und eine Zahl $g$
    (den "Erzeuger").
 2. Jede Seite wählt für sich geheim eine Zufallszahl (Server: $s$, Client:
-   $c$) — diese verrät niemand.
+   $c$) - diese verrät niemand.
 3. Jede Seite schickt der anderen öffentlich $g^{\text{eigene Zahl}} \bmod
    p$ (Server schickt $Y_s = g^s \bmod p$, Client schickt $Y_c = g^c \bmod
    p$).
 4. Beide berechnen jetzt denselben Wert: Server rechnet $Y_c^{\,s} \bmod
-   p$, Client rechnet $Y_s^{\,c} \bmod p$ — beides ergibt $g^{sc} \bmod p$.
+   p$, Client rechnet $Y_s^{\,c} \bmod p$ - beides ergibt $g^{sc} \bmod p$.
 
-Ein Lauscher sieht $p$, $g$, $Y_s$, $Y_c$ — aber ohne $s$ **oder** $c$ kann
+Ein Lauscher sieht $p$, $g$, $Y_s$, $Y_c$ - aber ohne $s$ **oder** $c$ kann
 er $g^{sc}$ nicht ausrechnen (das ist der diskrete Logarithmus, siehe
-unten) — **solange $p$ groß genug und gut gewählt ist.** Genau diese
+unten) - **solange $p$ groß genug und gut gewählt ist.** Genau diese
 Voraussetzung verletzt DHE_EXPORT absichtlich.
 
-**Namenshinweis für später:** In Wireshark heißen $Y_s$ und $Y_c$ nicht so —
+**Namenshinweis für später:** In Wireshark heißen $Y_s$ und $Y_c$ nicht so - 
 dort finden Sie beide unter dem Feldnamen **`Pubkey`** (einmal bei den
 Server-, einmal bei den Client-Parametern).
                 """,
@@ -318,13 +318,13 @@ Server-, einmal bei den Client-Parametern).
                 r"""
 Bevor zwei Rechner verschlüsselt kommunizieren (z.B. Browser und Webserver
 bei "https://"), einigen sie sich in einem **Handshake** auf einen
-gemeinsamen Schlüssel — genau das Diffie-Hellman-Verfahren von oben, nur
+gemeinsamen Schlüssel - genau das Diffie-Hellman-Verfahren von oben, nur
 eingebettet in ein festes Nachrichtenformat. Grob:
 `ClientHello` (Client sagt: "ich will reden, das kann ich") →
 `ServerHello` (Server antwortet, legt Verfahren fest) →
-`ServerKeyExchange` (Server schickt seine öffentlichen DH-Werte $p,g,Y_s$ —
+`ServerKeyExchange` (Server schickt seine öffentlichen DH-Werte $p,g,Y_s$ - 
 in Wireshark: `p`, `g`, `Pubkey`) →
-`ClientKeyExchange` (Client schickt seinen öffentlichen Wert $Y_c$ — in
+`ClientKeyExchange` (Client schickt seinen öffentlichen Wert $Y_c$ - in
 Wireshark ebenfalls `Pubkey`, diesmal bei den Client-Parametern) →
 `Finished` (beide bestätigen verschlüsselt, dass alles geklappt hat) →
 danach fließen die eigentlichen Nutzdaten (`Application Data`), ab hier
@@ -346,12 +346,12 @@ kleinen Primzahl $p$ (hier 512 Bit statt heute üblichen 2048+).
                 r"""
 **Wireshark** ist ein kostenloses Programm, das den gesamten Netzwerk-
 verkehr auf Ihrem Rechner (oder aus einer gespeicherten Datei) sichtbar
-macht — Paket für Paket, mit allen Feldern lesbar aufgeschlüsselt. Für
+macht - Paket für Paket, mit allen Feldern lesbar aufgeschlüsselt. Für
 diese Challenge nutzen Sie es, um eine **aufgezeichnete Verbindung**
 (`.pcap`-Datei) zu öffnen und darin genau die Werte zu finden, die der
 Server im Klartext verschickt hat ($p$, $g$, $Y_s$, …).
 
-Herunterladen: https://www.wireshark.org/download.html — installieren,
+Herunterladen: https://www.wireshark.org/download.html - installieren,
 öffnen, `Datei → Öffnen` und Ihre `.pcap` auswählen. Mehr braucht es zum
 Start nicht.
                 """,
@@ -363,12 +363,12 @@ Start nicht.
                     checkpoint(
                         "**Bevor es losgeht:** Alle Werkzeuge, die Sie brauchen (Wireshark, "
                         "Python 3, `sympy`, **yafu**), stehen fertig eingerichtet in der "
-                        "**Kali-Umgebung** dieser Challenge bereit — Button 'Kali' direkt bei "
+                        "**Kali-Umgebung** dieser Challenge bereit - Button 'Kali' direkt bei "
                         "der jeweiligen Aufgabe, keine eigene Installation nötig. Nur falls die "
                         "Kali-Umgebung bei Ihnen gerade nicht verfügbar ist: Sie können "
                         "Wireshark (https://www.wireshark.org) und `pip install sympy` "
                         "problemlos lokal installieren. **yafu** dagegen gibt es nur für "
-                        "Linux/Windows, keinen offiziellen macOS-Build — betrifft Sie das, "
+                        "Linux/Windows, keinen offiziellen macOS-Build - betrifft Sie das, "
                         "nutzen Sie ersatzweise `sympy.factorint()` (Aufgabe 4 erklärt das "
                         "genauer), liefert hier dasselbe Ergebnis."
                     ),
@@ -382,7 +382,7 @@ Start nicht.
                                 r"""
 Sie kennen $g$, $p$ und $Y_s = g^s \bmod p$. Der diskrete Logarithmus ist
 die Umkehr-Aufgabe: aus $Y_s$ das geheime $s$ zurückrechnen. Bei einer
-großen, gut gewählten Primzahl $p$ ist das praktisch unmöglich — genau
+großen, gut gewählten Primzahl $p$ ist das praktisch unmöglich - genau
 darauf verlässt sich Diffie-Hellman normalerweise.
                                 """,
                             ),
@@ -395,11 +395,11 @@ einzeln** lösen (winziges Teilproblem) und die Ergebnisse anschließend mit
 dem Chinesischen Restsatz zum vollständigen $s$ zusammensetzen. Genau diese
 glatte Struktur hat $p-1$ bei DHE_EXPORT.
 
-**Die Formel dahinter** — für jeden Faktor $q$ von $p-1$ "reduziert" man
+**Die Formel dahinter** - für jeden Faktor $q$ von $p-1$ "reduziert" man
 $g$ und $Y_s$ auf die kleine Untergruppe der Ordnung $q$:
 $$g_i = g^{(p-1)/q} \bmod p, \qquad h_i = Y_s^{(p-1)/q} \bmod p.$$
 In dieser kleinen Untergruppe findet man dann leicht $x_i$ mit
-$g_i^{x_i} = h_i$ — das ist $s \bmod q$. Genau diese beiden Zeilen füllen
+$g_i^{x_i} = h_i$ - das ist $s \bmod q$. Genau diese beiden Zeilen füllen
 Sie später in Schritt 5 aus.
                                 """,
                             ),
@@ -409,7 +409,7 @@ Sie später in Schritt 5 aus.
 Kennen Sie $s \bmod q_1$, $s \bmod q_2$, … für mehrere teilerfremde $q_i$,
 legt der CRT eindeutig fest, welchen Wert $s$ insgesamt hat (solange $s$
 kleiner ist als das Produkt aller $q_i$). Wir nutzen dafür die fertige
-Funktion `sympy.ntheory.modular.crt` — das Zusammensetzen selbst müssen Sie
+Funktion `sympy.ntheory.modular.crt` - das Zusammensetzen selbst müssen Sie
 nicht von Hand programmieren.
                                 """,
                             ),
@@ -419,10 +419,10 @@ nicht von Hand programmieren.
                                 rx.fragment(
                                     self._dh_values_panel(),
                                     box(
-                                        h("Schritt 4 — p-1 faktorisieren (yafu)", c),
+                                        h("Schritt 4 - p-1 faktorisieren (yafu)", c),
                                         rx.markdown(
                                             r"""
-Kein Code hier — nur ein externes Werkzeug. Öffnen Sie ein Terminal (z.B.
+Kein Code hier - nur ein externes Werkzeug. Öffnen Sie ein Terminal (z.B.
 über den "Kali"-Button bei der Aufgabe unten):
 
 ```bash
@@ -431,7 +431,7 @@ yafu "factor(<ERGEBNIS>)"
 ```
 
 Schreiben Sie sich die gefundenen Primfaktoren auf (ohne die 2, die brauchen
-Sie separat) — die brauchen Sie im nächsten Schritt.
+Sie separat) - die brauchen Sie im nächsten Schritt.
                                             """
                                         ),
                                         accent=c,
@@ -441,7 +441,7 @@ Sie separat) — die brauchen Sie im nächsten Schritt.
                                         PlayerCardState.tasks_solved["day_94_task_03"] | PlayerCardState.enable_test_mode,
                                         rx.fragment(
                                             box(
-                                                h("Schritt 5 — Diskreten Logarithmus finden (Teil 1/3 Ihres Skripts)", c),
+                                                h("Schritt 5 - Diskreten Logarithmus finden (Teil 1/3 Ihres Skripts)", c),
                                                 rx.markdown(
                                                     r"""
 Neue Datei anlegen (z.B. `loesung.py`). Die `None`/leere Liste unten sind
@@ -451,20 +451,20 @@ Neue Datei anlegen (z.B. `loesung.py`). Die `None`/leere Liste unten sind
 import math
 from sympy.ntheory.modular import crt
 
-p = None    # <- Ihr p (Kasten oben)
-g = None    # <- Ihr g (Kasten oben)
-Ys = None   # <- Ihr Ys (Kasten oben)
+p = None # <- Ihr p (Kasten oben)
+g = None # <- Ihr g (Kasten oben)
+Ys = None # <- Ihr Ys (Kasten oben)
 
 # Ihre Primfaktoren von p-1 aus Schritt 4 (OHNE die 2 - die kommt automatisch dazu):
-faktoren = []   # <- z.B. [1009, 3221, 50021] mit IHREN Werten
+faktoren = [] # <- z.B. [1009, 3221, 50021] mit IHREN Werten
 faktoren = [2] + faktoren
 
 def teilproblem_werte(q):
     # TODO: reduzieren Sie g und Ys auf die Untergruppe der Ordnung q.
     # Formel (siehe "Was ist Pohlig-Hellman?" oben):
-    #   gi = g^((p-1)/q) mod p
-    #   hi = Ys^((p-1)/q) mod p
-    return None, None   # <- (gi, hi)
+    # gi = g^((p-1)/q) mod p
+    # hi = Ys^((p-1)/q) mod p
+    return None, None # <- (gi, hi)
 
 def bsgs(g, h, p, n):
     # Baby-Step-Giant-Step: findet x mit 0<=x<n und g^x = h (mod p).
@@ -495,9 +495,9 @@ print("gefunden: s =", s)
 print("Kontrolle (muss True sein):", pow(g, s, p) == Ys)
 ```
 
-`bsgs` müssen Sie nicht verstehen, um die Aufgabe zu lösen — nur, dass es
+`bsgs` müssen Sie nicht verstehen, um die Aufgabe zu lösen - nur, dass es
 für jeden Faktor `q` das kleine Teilproblem löst. Die einzige Stelle, die
-**Sie** ausfüllen, ist `teilproblem_werte` — das ist genau der Kerngedanke
+**Sie** ausfüllen, ist `teilproblem_werte` - das ist genau der Kerngedanke
 von Pohlig-Hellman aus Schritt 3.
                                                     """
                                                 ),
@@ -518,11 +518,11 @@ von Pohlig-Hellman aus Schritt 3.
                                                         "das TLS Master Secret / pre_master_secret?",
                                                         r"""
 Das **pre_master_secret** ist das rohe Diffie-Hellman-Geheimnis
-($Z = Y_c^{\,s} \bmod p = Y_s^{\,c} \bmod p$ — beide Seiten berechnen
+($Z = Y_c^{\,s} \bmod p = Y_s^{\,c} \bmod p$ - beide Seiten berechnen
 denselben Wert, ohne dass ein Angreifer $c$ oder $s$ kennt... außer, $s$
 lässt sich wie hier zurückrechnen). Aus diesem rohen Geheimnis wird über
 eine Hash-Funktion (die **PRF**, "Pseudo-Random Function") das
-**master_secret** abgeleitet — ein sauberer, fester 48-Byte-Block, aus dem
+**master_secret** abgeleitet - ein sauberer, fester 48-Byte-Block, aus dem
 später alle eigentlichen Schlüssel kommen.
                                                         """,
                                                     ),
@@ -539,7 +539,7 @@ später alle eigentlichen Schlüssel kommen.
    `server_random`.
 3. **Client Key Exchange** anklicken → aufklappen bis
    `Diffie-Hellman Client Params → Pubkey` → Rechtsklick → `Copy` →
-   `...as a Hex Stream`. Das ist `Yc` (als Hex-Text, noch keine Zahl) — das
+   `...as a Hex Stream`. Das ist `Yc` (als Hex-Text, noch keine Zahl) - das
    Feld heißt auch hier `Pubkey`, genau wie bei den Server-Parametern in
    Schritt 2.
                                                             """
@@ -547,7 +547,7 @@ später alle eigentlichen Schlüssel kommen.
                                                         accent=c,
                                                     ),
                                                     box(
-                                                        h("Schritt 6 — Master Secret berechnen (Teil 2/3, direkt anhängen)", c),
+                                                        h("Schritt 6 - Master Secret berechnen (Teil 2/3, direkt anhängen)", c),
                                                         rx.markdown(
                                                             r"""
 ```python
@@ -606,27 +606,27 @@ print("Master Secret:", master_secret.hex())
 Weiter im Filter `tls.handshake or tls.app_data`: Suchen Sie das **eine**
 Paket vom Server, dessen Info-Spalte mit **"Change Cipher Spec"** beginnt
 (meist steht dort in einer Zeile gleich noch mehr, z.B. "..., Encrypted
-Handshake Message, Application Data" — das ist alles **ein einziges
+Handshake Message, Application Data" - das ist alles **ein einziges
 Paket**, keine drei verschiedenen). Anklicken und im Detail-Baum aufklappen
-— Sie sehen dort **drei separate** `TLSv1 Record Layer`-Einträge
+ - Sie sehen dort **drei separate** `TLSv1 Record Layer`-Einträge
 untereinander:
 
-1. `TLSv1 Record Layer: Change Cipher Spec` — **ignorieren**, nichts zu tun.
+1. `TLSv1 Record Layer: Change Cipher Spec` - **ignorieren**, nichts zu tun.
 2. `TLSv1 Record Layer: Handshake Protocol: Encrypted Handshake Message` →
    aufklappen bis zum Feld `Encrypted Handshake Message` → Rechtsklick →
    `Copy` → `...as a Hex Stream`. Das ist `finished_ciphertext`.
 3. `TLSv1 Record Layer: Application Data` → Feld `Encrypted Application
-   Data` → genauso kopieren. Das ist `application_data_ciphertext` — hier
+   Data` → genauso kopieren. Das ist `application_data_ciphertext` - hier
    steckt die Flagge.
                                                                     """
                                                                 ),
                                                                 accent=c,
                                                             ),
                                                             box(
-                                                                h("Schritt 7 — Flagge entschlüsseln (Teil 3/3, direkt anhängen)", c),
+                                                                h("Schritt 7 - Flagge entschlüsseln (Teil 3/3, direkt anhängen)", c),
                                                                 rx.markdown(
                                                                     r"""
-Hier gibt es **keine Lücke mehr** — nur noch fertigen Code, der alles
+Hier gibt es **keine Lücke mehr** - nur noch fertigen Code, der alles
 zusammenführt. Lesen Sie ihn trotzden einmal durch, bevor Sie ihn ausführen:
 
 ```python
@@ -681,7 +681,7 @@ print("Flagge:", flag_bytes.decode())
 ```
 
 **Wichtig:** `rc4 = RC4(...)` nur EINMAL erzeugen und danach beide
-`mac_then_decrypt`-Aufrufe in genau dieser Reihenfolge damit ausführen — RC4
+`mac_then_decrypt`-Aufrufe in genau dieser Reihenfolge damit ausführen - RC4
 ist ein fortlaufender Strom, kein Aufruf pro Datensatz für sich.
                                                                     """
                                                                 ),
@@ -689,7 +689,7 @@ ist ein fortlaufender Strom, kein Aufruf pro Datensatz für sich.
                                                             ),
                                                             checkpoint(
                                                                 "**Bekommen Sie `MAC-Prüfung ok: False False`?** Dann "
-                                                                "stimmt vermutlich `server_write_key` nicht — meist, "
+                                                                "stimmt vermutlich `server_write_key` nicht - meist, "
                                                                 "weil `s` (Schritt 5) oder `Z`/`master_secret` "
                                                                 "(Schritt 6) noch falsch war. Prüfen Sie dort zuerst."
                                                             ),
@@ -709,7 +709,7 @@ ist ein fortlaufender Strom, kein Aufruf pro Datensatz für sich.
             rx.cond(
                 PlayerCardState.tasks_solved["day_94_task_06"] | PlayerCardState.enable_test_mode,
                 success_box(
-                    "**Geschafft!** Sie haben einen echten TLS-Handshake gebrochen — von "
+                    "**Geschafft!** Sie haben einen echten TLS-Handshake gebrochen - von "
                     "Wireshark über Pohlig-Hellman bis zur fertig entschlüsselten Nachricht. "
                     "Genau dieser Angriff (Logjam) betraf 2015 einen erheblichen Teil aller "
                     "HTTPS-Server weltweit.",
@@ -722,7 +722,7 @@ ist ein fortlaufender Strom, kein Aufruf pro Datensatz für sich.
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Kapitel 4: Schwaches Diffie-Hellman — Beginner Walkthrough", color=self.main_color, size="8",
+                rx.heading("Kapitel 4: Schwaches Diffie-Hellman - Beginner Walkthrough", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),

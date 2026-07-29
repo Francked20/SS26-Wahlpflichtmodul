@@ -182,20 +182,20 @@ class Kapitel_03_Beginner(AbstractSiteBuilder):
                 rx.markdown(
                     "Das ist Ihr persönlicher, für Sie einzigartiger Mitschnitt "
                     "(abhängig von Ihrem Benutzernamen). Sie haben **zwei "
-                    "gleichwertige Wege**, ihn zu bekommen — wählen Sie einen:"
+                    "gleichwertige Wege**, ihn zu bekommen - wählen Sie einen:"
                 ),
                 rx.vstack(
-                    rx.text.strong("Option 1 — Herunterladen:"),
+                    rx.text.strong("Option 1 - Herunterladen:"),
                     pcap_download_button("Meine Capture herunterladen (.pcap)", BeginnerExportCipherState.pcap_url),
                     spacing="2", align_items="center", width="100%", margin_top="0.75em",
                 ),
                 rx.vstack(
-                    rx.text.strong("Option 2 — Live mitschneiden:"),
+                    rx.text.strong("Option 2 - Live mitschneiden:"),
                     rx.text(
                         "Bevor Sie klicken: Öffnen Sie zuerst Wireshark in Ihrer "
                         "Kali-Umgebung, wählen Sie oben in der Liste das passende "
                         "Netzwerk-Interface aus und starten Sie den Mitschnitt "
-                        "(blaues Hai-Flossen-Symbol bzw. Strg+E) — erst danach "
+                        "(blaues Hai-Flossen-Symbol bzw. Strg+E) - erst danach "
                         "unten auf 'Live-Mitschnitt starten' klicken, sonst ist "
                         "der Handshake schon vorbei, bevor Wireshark mitschneidet.",
                         size="2", color="#cccccc",
@@ -234,7 +234,7 @@ class Kapitel_03_Beginner(AbstractSiteBuilder):
                 rx.hstack(rx.text.strong("N₂₅₆ ="), rx.code(BeginnerExportCipherState.n256, size="2",
                           style={"wordBreak": "break-all"}), align_items="start", margin_top="0.5em"),
                 rx.text(
-                    "Diese Zahl gilt NUR für Sie — kopieren Sie sie direkt in Ihr Skript.",
+                    "Diese Zahl gilt NUR für Sie - kopieren Sie sie direkt in Ihr Skript.",
                     margin_top="0.75em",
                 ),
                 accent=self.main_color,
@@ -250,7 +250,7 @@ class Kapitel_03_Beginner(AbstractSiteBuilder):
                 rx.hstack(rx.text.strong("N ="), rx.code(BeginnerExportCipherState.n512, size="2",
                           style={"wordBreak": "break-all"}), align_items="start", margin_top="0.5em"),
                 rx.text(
-                    "⚠️ Wireshark (Schritt 2) zeigt dieselbe Zahl als Hexadezimalzahl — hier "
+                    "⚠️ Wireshark (Schritt 2) zeigt dieselbe Zahl als Hexadezimalzahl - hier "
                     "oben steht sie als Dezimalzahl (Basis 10), praktischer zum Einfügen ins "
                     "Skript. Alternativ selbst umrechnen: int(\"<Ihr Hex-Wert aus Wireshark>\", 16).",
                     margin_top="0.75em", size="2", color="#cccccc",
@@ -282,12 +282,12 @@ class Kapitel_03_Beginner(AbstractSiteBuilder):
                     r"""
 1990er-USA: Verschlüsselungssoftware durfte nicht "zu stark" exportiert
 werden. Server behielten deshalb absichtlich eine **schwache** RSA-Variante
-(**RSA_EXPORT**) für alte Clients bei — mit einem Schlüssel von nur 512 Bit
+(**RSA_EXPORT**) für alte Clients bei - mit einem Schlüssel von nur 512 Bit
 statt der heute üblichen 2048+. 2015 zeigte die **FREAK**-Attacke: Ein
 Angreifer kann einen Client per Man-in-the-Middle auf so eine Export-Suite
-herabstufen — selbst wenn beide Seiten eigentlich starke Kryptografie
+herabstufen - selbst wenn beide Seiten eigentlich starke Kryptografie
 beherrschen. Danach genügt es, den 512-Bit-Schlüssel zu faktorisieren, um
-den privaten Schlüssel — und damit die ganze Sitzung — zu rekonstruieren.
+den privaten Schlüssel - und damit die ganze Sitzung - zu rekonstruieren.
 
 **Warum das wichtig ist:** FREAK betraf 2015 schätzungsweise **36% aller
 HTTPS-Server**, die Browser als "sicher" auswiesen. Ein grünes
@@ -314,17 +314,19 @@ kennen darf, und einem privaten $d$, den nur der Server kennt.
 
 1. Man wählt zwei **Primzahlen** $p$ und $q$ und berechnet $N = p \cdot q$.
 2. Der öffentliche Schlüssel ist $(N, e)$ (meist $e = 65537$).
-3. Der private Schlüssel: $d \equiv e^{-1} \pmod{(p-1)(q-1)}$ — das
+3. Der private Schlüssel: $d \equiv e^{-1} \pmod{(p-1)(q-1)}$ - das
    "modulare Inverse" von $e$, eine reine Rechenaufgabe, **kein** Raten.
-   In Python berechnet `pow(e, -1, phi)` das direkt (Python 3.8+) — Sie
+   In Python berechnet `pow(e, -1, phi)` das direkt (Python 3.8+) - Sie
    müssen keinen Algorithmus dafür selbst schreiben, nur die richtigen
    Werte einsetzen.
 4. Verschlüsseln: $c = m^e \bmod N$. Entschlüsseln: $m = c^d \bmod N$.
 
 Die **gesamte** Sicherheit hängt daran, dass niemand $N$ in $p$ und $q$
-zerlegen kann — kennt man $p$ und $q$, ist $d$ eine einfache Rechnung ohne
-jedes Faktorisieren mehr. Bei 512 Bit ist die Zerlegung mit modernen
-Tools (yafu) in Sekunden bis Minuten machbar, bei 2048+ Bit praktisch nie.
+zerlegen kann. Kennt man $p$ und $q$, lässt sich $d$ direkt berechnen, ganz
+ohne weiteres Faktorisieren. Bei 512 Bit dauert die Zerlegung selbst mit
+yafu ein bis zwei Tage (deshalb üben Sie an einer kleineren 256-Bit-Zahl,
+siehe Schritt 3), bei 2048+ Bit ist sie mit heutiger Technik praktisch
+unmöglich.
                 """,
             ),
             explain_box(
@@ -356,7 +358,7 @@ kleinen Schlüssel (512 Bit statt heute üblichen 2048+).
                 "Wireshark?",
                 r"""
 **Wireshark** ist ein kostenloses Programm, das Netzwerkverkehr sichtbar
-macht — Paket für Paket, mit allen Feldern lesbar aufgeschlüsselt. Für
+macht - Paket für Paket, mit allen Feldern lesbar aufgeschlüsselt. Für
 diese Challenge öffnen Sie damit eine aufgezeichnete Verbindung
 (`.pcap`-Datei) und lesen die Werte aus, die der Server im Klartext
 verschickt hat ($N$, $e$, …).
@@ -371,12 +373,12 @@ Herunterladen: https://www.wireshark.org/download.html
                     checkpoint(
                         "**Bevor es losgeht:** Alle Werkzeuge, die Sie brauchen (Wireshark, "
                         "Python 3, `sympy`, **yafu**), stehen fertig eingerichtet in der "
-                        "**Kali-Umgebung** dieser Challenge bereit — Button 'Kali' direkt bei "
+                        "**Kali-Umgebung** dieser Challenge bereit - Button 'Kali' direkt bei "
                         "der jeweiligen Aufgabe, keine eigene Installation nötig. Nur falls die "
                         "Kali-Umgebung bei Ihnen gerade nicht verfügbar ist: Sie können "
                         "Wireshark (https://www.wireshark.org) und `pip install sympy` "
                         "problemlos lokal installieren. **yafu** dagegen gibt es nur für "
-                        "Linux/Windows, keinen offiziellen macOS-Build — betrifft Sie das, "
+                        "Linux/Windows, keinen offiziellen macOS-Build - betrifft Sie das, "
                         "nutzen Sie die Kali-Umgebung für den Faktorisierungs-Schritt (Schritt 3). "
                         "`sympy.factorint()` ist dafür **kein brauchbarer Ersatz**: $N_{256}$ ist "
                         "das Produkt zweier etwa gleich großer ~128-Bit-Primzahlen, und für solche "
@@ -390,15 +392,15 @@ Herunterladen: https://www.wireshark.org/download.html
                         rx.fragment(
                             self._n256_panel(),
                             box(
-                                h("Schritt 3 — Übungszahl faktorisieren", c),
+                                h("Schritt 3 - Übungszahl faktorisieren", c),
                                 rx.markdown(
                                     r"""
-Kein Code hier — nur ein externes Werkzeug (Terminal, z.B. über den
+Kein Code hier - nur ein externes Werkzeug (Terminal, z.B. über den
 "Kali"-Button bei der Aufgabe unten). Den genauen Befehl und alle Details
 finden Sie direkt in der Aufgabe unten.
 
 Bei Erfolg bekommen Sie automatisch **einen Faktor Ihres echten
-512-Bit-Schlüssels** geschenkt — eine Abkürzung für Schritt 4.
+512-Bit-Schlüssels** geschenkt - eine Abkürzung für Schritt 4.
                                     """
                                 ),
                                 accent=c,
@@ -410,15 +412,15 @@ Bei Erfolg bekommen Sie automatisch **einen Faktor Ihres echten
                                 rx.fragment(
                                     self._reveal_panel(),
                                     box(
-                                        h("Schritt 4 — Zweiten Faktor berechnen (Teil 1/3 Ihres Skripts)", c),
+                                        h("Schritt 4 - Zweiten Faktor berechnen (Teil 1/3 Ihres Skripts)", c),
                                         rx.markdown(
                                             r"""
 Neue Datei anlegen (z.B. `loesung.py`). Die `None`-Werte unten sind
 **absichtlich** keine echten Werte:
 
 ```python
-n512 = None   # <- Ihr echtes 512-Bit-N (Kasten direkt über dieser Aufgabe)
-p512 = None   # <- Ihr geschenkter Faktor aus Schritt 3 (Belohnungs-Kasten)
+n512 = None # <- Ihr echtes 512-Bit-N (Kasten direkt über dieser Aufgabe)
+p512 = None # <- Ihr geschenkter Faktor aus Schritt 3 (Belohnungs-Kasten)
 
 # TODO: q berechnen - wenn N = p * q und Sie p kennen, wie kommen Sie an q?
 # Achtung: n512 hat >150 Dezimalstellen - die normale Division "/" liefert
@@ -449,9 +451,9 @@ Der Client verschlüsselt beim Handshake ein zufälliges Geheimnis
 (**pre_master_secret**, 48 Byte) mit dem öffentlichen RSA-Schlüssel des
 Servers und schickt es in der `ClientKeyExchange`-Nachricht. Normalerweise
 kann nur der Server (mit seinem privaten Schlüssel $d$) das wieder
-entschlüsseln — Sie haben $d$ jetzt aber selbst berechnet. Aus dem
+entschlüsseln - Sie haben $d$ jetzt aber selbst berechnet. Aus dem
 pre_master_secret wird über eine Hash-Funktion (die **PRF**) das
-**master_secret** abgeleitet — ein fester 48-Byte-Block, aus dem später
+**master_secret** abgeleitet - ein fester 48-Byte-Block, aus dem später
 alle eigentlichen Schlüssel kommen.
                                                 """,
                                             ),
@@ -473,7 +475,7 @@ alle eigentlichen Schlüssel kommen.
                                                 accent=c,
                                             ),
                                             box(
-                                                h("Schritt 5 — Master Secret berechnen (Teil 2/3, direkt anhängen)", c),
+                                                h("Schritt 5 - Master Secret berechnen (Teil 2/3, direkt anhängen)", c),
                                                 rx.markdown(
                                                     r"""
 ```python
@@ -545,24 +547,26 @@ print("Master Secret:", master_secret.hex())
                                                             r"""
 Weiter im Filter `tls.handshake or tls.app_data`. Suchen Sie das **eine**
 Paket vom Server, dessen Info-Spalte mit **"Change Cipher Spec"** beginnt
-(oft steht dort noch mehr in derselben Zeile — das ist alles **ein
-einziges Paket**, keine mehreren). Anklicken und aufklappen — Sie sehen
+(oft steht dort noch mehr in derselben Zeile - das ist alles **ein
+einziges Paket**, keine mehreren). Anklicken und aufklappen - Sie sehen
 dort mehrere `TLSv1 Record Layer`-Einträge untereinander:
 
-1. `Change Cipher Spec` — **ignorieren**.
+1. `Change Cipher Spec` - **ignorieren**.
 2. `Encrypted Handshake Message` → Feld kopieren (`Copy` → `...as a Hex
    Stream`). Das ist `finished_ciphertext`.
 3. `Application Data` → Feld `Encrypted Application Data` → genauso
-   kopieren. Das ist `application_data_ciphertext` — hier steckt die Flagge.
+   kopieren. Das ist `application_data_ciphertext` - hier steckt die Flagge.
                                                             """
                                                         ),
                                                         accent=c,
                                                     ),
                                                     box(
-                                                        h("Schritt 6 — Flagge entschlüsseln (Teil 3/3, direkt anhängen)", c),
+                                                        h("Schritt 6 - Flagge entschlüsseln (Teil 3/3, direkt anhängen)", c),
                                                         rx.markdown(
                                                             r"""
-Hier gibt es **keine Lücke mehr** — nur noch fertigen Code:
+Hier gibt es **keine Lücke mehr**, nur noch fertigen Code. Sie müssen lediglich
+`finished_ciphertext` und `application_data_ciphertext` aus Ihrem Capture
+(siehe Kasten oben) einsetzen:
 
 ```python
 key_block = tls10_prf(master_secret, b"key expansion", server_random + client_random, 42)
@@ -615,7 +619,7 @@ print("Flagge:", flag_bytes.decode())
 ```
 
 **Wichtig:** `rc4 = RC4(...)` nur EINMAL erzeugen, dann beide
-`mac_then_decrypt`-Aufrufe in genau dieser Reihenfolge — RC4 ist ein
+`mac_then_decrypt`-Aufrufe in genau dieser Reihenfolge - RC4 ist ein
 fortlaufender Strom, kein Neustart pro Datensatz.
                                                             """
                                                         ),
@@ -624,7 +628,7 @@ fortlaufender Strom, kein Neustart pro Datensatz.
                                                     checkpoint(
                                                         "**Bekommen Sie `MAC-Prüfung ok: False False`?** Dann "
                                                         "stimmt vermutlich `d` (Schritt 5) oder das Master "
-                                                        "Secret nicht — dort zuerst prüfen."
+                                                        "Secret nicht - dort zuerst prüfen."
                                                     ),
                                                     render_task(self.PAGE_ID, 5, "Schritt 6: Flagge einreichen", TaskWidget(task_03b_05)),
                                                 ),
@@ -640,7 +644,7 @@ fortlaufender Strom, kein Neustart pro Datensatz.
             rx.cond(
                 PlayerCardState.tasks_solved["day_95_task_05"] | PlayerCardState.enable_test_mode,
                 success_box(
-                    "**Geschafft!** Sie haben einen echten TLS-Handshake gebrochen — von "
+                    "**Geschafft!** Sie haben einen echten TLS-Handshake gebrochen - von "
                     "Wireshark über RSA-Faktorisierung bis zur fertig entschlüsselten "
                     "Nachricht. Genau dieser Angriff (FREAK) betraf 2015 einen erheblichen "
                     "Teil aller HTTPS-Server weltweit.",
@@ -653,7 +657,7 @@ fortlaufender Strom, kein Neustart pro Datensatz.
     def page(self) -> rx.Component:
         return rx.vstack(
             rx.hstack(
-                rx.heading("Kapitel 3: Export Ciphers & FREAK — Beginner Walkthrough", color=self.main_color, size="8",
+                rx.heading("Kapitel 3: Export Ciphers & FREAK - Beginner Walkthrough", color=self.main_color, size="8",
                            style={"background": "linear-gradient(90deg, #04B486, #00FFFF)",
                                   "WebkitBackgroundClip": "text",
                                   "WebkitTextFillColor": "transparent"}),
