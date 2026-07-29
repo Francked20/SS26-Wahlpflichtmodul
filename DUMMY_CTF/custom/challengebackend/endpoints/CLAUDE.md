@@ -39,7 +39,12 @@ forking.
   (unlike the other three modules). `GET /variant/{username}` and
   `POST /{index}/start_capture` are public (a player's own N, and the trigger
   for their own on-demand live-capture handshake, keyed by their deterministic
-  variant index — see `../CLAUDE.md`). `start_capture` sends that variant to
+  variant index — see `../CLAUDE.md`). `/variant/{username}` also returns
+  `n512` (the real 512-bit RSA modulus) alongside `n256` — safe to expose
+  unauthenticated since it's the public half of an RSA keypair by
+  definition; added so `challenge_03_beginner.py` can show it as a decimal
+  number without requiring a manual Wireshark hex→decimal conversion.
+  `start_capture` sends that variant to
   `EXPORT_CIPHER_VM_HOST/PORT` via `utils/export_cipher_sender.py`'s
   `send_variant_to_vm()` — 503 if the training VM isn't configured, 502 if
   unreachable. `GET /reveal_factor/{username}`, `POST /check_answer`,

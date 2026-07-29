@@ -66,7 +66,16 @@ not this day-4 TLS/Logjam one.)
   flights, so a participant can capture their own, self-contained live
   traffic on the training VM with Wireshark. No periodic/background sender
   anymore — replaced because a shared round-robin through all ~100 variants
-  mixed other players' traffic into everyone's capture.
+  mixed other players' traffic into everyone's capture. The index prefix and
+  each flight are sent as separate `write()`+`drain()` calls with a short
+  `asyncio.sleep()` in between (plus `TCP_NODELAY` on the socket): sending
+  two byte-blobs back-to-back in one flush lets the OS (or, for local dev,
+  Docker Desktop's vpnkit relay to the LAN) coalesce them into a single TCP
+  segment, which shifts a TLS record header away from the start of that
+  segment and makes Wireshark's heuristic TLS dissector silently fail to
+  recognize it (confirmed in testing: `TCP_NODELAY` alone did not reliably
+  prevent this, only adding the sleep did). `dh_export_sender.py` mirrors
+  this same fix for the day-4 chain.
 - `scripts/generate_export_cipher_pool.py` — one-off operator script,
   populates the ~100-entry `ExportCipherVariant` pool. Run manually:
   `docker compose exec challenge python3 scripts/generate_export_cipher_pool.py`.

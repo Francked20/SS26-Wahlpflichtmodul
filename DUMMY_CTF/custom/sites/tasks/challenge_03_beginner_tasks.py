@@ -87,8 +87,16 @@ task_03b_01 = TaskData(
         "Certificate` ▶ `Handshake Protocol: Certificate` ▶ `Certificates` ▶ "
         "`Certificate` ▶ `signedCertificate` ▶ `subjectPublicKeyInfo` ▶ "
         "`subjectPublicKey: RSAPublicKey` ▶ `modulus`.\n"
-        "5. Dort finden Sie **zwei separate Zeilen**: eine Längenangabe **in "
-        "Byte** und direkt darunter den eigentlichen Hex-Wert des Modulus $N$.\n\n"
+        "5. Dort finden Sie die Zeile `modulus: 0x00...` — das ist der Hex-Wert "
+        "von $N$. **Anders als bei Diffie-Hellman zeigt Wireshark hier keine "
+        "separate Längen-Zeile** — Sie müssen die Bitlänge selbst bestimmen:\n"
+        "   - Klicken Sie die `modulus`-Zeile an — unten zeigt Wireshark die "
+        "Byte-Anzahl des markierten Felds an (z.B. \"65 bytes\").\n"
+        "   - **Wichtig:** Diese Zahl enthält das führende `00` direkt nach "
+        "`0x` mit — das ist nur ein ASN.1-Vorzeichen-Padding-Byte, kein Teil "
+        "des eigentlichen Schlüssels. Ziehen Sie **1 Byte ab**, bevor Sie mit "
+        "8 multiplizieren (zeigt Wireshark z.B. 65 Byte an, sind es "
+        "tatsächlich 64 Byte Schlüssel).\n\n"
         "**Achtung Zahlenformat:** Wireshark zeigt $N$ als **Hexadezimalzahl** "
         "(z.B. `a1b2c3...`). Weiter unten auf dieser Seite bekommen Sie densel"
         "ben Wert später auch als gewöhnliche **Dezimalzahl** — beide "
@@ -99,14 +107,13 @@ task_03b_01 = TaskData(
         "vorgesehen, die Sicherheit soll allein daran hängen, dass $N$ groß "
         "genug ist, um es nicht faktorisieren zu können. Genau das ist hier "
         "nicht der Fall.\n\n"
-        "**Wie viele Bit hat der RSA-Schlüssel?** (Länge steht in Byte da — "
-        "1 Byte = 8 Bit.)"
+        "**Wie viele Bit hat der RSA-Schlüssel?**"
     ],
     placeholder_text=["z.B. 2048"],
     hints=[
         TaskHint.create(0, "Filter: `tls.handshake`, dann nach 'Certificate' in der Info-Spalte suchen.", 0.7),
         TaskHint.create(0, "Der Pfad im Detail-Baum: TLS → Certificate → subjectPublicKeyInfo → RSAPublicKey → modulus.", 0.5),
-        TaskHint.create(0, "Die Längenangabe steht in Byte, nicht Bit — die gesuchte Zahl ist Länge mal 8.", 0.3),
+        TaskHint.create(0, "Hex-Zeichen des modulus zählen (ohne führendes 00), durch 2 (=Byte), mal 8 (=Bit).", 0.3),
         TaskHint.create(0, "Die Antwort lautet: 512", 0.15),
     ],
     download_text=[""], download_path=[""], link_text=[""], link_path=[""],
@@ -140,17 +147,27 @@ task_03b_02 = TaskData(
         "nie die volle 512-Bit-Zahl faktorisieren.\n\n"
         "**Mit yafu (in der Kali-Umgebung, Button 'Kali' bei dieser Aufgabe):**\n"
         "```bash\n"
-        "yafu \"factor(<IHR_N256>)\"\n"
+        "echo \"factor(<IHR_N256>)\" | yafu\n"
         "```\n"
+        "**Wichtig:** yafu als reines Kommandozeilen-Argument "
+        "(`yafu \"factor(...)\"`) funktioniert **nicht** — es beendet sich "
+        "sofort, ohne zu rechnen. Der Ausdruck muss per `echo ... | yafu` "
+        "an die Standardeingabe übergeben werden.\n"
         "Bei 256 Bit (~77 Dezimalstellen) liefert yafu die Faktoren "
         "typischerweise in unter einer Minute.\n\n"
         "**Kein yafu zur Hand (z.B. lokal auf macOS, kein offizieller Build "
-        "verfügbar)?** Weil $N_{256}$ hier bewusst klein genug ist, reicht "
-        "auch reines Python:\n"
-        "```python\n"
-        "from sympy import factorint\n"
-        "print(factorint(n256))\n"
-        "```\n\n"
+        "verfügbar)?** Nutzen Sie den 'Kali'-Button bei dieser Aufgabe — dort "
+        "läuft yafu bereits fertig eingerichtet. $N_{256}$ ist zwar deutlich "
+        "kleiner als der echte 512-Bit-Schlüssel, aber immer noch das Produkt "
+        "zweier etwa gleich großer ~128-Bit-Primzahlen. Genau das macht es "
+        "für **reines Python ungeeignet**: Werkzeuge wie `sympy.factorint()` "
+        "probieren zuerst einfache Verfahren (Probedivision, Pollard-Rho), "
+        "deren Aufwand von der Größe des **kleineren** Faktors abhängt — bei "
+        "zwei gleich großen Faktoren ist das praktisch aussichtslos "
+        "(mehrere Minuten bis Stunden, kein Abbruch in Sicht). yafu "
+        "implementiert dagegen ein echtes Siebverfahren und ist dafür gebaut. "
+        "Es gibt hier keinen brauchbaren schnellen Python-Ersatz — "
+        "der 'Kali'-Button ist der vorgesehene Weg.\n\n"
         "**Kontrolle, bevor Sie abgeben:** Multiplizieren Sie beide Faktoren — "
         "das Ergebnis muss wieder exakt $N_{256}$ ergeben.\n\n"
         "**Antwortformat:** beide Primfaktoren, kommagetrennt (Reihenfolge "
@@ -158,8 +175,8 @@ task_03b_02 = TaskData(
     ],
     placeholder_text=["p,q"],
     hints=[
-        TaskHint.create(0, "yafu-Aufruf: `yafu \"factor(N)\"` mit N = Ihrer 256-Bit-Zahl von oben.", 0.7),
-        TaskHint.create(0, "Kein yafu? `sympy.factorint(n256)` liefert dasselbe Ergebnis.", 0.5),
+        TaskHint.create(0, "yafu-Aufruf: `echo \"factor(N)\" | yafu` mit N = Ihrer 256-Bit-Zahl von oben (NICHT als reines Kommandozeilen-Argument — das funktioniert nicht).", 0.7),
+        TaskHint.create(0, "Kein yafu zur Hand? Kali-Button nutzen — sympy.factorint() ist hier zu langsam (zwei gleich große Faktoren).", 0.5),
         TaskHint.create(0, "Selbstkontrolle: Produkt beider Faktoren muss exakt N_256 ergeben.", 0.3),
         TaskHint.create(0, "Format: zwei Dezimalzahlen mit Komma getrennt, z.B. 12345,67890", 0.15),
     ],
@@ -182,9 +199,9 @@ task_03b_03 = TaskData(
     answers=[Correct.create("dynamic")],
     question=[
         "Sie kennen jetzt einen Faktor $p$ Ihres echten 512-Bit-Moduls $N$ — "
-        "er wurde Ihnen nach der letzten Aufgabe angezeigt (siehe Kasten oben). "
-        "$N$ selbst kennen Sie schon aus Schritt 2 (Wireshark) bzw. finden es "
-        "auch im blauen Kasten oben als Dezimalzahl."
+        "er wurde Ihnen nach der letzten Aufgabe im Belohnungs-Kasten oben "
+        "angezeigt. $N$ selbst steht direkt darüber in einem eigenen Kasten, "
+        "beides als gewöhnliche Dezimalzahl, direkt zum Kopieren."
     ],
     question_further=[
         "Das Code-Gerüst unten ist komplett fertig — bis auf **eine** Lücke: "

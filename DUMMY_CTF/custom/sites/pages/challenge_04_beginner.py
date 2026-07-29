@@ -61,7 +61,7 @@ def h(text, accent="#04B486"):
 def explain_box(title, body_markdown):
     return rx.accordion.root(
         rx.accordion.item(
-            header=rx.text.strong(f"❓ Was ist {title}?"),
+            header=rx.text.strong(f"❓ Was ist {title.rstrip('?')}?"),
             content=rx.markdown(body_markdown, style={"color": "#F2F2F2"}),
         ),
         collapsible=True,
@@ -745,7 +745,7 @@ ist ein fortlaufender Strom, kein Aufruf pro Datensatz für sich.
 
     def configure(self) -> None:
         self.url = "/challenge_04_beginner"
-        self.name = "Schwaches Diffie-Hellman (Beginner)"
+        self.name = "Schwaches Diffie-Hellman (Beginner Walkthrough)"
         self.group = "3_Beginner"
         self.position_priority = 10
         self.icon = "key-round"

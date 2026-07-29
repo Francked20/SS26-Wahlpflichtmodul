@@ -63,7 +63,7 @@ def h(text, accent="#04B486"):
 def explain_box(title, body_markdown):
     return rx.accordion.root(
         rx.accordion.item(
-            header=rx.text.strong(f"❓ Was ist {title}?"),
+            header=rx.text.strong(f"❓ Was ist {title.rstrip('?')}?"),
             content=rx.markdown(body_markdown, style={"color": "#F2F2F2"}),
         ),
         collapsible=True,
@@ -123,6 +123,7 @@ class ChallengeBackendRequests(BackendRequests):
 class BeginnerExportCipherState(AuthCookie):
     index: int = 0
     n256: str = ""
+    n512: str = ""
     loaded: bool = False
     reveal_factor: str = ""
     capture_status: str = ""
@@ -149,6 +150,7 @@ class BeginnerExportCipherState(AuthCookie):
             data = response.json()
             self.index = data["index"]
             self.n256 = data["n256"]
+            self.n512 = data["n512"]
             self.loaded = True
 
         reveal_response = await BackendRequests.get(
@@ -240,13 +242,34 @@ class Kapitel_03_Beginner(AbstractSiteBuilder):
             rx.spinner(),
         )
 
+    def _n512_panel(self) -> rx.Component:
+        return rx.cond(
+            BeginnerExportCipherState.loaded,
+            box(
+                rx.text.strong("Ihr echtes 512-Bit-N (für Schritt 4):"),
+                rx.hstack(rx.text.strong("N ="), rx.code(BeginnerExportCipherState.n512, size="2",
+                          style={"wordBreak": "break-all"}), align_items="start", margin_top="0.5em"),
+                rx.text(
+                    "⚠️ Wireshark (Schritt 2) zeigt dieselbe Zahl als Hexadezimalzahl — hier "
+                    "oben steht sie als Dezimalzahl (Basis 10), praktischer zum Einfügen ins "
+                    "Skript. Alternativ selbst umrechnen: int(\"<Ihr Hex-Wert aus Wireshark>\", 16).",
+                    margin_top="0.75em", size="2", color="#cccccc",
+                ),
+                accent=self.main_color,
+            ),
+            rx.spinner(),
+        )
+
     def _reveal_panel(self) -> rx.Component:
         return rx.cond(
             BeginnerExportCipherState.reveal_factor != "",
-            checkpoint(
-                f"**Belohnung freigeschaltet:** Ihr Faktor des echten 512-Bit-N "
-                f"lautet: `{BeginnerExportCipherState.reveal_factor}` — kopieren "
-                f"Sie ihn, Sie brauchen ihn ab Schritt 4."
+            rx.callout(
+                rx.hstack(rx.text.strong("p ="), rx.code(BeginnerExportCipherState.reveal_factor, size="2",
+                          style={"wordBreak": "break-all"}), align_items="start"),
+                icon="key",
+                color_scheme="amber",
+                width="100%",
+                style={"maxWidth": "1200px", "margin": "16px auto"},
             ),
         )
 
@@ -293,6 +316,9 @@ kennen darf, und einem privaten $d$, den nur der Server kennt.
 2. Der öffentliche Schlüssel ist $(N, e)$ (meist $e = 65537$).
 3. Der private Schlüssel: $d \equiv e^{-1} \pmod{(p-1)(q-1)}$ — das
    "modulare Inverse" von $e$, eine reine Rechenaufgabe, **kein** Raten.
+   In Python berechnet `pow(e, -1, phi)` das direkt (Python 3.8+) — Sie
+   müssen keinen Algorithmus dafür selbst schreiben, nur die richtigen
+   Werte einsetzen.
 4. Verschlüsseln: $c = m^e \bmod N$. Entschlüsseln: $m = c^d \bmod N$.
 
 Die **gesamte** Sicherheit hängt daran, dass niemand $N$ in $p$ und $q$
@@ -351,8 +377,11 @@ Herunterladen: https://www.wireshark.org/download.html
                         "Wireshark (https://www.wireshark.org) und `pip install sympy` "
                         "problemlos lokal installieren. **yafu** dagegen gibt es nur für "
                         "Linux/Windows, keinen offiziellen macOS-Build — betrifft Sie das, "
-                        "nutzen Sie ersatzweise `sympy.factorint()`, liefert hier dasselbe "
-                        "Ergebnis."
+                        "nutzen Sie die Kali-Umgebung für den Faktorisierungs-Schritt (Schritt 3). "
+                        "`sympy.factorint()` ist dafür **kein brauchbarer Ersatz**: $N_{256}$ ist "
+                        "das Produkt zweier etwa gleich großer ~128-Bit-Primzahlen, und für solche "
+                        "Zahlen brauchen sympys einfache Verfahren extrem lange (anders als z.B. "
+                        "bei Diffie-Hellman-Zahlen)."
                     ),
                     self._capture_panel(),
                     render_task(self.PAGE_ID, 1, "Schritt 2: Wie groß ist der RSA-Schlüssel?", TaskWidget(task_03b_01)),
@@ -364,25 +393,18 @@ Herunterladen: https://www.wireshark.org/download.html
                                 h("Schritt 3 — Übungszahl faktorisieren", c),
                                 rx.markdown(
                                     r"""
-Kein Code hier — nur ein externes Werkzeug. Öffnen Sie ein Terminal (z.B.
-über den "Kali"-Button bei der Aufgabe unten):
-
-```bash
-yafu "factor(<IHRE_N256>)"
-```
-
-Kein yafu zur Hand? `sympy.factorint(n256)` liefert dasselbe Ergebnis (die
-Primfaktorzerlegung ist mathematisch eindeutig, jedes korrekte Tool muss
-dieselbe Antwort liefern).
+Kein Code hier — nur ein externes Werkzeug (Terminal, z.B. über den
+"Kali"-Button bei der Aufgabe unten). Den genauen Befehl und alle Details
+finden Sie direkt in der Aufgabe unten.
 
 Bei Erfolg bekommen Sie automatisch **einen Faktor Ihres echten
-512-Bit-Schlüssels** geschenkt — Sie sehen ihn direkt hier auf der Seite,
-sobald Sie die Aufgabe unten lösen.
+512-Bit-Schlüssels** geschenkt — eine Abkürzung für Schritt 4.
                                     """
                                 ),
                                 accent=c,
                             ),
                             render_task(self.PAGE_ID, 2, "Schritt 3: 256-Bit faktorisieren", TaskWidget(task_03b_02)),
+                            self._n512_panel(),
                             rx.cond(
                                 PlayerCardState.tasks_solved["day_95_task_02"] | PlayerCardState.enable_test_mode,
                                 rx.fragment(
@@ -395,11 +417,12 @@ Neue Datei anlegen (z.B. `loesung.py`). Die `None`-Werte unten sind
 **absichtlich** keine echten Werte:
 
 ```python
-# Werte aus Wireshark (Schritt 2) bzw. dem Belohnungs-Kasten oben:
-n512 = None   # <- Ihr N (das echte, 512-Bit, aus Wireshark/Zertifikat)
-p512 = None   # <- Ihr geschenkter Faktor aus Schritt 3
+n512 = None   # <- Ihr echtes 512-Bit-N (Kasten direkt über dieser Aufgabe)
+p512 = None   # <- Ihr geschenkter Faktor aus Schritt 3 (Belohnungs-Kasten)
 
 # TODO: q berechnen - wenn N = p * q und Sie p kennen, wie kommen Sie an q?
+# Achtung: n512 hat >150 Dezimalstellen - die normale Division "/" liefert
+# bei so großen Zahlen einen ungenauen Float. Es gibt eine Ganzzahl-Division.
 q512 = None
 
 print("gefunden: q =", q512)
@@ -653,7 +676,7 @@ fortlaufender Strom, kein Neustart pro Datensatz.
 
     def configure(self) -> None:
         self.url = "/challenge_03_beginner"
-        self.name = "Export Ciphers (Beginner)"
+        self.name = "Export Ciphers (Beginner Walkthrough)"
         self.group = "3_Beginner"
         self.position_priority = 20
         self.icon = "unlock"

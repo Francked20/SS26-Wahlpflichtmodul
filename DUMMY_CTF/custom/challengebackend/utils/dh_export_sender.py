@@ -13,6 +13,7 @@ connections apart.
 """
 
 import asyncio
+import socket
 import struct
 
 from database import DhExportVariant
@@ -26,13 +27,33 @@ async def send_variant_to_vm(host: str, port: int, variant: DhExportVariant) -> 
         asyncio.open_connection(host, port), timeout=CONNECT_TIMEOUT_SECONDS
     )
     try:
+        # See export_cipher_sender.py for why this is split into separate
+        # write()+drain() calls with a real sleep in between, and why
+        # TCP_NODELAY is set: sending the 2-byte index and client_flight_1
+        # in one flush lets the OS (or, for local dev, Docker Desktop's
+        # vpnkit relay to the LAN) coalesce them into a single TCP segment,
+        # which shifts the TLS record header 2 bytes into that segment -
+        # Wireshark's heuristic TLS dissector then fails to recognize it and
+        # ClientHello never shows up. TCP_NODELAY alone wasn't enough to fix
+        # this reliably in testing (vpnkit still merged sends sometimes);
+        # the sleep forces enough real separation to survive that relay too.
+        sock = writer.get_extra_info("socket")
+        if sock is not None:
+            sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
         writer.write(struct.pack("!H", variant.index))
+        await writer.drain()
+        await asyncio.sleep(0.05)
         writer.write(bytes.fromhex(variant.client_flight_1_hex))
         await writer.drain()
+        # Not a reliable pacing mechanism on its own (see listener - it
+        # replies almost immediately after the index, not after a real
+        # round-trip), same coalescing risk as above, same fix.
         try:
             await asyncio.wait_for(reader.read(4096), timeout=READ_TIMEOUT_SECONDS)
         except asyncio.TimeoutError:
             pass
+        await asyncio.sleep(0.05)
 
         writer.write(bytes.fromhex(variant.client_flight_2_hex))
         await writer.drain()

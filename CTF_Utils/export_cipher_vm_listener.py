@@ -75,6 +75,17 @@ def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
                 continue
             print(f"Connection from {addr}, replaying variant #{index}")
 
+            # Wait for (and discard) the sender's ClientHello before replying
+            # - not needed to pick the right bytes (that's already decided by
+            # the index above), but without it this sends server_flight_1
+            # immediately after the index, so Wireshark shows the server
+            # replying before the client's ClientHello even arrives, which
+            # can't happen in a real TLS handshake.
+            try:
+                conn.recv(4096)
+            except socket.timeout:
+                pass
+
             conn.sendall(bytes.fromhex(variant["server_flight_1_hex"]))
             try:
                 conn.recv(4096)
