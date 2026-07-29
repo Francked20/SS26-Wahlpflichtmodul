@@ -745,7 +745,9 @@ ist ein fortlaufender Strom, kein Aufruf pro Datensatz für sich.
 
     def configure(self) -> None:
         self.url = "/challenge_04_beginner"
-        self.name = "04b: Schwaches DH (Beginner Walkthrough)"
+        self.name = "Schwaches Diffie-Hellman (Beginner)"
+        self.group = "3_Beginner"
+        self.position_priority = 10
         self.icon = "key-round"
         self.main_color = "#04B486"
         self.on_load = [
