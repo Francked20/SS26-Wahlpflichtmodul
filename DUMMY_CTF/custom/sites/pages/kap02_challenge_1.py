@@ -15,6 +15,8 @@ from website.unlock_settings import *
 from ..tasks.kap02_c1_tasks import task_02_04, task_02_05
 from .kap02_shared import stories, theory
 from .kap02_shared.variant import DhVariantState, index_banner, download_button
+from .kap02_shared.muster import muster_panel
+from .kap02_shared.kap02_muster_codes import MUSTER_C1
 
 
 class Kapitel_02_Challenge_1(AbstractSiteBuilder):
@@ -31,6 +33,8 @@ class Kapitel_02_Challenge_1(AbstractSiteBuilder):
             # personal capture
             index_banner(c),
             download_button("Challenge 1: Capture herunterladen", DhVariantState.cap_1),
+            # Muster-Löser + SageCell
+            muster_panel(c, MUSTER_C1),
             # tasks
             render_task(self.PAGE_ID, 4, "Aufgabe: Die Capture", TaskWidget(task_02_04)),
             rx.cond(

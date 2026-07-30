@@ -27,6 +27,13 @@ Usage:
 
 Use --insecure if the challenge backend is only reachable via a self-signed
 cert (e.g. local dev, see DUMMY_CTF/certs/).
+
+Use --resolve-ip <IP> when --challenge-domain is a name that this machine
+cannot resolve to the right host on its own - most notably a *.localhost
+name, which glibc hard-wires to 127.0.0.1 before consulting /etc/hosts.
+This is the Python equivalent of `curl --resolve NAME:PORT:IP`: the TCP
+socket connects to <IP>, while the TLS SNI and HTTP Host header stay as
+--challenge-domain, so a reverse proxy (Caddy) still picks the right site.
 """
 import argparse
 import json
@@ -35,17 +42,38 @@ import socket
 import ssl
 import struct
 import sys
-import time
 import urllib.request
 
 
-def fetch_replay_data(challenge_domain: str, api_key: str, insecure: bool) -> dict[int, dict]:
+def fetch_replay_data(challenge_domain: str, api_key: str, insecure: bool,
+                      resolve_ip: str | None = None) -> dict[int, dict]:
     url = f"https://{challenge_domain}/dh_export/vm_replay_data"
     req = urllib.request.Request(url, headers={"X-Challenge-Api-Key": api_key})
     context = ssl._create_unverified_context() if insecure else None
 
-    with urllib.request.urlopen(req, timeout=10, context=context) as resp:
-        data = json.loads(resp.read())
+    if resolve_ip:
+        # Equivalent of `curl --resolve`: force the socket to connect to
+        # resolve_ip while urllib keeps using challenge_domain for the TLS
+        # SNI and the HTTP Host header, so Caddy serves the right site. This
+        # sidesteps glibc hard-wiring *.localhost -> 127.0.0.1 ahead of
+        # /etc/hosts, which otherwise makes the name unreachable across a VM
+        # boundary.
+        _orig_getaddrinfo = socket.getaddrinfo
+
+        def _patched_getaddrinfo(host, *args, **kwargs):
+            if host == challenge_domain:
+                host = resolve_ip
+            return _orig_getaddrinfo(host, *args, **kwargs)
+
+        socket.getaddrinfo = _patched_getaddrinfo
+        try:
+            with urllib.request.urlopen(req, timeout=10, context=context) as resp:
+                data = json.loads(resp.read())
+        finally:
+            socket.getaddrinfo = _orig_getaddrinfo
+    else:
+        with urllib.request.urlopen(req, timeout=10, context=context) as resp:
+            data = json.loads(resp.read())
 
     variants = data["variants"]
     if not variants:
@@ -94,32 +122,14 @@ def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
                 continue
             print(f"Connection from {addr}, replaying variant #{index}")
 
-            # Wait for (and discard) the sender's ClientHello before replying
-            # - without it, this sends server_flight_1 immediately after the
-            # index, so Wireshark shows the server replying before the
-            # client's ClientHello even arrives, which can't happen in a
-            # real TLS handshake.
-            try:
-                conn.recv(4096)
-            except socket.timeout:
-                pass
-
-            # A real sleep between sends, not just separate sendall() calls
-            # per record: TCP_NODELAY alone wasn't enough in testing (Docker
-            # Desktop's vpnkit relay to the LAN can still coalesce two fast
-            # back-to-back sends into one TCP segment), which shifts a
-            # later record's TLS header into the middle of a segment and
-            # breaks Wireshark's heuristic TLS dissection of it.
             for record in split_records(bytes.fromhex(variant["server_flight_1_hex"])):
                 conn.sendall(record)
-                time.sleep(0.05)
             try:
                 conn.recv(4096)
             except socket.timeout:
                 pass
             for record in split_records(bytes.fromhex(variant["server_flight_2_hex"])):
                 conn.sendall(record)
-                time.sleep(0.05)
         except OSError as e:
             print(f"Connection to {addr} failed mid-replay: {e}", file=sys.stderr)
         finally:
@@ -134,6 +144,11 @@ def main():
                          help="Must match DH_EXPORT_VM_PORT in DUMMY_CTF/.env (default: 4434)")
     parser.add_argument("--insecure", action="store_true",
                          help="Skip TLS certificate verification (self-signed dev certs)")
+    parser.add_argument("--resolve-ip", default=None,
+                         help="Force --challenge-domain to resolve to this IP (like "
+                              "`curl --resolve`), keeping the TLS SNI/Host header intact. "
+                              "Use when the domain is a *.localhost name trapped by glibc, "
+                              "e.g. --resolve-ip 192.168.56.1")
     args = parser.parse_args()
 
     api_key = os.getenv("CHALLENGE_API_KEY")
@@ -141,7 +156,7 @@ def main():
         print("Set CHALLENGE_API_KEY (same value as in DUMMY_CTF/.env) before running this script.", file=sys.stderr)
         sys.exit(1)
 
-    variants = fetch_replay_data(args.challenge_domain, api_key, args.insecure)
+    variants = fetch_replay_data(args.challenge_domain, api_key, args.insecure, args.resolve_ip)
     print(f"Fetched {len(variants)} variants from the challenge backend.")
     serve(args.listen_port, variants)
 
