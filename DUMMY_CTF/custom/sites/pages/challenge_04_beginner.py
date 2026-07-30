@@ -1,16 +1,5 @@
-"""Kapitel 04 - Beginner-Version: "Schwaches Diffie-Hellman (Logjam)".
-
-Gleicher Angriff, gleicher Varianten-Pool, gleiches Backend wie
-challenge_04.py (custom/challengebackend/dh_export_*) - ruft dessen bereits
-bestehende Endpunkte unveraendert auf, keine einzige Zeile dort wird
-angefasst. Nur Erklaerungstiefe und Code-Geruest unterscheiden sich: jeder
-Fachbegriff hat eine eigene "Was ist X?"-Box, jedes Skript ist bis auf genau
-eine zentrale Luecke pro Schritt fertig vorgegeben (siehe
-challenge_04_beginner_tasks.py fuer die Aufgabendefinitionen).
-
-Eigener day-Wert 94 (siehe challenge_04_beginner_tasks.py), damit Beginner-
-und Advanced-Version unabhaengig voneinander loesbar sind.
-"""
+"""Kapitel 04 - Beginner-Version: Schwaches Diffie-Hellman (Logjam).
+Eigener day=94, unabhaengig von der Advanced-Version (day=4)"""
 
 import hashlib
 from urllib.parse import quote
@@ -27,15 +16,11 @@ from ..tasks.challenge_04_beginner_tasks import (
     task_04b_00, task_04b_01, task_04b_02, task_04b_03,
     task_04b_04, task_04b_05, task_04b_06,
 )
-# Muss zu challengebackend/utils/dh_export_pool.py: POOL_SIZE passen.
+# Muss zu challengebackend/utils/dh_export_pool.py: POOL_SIZE passen
 DH_EXPORT_POOL_SIZE = 100
 
 
-# ---------------------------------------------------------------------------
-# Kleine, lokale UI-Helfer (nur diese eine Seite braucht sie - siehe
-# entscheidungen.md-Prinzip: Auslagerung erst ab der zweiten Seite, die sie
-# braucht).
-# ---------------------------------------------------------------------------
+# Kleine, lokale UI-Helfer (nur diese Seite braucht sie)
 _BOX_STYLE = {
     "maxWidth": "1200px", "width": "100%", "margin": "16px auto",
     "padding": "18px", "borderRadius": "12px", "color": "#F2F2F2",
@@ -88,14 +73,8 @@ def success_box(text, accent="#04B486"):
 
 
 def pcap_download_button(text, href):
-    """Eigener Download-Button statt kap02_shared.download_button (das
-    <a download> HTML-Attribut) - Safari behandelt .pcap-Binaerdaten dabei
-    nachweislich (per xxd verifiziert: Haeufung von EF BF BD = UTF-8-
-    Replacement-Zeichen) irgendwo im Download-Pfad als Text und zerstoert sie,
-    unabhaengig von Content-Type/Content-Disposition-Headern. `rx.download()`
-    ist Reflex' eingebauter Mechanismus (schon anderswo im Projekt fuer PDF-
-    Downloads benutzt, z.B. website/sites/welcome.py) und lädt Binaerdaten
-    zuverlaessig ueber alle Browser hinweg, ohne dieses Problem."""
+    """rx.download() statt <a download> - Safari zerstoert Binaerdaten sonst
+    beim direkten Anchor-Download"""
     return rx.button(
         rx.hstack(
             rx.icon("download", size=18),
@@ -116,10 +95,7 @@ def pcap_download_button(text, href):
     )
 
 
-# ---------------------------------------------------------------------------
-# Backend-Zugriff: identisch zu MyDhVariantState in challenge_04.py, ruft
-# dieselben, unveraenderten Endpunkte auf.
-# ---------------------------------------------------------------------------
+# Backend-Zugriff: identisch zu MyDhVariantState in challenge_04.py
 class ChallengeBackendRequests(BackendRequests):
     url = "http://challenge:8000"
 
@@ -134,10 +110,7 @@ class BeginnerDhVariantState(AuthCookie):
 
     @rx.var
     def pcap_url(self) -> str:
-        """Berechnet den Download-Link direkt aus dem Usernamen (dieselbe
-        Formel wie challengebackend/utils/dh_export_pool.py:
-        variant_index_for_user) - so ist der Link sofort da, ohne auf die
-        async load()-Antwort vom Backend warten zu muessen."""
+        """Dieselbe Formel wie dh_export_pool.py: variant_index_for_user"""
         try:
             username = self.data_cookie
             if not username:
@@ -462,15 +435,15 @@ faktoren = [] # <- z.B. [1009, 3221, 50021] mit IHREN Werten
 faktoren = [2] + faktoren
 
 def teilproblem_werte(q):
-    # TODO: reduzieren Sie g und Ys auf die Untergruppe der Ordnung q.
+    # TODO: reduzieren Sie g und Ys auf die Untergruppe der Ordnung q
     # Formel (siehe "Was ist Pohlig-Hellman?" oben):
     # gi = g^((p-1)/q) mod p
     # hi = Ys^((p-1)/q) mod p
     return None, None # <- (gi, hi)
 
 def bsgs(g, h, p, n):
-    # Baby-Step-Giant-Step: findet x mit 0<=x<n und g^x = h (mod p).
-    # Fertig vorgegeben - Sie müssen diese Funktion nicht verändern.
+    # Baby-Step-Giant-Step: findet x mit 0<=x<n und g^x = h (mod p)
+    # Fertig vorgegeben - Sie müssen diese Funktion nicht verändern
     m = math.isqrt(n) + 1
     table = {}
     e = 1
@@ -556,7 +529,7 @@ später alle eigentlichen Schlüssel kommen.
 import hmac, hashlib
 
 def p_hash(digestmod, secret, seed, length):
-    # Fertig vorgegeben.
+    # Fertig vorgegeben
     out = b""
     a = seed
     while len(out) < length:
@@ -565,7 +538,7 @@ def p_hash(digestmod, secret, seed, length):
     return out[:length]
 
 def tls10_prf(secret, label, seed, length):
-    # Fertig vorgegeben - die TLS-1.0-PRF aus RFC 2246.
+    # Fertig vorgegeben - die TLS-1.0-PRF aus RFC 2246
     half = (len(secret) + 1) // 2
     s1, s2 = secret[:half], secret[-half:]
     p_md5 = p_hash(hashlib.md5, s1, label + seed, length)
@@ -578,7 +551,7 @@ server_random = bytes.fromhex("HIER_HEX_EINFUEGEN")
 Yc = int("HIER_HEX_EINFUEGEN", 16)
 
 # TODO: Z = Yc^s mod p - dasselbe DH-Prinzip wie immer, diesmal mit
-# Ihrem in Schritt 5 gefundenen s als Exponent.
+# Ihrem in Schritt 5 gefundenen s als Exponent
 Z = None
 
 pms = Z.to_bytes((Z.bit_length() + 7) // 8, "big")
@@ -643,7 +616,7 @@ def final_write_key(write_key_raw, label):
 server_write_key = final_write_key(server_write_key_raw, b"server write key")
 
 class RC4:
-    # Fertig vorgegeben - der RC4-Stream-Cipher-Algorithmus.
+    # Fertig vorgegeben - der RC4-Stream-Cipher-Algorithmus
     def __init__(self, key):
         S = list(range(256))
         j = 0
@@ -664,7 +637,7 @@ class RC4:
         return bytes(out)
 
 def mac_then_decrypt(content_type, ciphertext, mac_secret, rc4, seq_num):
-    # Fertig vorgegeben - prueft die HMAC-MD5-Pruefsumme und entschluesselt.
+    # Fertig vorgegeben - prueft die HMAC-MD5-Pruefsumme und entschluesselt
     decrypted = rc4.crypt(ciphertext)
     plaintext, mac = decrypted[:-16], decrypted[-16:]
     mac_input = (seq_num.to_bytes(8, "big") + bytes([content_type]) +

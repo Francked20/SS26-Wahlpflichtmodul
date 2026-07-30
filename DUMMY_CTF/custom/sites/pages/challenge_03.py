@@ -11,20 +11,10 @@ from website.auth_lib import AuthCookie, BackendRequests
 
 
 class ChallengeBackendRequests(BackendRequests):
-    """Same request helper as BackendRequests, pointed at custom/challengebackend
-    (the `challenge` service) instead of core/backend's `api` service."""
     url = "http://challenge:8000"
 
 
 class MyVariantState(AuthCookie):
-    """Fetches this player's assigned export-cipher pool entry (deterministic
-    from their username, see custom/challengebackend/utils/export_cipher_pool.py)
-    directly from custom/challengebackend - the practice 256-bit N and the
-    capture trigger are per-player, so they can't go through the generic static
-    download_path task mechanism. Unauthenticated on purpose, matching this
-    service's other player-facing endpoints (e.g. primes.py) - knowing another
-    player's N doesn't help solve YOUR OWN (differently-indexed) challenge."""
-
     index: int = 0
     n256: str = ""
     loaded: bool = False
@@ -40,9 +30,6 @@ class MyVariantState(AuthCookie):
             self.n256 = data["n256"]
             self.loaded = True
 
-        # Re-fetch an already-earned reward on page load - widget.py's
-        # `revealed_secret` only carries it once, transiently, right after
-        # solving; this survives reloads.
         reveal_response = await BackendRequests.get(
             "/challenges/export_cipher_reveal_factor",
             params={"day": 3, "task": 2},
@@ -55,11 +42,7 @@ class MyVariantState(AuthCookie):
 
     @rx.event(background=True)
     async def trigger_capture(self):
-        """Sends this player's variant to the training VM on demand, so
-        whatever the player is currently capturing with Wireshark there is
-        their own, self-contained TLS conversation - see
-        custom/challengebackend/endpoints/export_cipher.py's
-        POST /{index}/start_capture."""
+        """Sendet die Variante an die Trainings-VM"""
         async with self:
             self.capture_status = "sending"
 

@@ -1,14 +1,4 @@
-"""
-Tasks for Kapitel 02 — Challenge 9 (ElGamal) + Challenge 10 (DSA)
-
-Numbering: task_02_28 .. task_02_33.
-  Challenge 9  (ElGamal): 28 (concept WF), 29 (proof: same c1? -> Ja), 30 (flag)
-  Challenge 10 (DSA):     31 (concept WF), 32 (proof: same r?  -> Ja), 33 (flag)
-
-Both proof questions target the tell-tale sign of a reused nonce (identical c1
-for ElGamal, identical r for DSA) — a common, non-guessable answer that forces
-the student to actually inspect the two ciphertexts / signatures.
-"""
+"""Tasks fuer Kapitel 02 - Challenge 9 (ElGamal) + Challenge 10 (DSA)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint

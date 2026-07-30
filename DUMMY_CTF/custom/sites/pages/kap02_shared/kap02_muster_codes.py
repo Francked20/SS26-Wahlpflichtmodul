@@ -1,8 +1,4 @@
-"""
-Muster-Löser (starter code) für alle 10 Challenges des Kapitels 02.
-Jede Konstante enthält den anpassbaren SageMath-Code für eine Challenge.
-Wird von den kap02_challenge_*.py-Seiten über muster_panel(...) angezeigt.
-"""
+"""Muster-Loeser (starter code) fuer die Challenges des Kapitels 02"""
 
 MUSTER_C1 = r"""
 # ============================================================
@@ -10,9 +6,9 @@ MUSTER_C1 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze unten die vier TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze unten die vier TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 # ============================================================
 import base64, hashlib
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -49,12 +45,12 @@ MUSTER_C2 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
-#   p ist gross, aber p-1 ist glatt (nur kleine Primfaktoren).
-#   Sage loest den diskreten Logarithmus automatisch per Pohlig-Hellman.
+#   p ist gross, aber p-1 ist glatt (nur kleine Primfaktoren)
+#   Sage loest den diskreten Logarithmus automatisch per Pohlig-Hellman
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -90,11 +86,11 @@ MUSTER_C3 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
-#   p-1 ist fast glatt (ein groesserer Faktor). discrete_log kommt dennoch zum Ziel.
+#   p-1 ist fast glatt (ein groesserer Faktor). discrete_log kommt dennoch zum Ziel
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -130,12 +126,12 @@ MUSTER_C4 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
-#   Der Generator g erzeugt nur eine kleine Untergruppe der Ordnung q.
-#   Der geheime Exponent a ist daher klein (a < q) und per BSGS zu finden.
+#   Der Generator g erzeugt nur eine kleine Untergruppe der Ordnung q
+#   Der geheime Exponent a ist daher klein (a < q) und per BSGS zu finden
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -171,11 +167,11 @@ MUSTER_C5 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
-#   Klassischer Logjam: p-1 ist das Produkt vieler kleiner Faktoren.
+#   Klassischer Logjam: p-1 ist das Produkt vieler kleiner Faktoren
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -211,14 +207,14 @@ MUSTER_C6 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
 #   Du bist Mallory. Du hast BEIDE Handshakes gekapert und kennst deine
 #   geheimen Exponenten m1 (Richtung Alice) und m2 (Richtung Bob). Die Flagge
 #   ist auf beide Richtungen aufgeteilt - du musst BEIDE Records entschluesseln
-#   und die zwei Haelften zusammensetzen.
+#   und die zwei Haelften zusammensetzen
 # ============================================================
 import base64, json
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -261,13 +257,13 @@ MUSTER_C7 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
 #   ECDH auf einer Kurve kleiner Ordnung. Wir bauen die Kurve in Sage nach,
 #   loesen den diskreten Logarithmus auf der Kurve (a mit A = a*G) und
-#   berechnen den gemeinsamen Punkt S = a*B. Der Schluessel kommt aus x(S).
+#   berechnen den gemeinsamen Punkt S = a*B. Der Schluessel kommt aus x(S)
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -314,12 +310,12 @@ MUSTER_C8 = r"""
 # Anleitung:
 #   Diese Challenge hat viele Sonden (Probes). Statt jeden Wert einzeln
 #   einzutragen, fuegst du deine KOMPLETTE Capture unten zwischen die
-#   dreifachen Anfuehrungszeichen ein (TODO). Der Rest laeuft automatisch.
+#   dreifachen Anfuehrungszeichen ein (TODO). Der Rest laeuft automatisch
 #
 #   Angriff: Bob prueft den empfangenen Punkt nicht. Fuer jede Sonde liegt
 #   ein Punkt R = d*P auf einer schwachen Kurve E'(b_invalid) mit kleiner
 #   Untergruppe der Ordnung q. Per BSGS findet man d mod q; alle Reste
-#   werden per CRT zu Bobs Geheimnis d zusammengesetzt.
+#   werden per CRT zu Bobs Geheimnis d zusammengesetzt
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -380,13 +376,13 @@ MUSTER_C9 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
 #   Zwei Nachrichten wurden mit DEMSELBEN Zufallswert k verschluesselt
 #   (gleiche C1!). Aus der bekannten Nachricht m1 folgt m2 direkt -
-#   OHNE den diskreten Logarithmus zu loesen:  m2 = c2_2 * m1 / c2_1 (mod p).
+#   OHNE den diskreten Logarithmus zu loesen:  m2 = c2_2 * m1 / c2_1 (mod p)
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
@@ -423,13 +419,13 @@ MUSTER_C10 = r"""
 # Muster-Loeser fuer https://sagecell.sagemath.org/
 #
 # Anleitung:
-#   1. Oeffne deine .tcvcap-Datei.
-#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture.
-#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende.
+#   1. Oeffne deine .tcvcap-Datei
+#   2. Ersetze die TODO-Werte durch DEINE Werte aus der Capture
+#   3. Fuehre den Code aus (Evaluate). Die Flagge erscheint am Ende
 #
 #   Zwei Signaturen mit demselben r -> derselbe Nonce k. Daraus folgt
 #   k = (h1-h2)/(s1-s2) mod q, dann der private Schluessel
-#   x = (s1*k - h1)/r mod q. Der Schluessel kommt aus x.
+#   x = (s1*k - h1)/r mod q. Der Schluessel kommt aus x
 # ============================================================
 import base64
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF

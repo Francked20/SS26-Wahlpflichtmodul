@@ -1,4 +1,4 @@
-"""Main entry point for the FastAPI application."""
+"""Main entry point for the FastAPI application"""
 
 import os
 

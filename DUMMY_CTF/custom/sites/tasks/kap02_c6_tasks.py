@@ -1,20 +1,11 @@
-"""
-Tasks for Kapitel 02 — Challenge 6 (Man-in-the-Middle).
-
-Numbering: task_02_19 .. task_02_21.
-  Challenge 6: 19 (concept WF), 20 (detection Ja/Nein), 21 (flag)
-
-The flag is split across the two decrypted directions (Anna->Bob and
-Bob->Anna); the student must decrypt BOTH records with the two MITM session
-keys and concatenate the halves.
-"""
+"""Tasks fuer Kapitel 02 - Challenge 6 (Man-in-the-Middle)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint
 
 
 def _wf(day_idx, points, desc, question, further, correct_is_true):
-    """Single Wahr/Falsch question (matches the C1-C5 helper)."""
+    """Single Wahr/Falsch question (matches the C1-C5 helper)"""
     if correct_is_true:
         answers = [Correct.create("Wahr"), Incorrect.create("Falsch")]
     else:
@@ -34,7 +25,7 @@ def _wf(day_idx, points, desc, question, further, correct_is_true):
 
 
 def _jn(day_idx, points, desc, question, further, correct_is_yes):
-    """Single Ja/Nein question — used for the MITM detection check."""
+    """Single Ja/Nein question — used for the MITM detection check"""
     if correct_is_yes:
         answers = [Correct.create("Ja"), Incorrect.create("Nein")]
     else:

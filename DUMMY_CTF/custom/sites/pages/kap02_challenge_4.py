@@ -1,7 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 4 (Der schwache Erzeuger).
-
-"""
+"""Kapitel 02 - Sub-page: Challenge 4 (Der schwache Erzeuger)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

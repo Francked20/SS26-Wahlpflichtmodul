@@ -1,12 +1,4 @@
-"""
-Reference solver — walks the ACTUAL generated captures for C4, C5, C6 exactly
-as a student would, decrypts, and checks the recovered flag against FLAGS.
-
-C4: parse p,g,A,B -> find small order q of g -> BSGS -> a -> s=B^a -> decrypt.
-C5: parse p,g,A,B -> factor p-1 -> Pohlig-Hellman+CRT -> a -> s=B^a -> decrypt.
-C6: parse p,g,A,B,M1,M2,m1,m2 -> s_left=A^m1, s_right=B^m2 -> decrypt BOTH ->
-    reassemble flag; detection check M1 != B.
-"""
+"""Reference solver fuer C4, C5, C6."""
 
 import base64
 import json
@@ -72,7 +64,7 @@ def crt(res, mod):
 
 
 def element_order_divisors(g, p, phi_factors):
-    """Find the order of g given prime factors of p-1 (works for small subgroup)."""
+    """Ordnung von g anhand der Primfaktoren von p-1."""
     order = p - 1
     for q, e in phi_factors.items():
         for _ in range(e):
@@ -85,10 +77,10 @@ def element_order_divisors(g, p, phi_factors):
 def solve_c4(cap):
     p = int(cap["PARAM_P"]); g = int(cap["PARAM_G"])
     A = int(cap["ALICE_PUBLIC_A"]); B = int(cap["BOB_PUBLIC_B"])
-    phi_fac = factorint(p - 1)                 # yafu-equivalent
-    q = element_order_divisors(g, p, phi_fac)  # small order of g
+    phi_fac = factorint(p - 1)
+    q = element_order_divisors(g, p, phi_fac)
     t = time.time()
-    a = bsgs(g, A, p, q)                        # a mod q; a < q so exact
+    a = bsgs(g, A, p, q)
     dt = time.time() - t
     s = pow(B, a, p)
     pt = decrypt(derive_key(s, p), cap["RECORD_NONCE_B64"], cap["RECORD_CIPHERTEXT_B64"])
@@ -121,14 +113,13 @@ def solve_c6(cap):
     A = int(cap["ALICE_PUBLIC_A"]); B = int(cap["BOB_PUBLIC_B"])
     M1 = int(cap["MALLORY_TO_ALICE_M1"]); M2 = int(cap["MALLORY_TO_BOB_M2"])
     m1 = int(cap["MALLORY_SECRET_M1"]); m2 = int(cap["MALLORY_SECRET_M2"])
-    # As Mallory: no DLP. Direct key computation.
-    s_left = pow(A, m1, p)     # Anna<->Mallory
-    s_right = pow(B, m2, p)    # Bob<->Mallory
+    s_left = pow(A, m1, p)
+    s_right = pow(B, m2, p)
     pt_ab = decrypt(derive_key(s_left, p), cap["RECORD_AB_NONCE_B64"], cap["RECORD_AB_CIPHERTEXT_B64"])
     pt_ba = decrypt(derive_key(s_right, p), cap["RECORD_BA_NONCE_B64"], cap["RECORD_BA_CIPHERTEXT_B64"])
     j_ab = json.loads(pt_ab); j_ba = json.loads(pt_ba)
     flag = j_ab["flag_teil_1"] + j_ba["flag_teil_2"]
-    detection = (M1 != B)      # the key Anna sees is not Bob's real one
+    detection = (M1 != B)
     return flag, {"detection_M1_ne_B": detection, "bits_p": p.bit_length(),
                   "frag1": j_ab["flag_teil_1"], "frag2": j_ba["flag_teil_2"]}
 
@@ -140,7 +131,7 @@ FLAGS = {
 }
 
 if __name__ == "__main__":
-    base = "/home/claude/work/custom/assets/0200"
+    base = "custom/assets/0200"
     for index in range(3):
         print(f"\n########## Variante {index} ##########")
         for name, solver in [("challenge_4", solve_c4), ("challenge_5", solve_c5), ("challenge_6", solve_c6)]:

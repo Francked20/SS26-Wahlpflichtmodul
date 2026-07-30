@@ -11,20 +11,10 @@ from website.auth_lib import AuthCookie, BackendRequests
 
 
 class ChallengeBackendRequests(BackendRequests):
-    """Same request helper as BackendRequests, pointed at custom/challengebackend
-    (the `challenge` service) instead of core/backend's `api` service."""
     url = "http://challenge:8000"
 
 
 class MyDhVariantState(AuthCookie):
-    """Fetches this player's assigned weak-DH pool entry (deterministic from
-    their username, see custom/challengebackend/utils/dh_export_pool.py) and the
-    public DH values they need (p, g, Ys). These are per-player, so they can't go
-    through the generic static download mechanism. Unauthenticated on purpose,
-    matching the challenge service's other player-facing endpoints - knowing
-    another player's p/g/Ys doesn't help solve YOUR OWN (differently-indexed)
-    instance, and those values are in the player's pcap anyway."""
-
     index: int = 0
     p: str = ""
     g: str = ""
@@ -44,10 +34,7 @@ class MyDhVariantState(AuthCookie):
             self.loaded = True
 
     async def trigger_capture(self):
-        """Sends THIS player's client-role flights over a real TCP connection to
-        the training VM, so they capture a genuine, self-contained DHE_EXPORT
-        conversation - see custom/challengebackend/endpoints/dh_export.py's
-        POST /{index}/start_capture."""
+        """Sendet die Variante an die Trainings-VM"""
         async with self:
             self.capture_status = "sending"
 
@@ -61,7 +48,7 @@ class Kapitel_04(AbstractSiteBuilder):
     PAGE_ID = "challenge_04"
 
     def _capture_panel(self) -> rx.Component:
-        """Per-player DH values + Wireshark capture trigger (shown after 4.2)."""
+        """Per-player DH values + Wireshark capture trigger (shown after 4.2)"""
         return rx.cond(
             MyDhVariantState.loaded,
             rx.box(

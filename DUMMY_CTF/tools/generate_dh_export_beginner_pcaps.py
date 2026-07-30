@@ -1,16 +1,5 @@
-"""Generates one downloadable .pcap per weak-DH (day-94 beginner Logjam)
-pool variant, served statically from custom/assets/0400/<index>/capture.pcap
-(see challenge_04_beginner.py's download_button).
-
-Own script, own output folder (0400) - does not touch or depend on Francks's
-CTF_Utils/dh_pcap_generator.py (which the advanced chapter references but
-which isn't wired into any download button yet). Reads the same
-dh_export_variants collection Francks's challengebackend already populates
-(scripts/generate_dh_export_pool.py) - read-only, no schema changes.
-
-Usage (from repo root, needs `pip install scapy pymongo`):
-    MONGO_HOST=localhost python3 tools/generate_dh_export_beginner_pcaps.py
-"""
+"""Generiert je Variante ein .pcap fuer Kapitel 4 Beginner (day=94).
+Usage: MONGO_HOST=localhost python3 tools/generate_dh_export_beginner_pcaps.py"""
 import os
 
 from pymongo import MongoClient

@@ -1,14 +1,4 @@
-"""Task definitions for Chapter 2 ("Diffie-Hellman").
-
-Each `task_02_XX` is a `TaskData` object describing one exercise. The chapter
-runs a story arc across three attack challenges, alternating concept
-multiple-choice questions with hands-on capture-breaking tasks:
-  - Challenge 1: small p, discrete log by brute force / BSGS  (2.0-2.3)
-  - Challenge 2: smooth order, yafu + Pohlig-Hellman + CRT     (2.4-2.6)
-  - Challenge 3: "almost smooth" trap, PH on the smooth part only, a < M (2.7-2.9)
-Answers, questions, hints, and per-variant text are intentionally in German.
-These objects are imported and rendered by the Chapter 2 site pages.
-"""
+"""Task definitions for Chapter 2 (Diffie-Hellman)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint

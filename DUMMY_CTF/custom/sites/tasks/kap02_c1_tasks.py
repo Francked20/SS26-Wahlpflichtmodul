@@ -1,22 +1,11 @@
-"""
-Tasks for Kapitel 02 — Kurs + Challenge 1 (model sub-pages).
-
-Design:
-  - Multi-answer QCM are split into individual Wahr/Falsch (true/false)
-    questions, each validated independently (task_type="select"). The student
-    gets per-statement feedback instead of all-or-nothing.
-  - No backend. Flag validation is static.
-  - No task randomization: allow_random_order=False, one entry per list.
-
-Numbering (task_02_XX) and reveal keys (day_02_task_XX) run continuously.
-"""
+"""Tasks fuer Kapitel 02 - Kurs + Challenge 1"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint
 
 
 def _wf(day_idx, points, desc, question, further, correct_is_true):
-    """Helper: a single Wahr/Falsch question."""
+    """Helper: a single Wahr/Falsch question"""
     if correct_is_true:
         answers = [Correct.create("Wahr"), Incorrect.create("Falsch")]
     else:

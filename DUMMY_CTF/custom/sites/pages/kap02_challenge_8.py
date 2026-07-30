@@ -1,6 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 8 (Invalid Curve Attack).
-"""
+"""Kapitel 02 - Sub-page: Challenge 8 (Invalid Curve Attack)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

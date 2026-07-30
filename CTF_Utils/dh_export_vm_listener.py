@@ -1,39 +1,9 @@
 #!/usr/bin/env python3
-"""Companion script for the day-4 weak-DH (Logjam-style) challenge's
-training VM. Run this manually once the VM exists, then point
-DH_EXPORT_VM_HOST/PORT (in DUMMY_CTF/.env) at this machine.
-
-Same pattern as Jonas' export_cipher_vm_listener.py for the FREAK chapter.
-custom/challengebackend's on-demand sender (triggered by a player's
-'gestartet' button, see custom/challengebackend/endpoints/dh_export.py's
-POST /{index}/start_capture) plays the "client" role of a mock TLS handshake
-and connects out to this VM. This script plays the "server" role back -
-without it, participants only ever see one-directional (client-role) bytes
-on the wire, which won't dissect as a real conversation in Wireshark.
-
-No crypto knowledge needed here: this is a dumb byte-blob player. It fetches
-the precomputed server-role flight bytes ONCE from the challenge backend
-(GET /dh_export/vm_replay_data) and just replays them for whichever variant
-the connecting sender asks for - it never parses or generates any TLS bytes
-itself. Each connection starts with a 2-byte big-endian variant index sent
-by the sender, before any TLS bytes, so this script knows which variant's
-server flights to reply with - since triggers are on-demand and per-player
-now (not a fixed round-robin), a plain "next in list" counter on this side
-could easily reply with the wrong player's variant.
+"""Server-role Companion-Skript fuer die day-4 weak-DH Trainings-VM.
 
 Usage:
-    CHALLENGE_API_KEY=<same value as in DUMMY_CTF/.env> \\
+    CHALLENGE_API_KEY=<Wert aus DUMMY_CTF/.env> \\
         python3 dh_export_vm_listener.py --challenge-domain challenge.yourevent.example
-
-Use --insecure if the challenge backend is only reachable via a self-signed
-cert (e.g. local dev, see DUMMY_CTF/certs/).
-
-Use --resolve-ip <IP> when --challenge-domain is a name that this machine
-cannot resolve to the right host on its own - most notably a *.localhost
-name, which glibc hard-wires to 127.0.0.1 before consulting /etc/hosts.
-This is the Python equivalent of `curl --resolve NAME:PORT:IP`: the TCP
-socket connects to <IP>, while the TLS SNI and HTTP Host header stay as
---challenge-domain, so a reverse proxy (Caddy) still picks the right site.
 """
 import argparse
 import json
@@ -53,12 +23,7 @@ def fetch_replay_data(challenge_domain: str, api_key: str, insecure: bool,
     context = ssl._create_unverified_context() if insecure else None
 
     if resolve_ip:
-        # Equivalent of `curl --resolve`: force the socket to connect to
-        # resolve_ip while urllib keeps using challenge_domain for the TLS
-        # SNI and the HTTP Host header, so Caddy serves the right site. This
-        # sidesteps glibc hard-wiring *.localhost -> 127.0.0.1 ahead of
-        # /etc/hosts, which otherwise makes the name unreachable across a VM
-        # boundary.
+        # wie `curl --resolve`: Socket verbindet zu resolve_ip, TLS SNI/Host bleiben challenge_domain
         _orig_getaddrinfo = socket.getaddrinfo
 
         def _patched_getaddrinfo(host, *args, **kwargs):
@@ -85,12 +50,8 @@ def fetch_replay_data(challenge_domain: str, api_key: str, insecure: bool,
 
 
 def split_records(buf: bytes) -> list[bytes]:
-    """Splits a flight blob (several concatenated TLS records) into one
-    byte-string per record (5-byte header: content type + version + 2-byte
-    length, followed by that many fragment bytes). Sending each record in
-    its own TCP write (see `serve()`) makes every record land in its own
-    Wireshark frame instead of several being bundled into one packet, which
-    is otherwise easy to miss/mix up in the packet list."""
+    """Splits a flight blob into one byte-string per TLS record (5-byte
+    header + that many fragment bytes), so each lands in its own frame"""
     records = []
     i = 0
     while i < len(buf):
@@ -123,22 +84,13 @@ def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
                 continue
             print(f"Connection from {addr}, replaying variant #{index}")
 
-            # Wait for (and discard) the sender's ClientHello before replying
-            # - without it, this sends server_flight_1 immediately after the
-            # index, so Wireshark shows the server replying before the
-            # client's ClientHello even arrives, which can't happen in a
-            # real TLS handshake.
+            # wait for ClientHello first, else server appears to reply before it
             try:
                 conn.recv(4096)
             except socket.timeout:
                 pass
 
-            # A real sleep between sends, not just separate sendall() calls
-            # per record: TCP_NODELAY alone wasn't enough in testing (Docker
-            # Desktop's vpnkit relay to the LAN can still coalesce two fast
-            # back-to-back sends into one TCP segment), which shifts a
-            # later record's TLS header into the middle of a segment and
-            # breaks Wireshark's heuristic TLS dissection of it.
+            # real sleep between sends - NODELAY alone still let vpnkit merge them
             for record in split_records(bytes.fromhex(variant["server_flight_1_hex"])):
                 conn.sendall(record)
                 time.sleep(0.05)
@@ -164,10 +116,7 @@ def main():
     parser.add_argument("--insecure", action="store_true",
                          help="Skip TLS certificate verification (self-signed dev certs)")
     parser.add_argument("--resolve-ip", default=None,
-                         help="Force --challenge-domain to resolve to this IP (like "
-                              "`curl --resolve`), keeping the TLS SNI/Host header intact. "
-                              "Use when the domain is a *.localhost name trapped by glibc, "
-                              "e.g. --resolve-ip 192.168.56.1")
+                         help="Force --challenge-domain to resolve to this IP, e.g. --resolve-ip 192.168.56.1")
     args = parser.parse_args()
 
     api_key = os.getenv("CHALLENGE_API_KEY")

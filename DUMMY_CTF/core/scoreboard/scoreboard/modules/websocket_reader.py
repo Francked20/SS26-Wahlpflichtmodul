@@ -604,7 +604,7 @@ class ScoreBoardState(rx.State, BackendRequests):
 
     @rx.event(background=True)
     async def get_states(self):
-        """Startet den WS-Stream und hält den State aktuell."""
+        """Startet den WS-Stream und haelt den State aktuell"""
         # TODO: check_team_event hier mit try/execpt absichern
         async with self:
             try:

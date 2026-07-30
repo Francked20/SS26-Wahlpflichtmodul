@@ -1,9 +1,4 @@
-"""Thin HTTP client for the day-3 export-cipher challenge chain. All the
-actual crypto/variant-pool logic lives in custom/challengebackend now - this
-service only resolves the JWT username and awards points, delegating the
-actual answer check over the network. Same pattern already used for the
-external Cyber-Range service in endpoints/cyberrange.py.
-"""
+"""HTTP client fuer die dynamic_check Delegation der day-3 (export-cipher) Tasks."""
 
 import logging
 import os

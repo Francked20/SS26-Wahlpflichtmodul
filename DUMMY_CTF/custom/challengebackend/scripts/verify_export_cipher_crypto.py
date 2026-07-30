@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
-"""Standalone, self-checking verification for the export-cipher crypto engine.
+"""Standalone Verifikation der Export-Cipher-Crypto-Engine.
 
-No test framework is wired up in this repo, so this is a plain script: proves
-the crafted TLS bytes for one variant are genuinely decryptable using only the
-recovered RSA factors and the capture-visible wire bytes (never touching any
-precomputed "expected" value directly), and sanity-checks the per-stage answer
-comparators. Run manually:
-
-    cd custom/challengebackend && python3 scripts/verify_export_cipher_crypto.py
+Usage: cd custom/challengebackend && python3 scripts/verify_export_cipher_crypto.py
 """
 import os
 import sys

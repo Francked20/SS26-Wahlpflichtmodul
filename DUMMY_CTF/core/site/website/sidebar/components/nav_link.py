@@ -17,7 +17,7 @@ class NavDescription:
 
 
 def _group_heading(title: str) -> "rx.Component":
-    """Big group title shown above a block of navigation links."""
+    """Big group title shown above a block of navigation links"""
     return rx.text(
         title,
         class_name="sidebar_group_heading",

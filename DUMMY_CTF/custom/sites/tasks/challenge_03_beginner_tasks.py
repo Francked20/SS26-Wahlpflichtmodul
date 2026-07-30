@@ -1,20 +1,5 @@
-"""Task definitions for the Beginner version of Chapter 3 ("Export Ciphers &
-FREAK").
-
-Same underlying attack, same variant pool, same dynamic_check backend as
-Jonas' challenge_03_tasks.py (custom/challengebackend/export_cipher_*) -
-reuses its existing endpoints unmodified; no changes to core/backend or
-challengebackend needed for this file. Reuses the existing dynamic_check
-values ("export_factor256", "export_factor512", "export_master_secret",
-"export_flag") unmodified.
-
-Own day (95), separate from the advanced day=3, so a student can attempt
-either chapter independently without task_id collisions.
-
-  95.0 intro -> 95.1 spot the 512-bit RSA key -> 95.2 factor the 256-bit
-  practice N -> 95.3 find the second factor of the real N -> 95.4 TLS
-  master secret (RSA private key + PRF) -> 95.5 decrypt the flag.
-"""
+"""Beginner-Version von Kapitel 3 (Export Ciphers & FREAK).
+Eigener day=95, unabhaengig von der Advanced-Version (day=3)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, TaskHint

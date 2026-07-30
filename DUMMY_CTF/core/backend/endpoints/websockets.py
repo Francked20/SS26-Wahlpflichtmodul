@@ -18,7 +18,7 @@ score_sockets: list[WebSocket] = []
 # TODO: ausgelagerte Hilsfunktion, die auch in connection.py verwendet wird
 
 def _badges_to_str(raw_badges) -> str:
-    """Hilfsfunktion – wird sowohl in websockets.py als auch in connection.py genutzt."""
+    """Hilfsfunktion - wird sowohl in websockets.py als auch in connection.py genutzt"""
     if isinstance(raw_badges, list):
         if not raw_badges:
             return ""
@@ -34,7 +34,7 @@ def _badges_to_str(raw_badges) -> str:
 
 
 async def _build_full_state() -> list[dict]:
-    """Vollständigen State aller User aufbauen."""
+    """Vollständigen State aller User aufbauen"""
     users = await User.all().sort(
         "-stats.points", "-stats.challenges_solved"
     ).to_list()
@@ -58,7 +58,7 @@ async def _build_full_state() -> list[dict]:
 
 @router.websocket("/scores")
 async def listen_to_scores(websocket: WebSocket):
-    """WebSocket for scoreboard updates with heartbeat support."""
+    """WebSocket for scoreboard updates with heartbeat support"""
 
     await websocket.accept()
     score_sockets.append(websocket)
@@ -103,7 +103,7 @@ async def listen_to_scores(websocket: WebSocket):
 # alt
 #@router.websocket("/scores")
 #async def listen_to_scores(websocket: WebSocket):
-#    """WebSocket for scoreboard updates with heartbeat support."""
+#    """WebSocket for scoreboard updates with heartbeat support"""
 
 #    await websocket.accept()
 #    score_sockets.append(websocket)

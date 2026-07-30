@@ -104,7 +104,7 @@ class PlayerCardState(AuthCookie, BackendRequests):
         if not self.enable_player_levels:
             return
 
-        """Merkt sich das aktuelle Level aus dem Backend."""
+        """Merkt sich das aktuelle Level aus dem Backend"""
         safe_username = quote(self.get_username, safe="")
         try:
             resp_lvl = await self.get(f"/user/{safe_username}/level")
@@ -118,7 +118,7 @@ class PlayerCardState(AuthCookie, BackendRequests):
         if not self.enable_player_levels:
             return
 
-        """Merkt sich das potentiell neue Level aus dem Backend."""
+        """Merkt sich das potentiell neue Level aus dem Backend"""
         safe_username = quote(self.get_username, safe="")
         try:
             resp_lvl = await self.get(f"/user/{safe_username}/level")
@@ -165,7 +165,7 @@ class PlayerCardState(AuthCookie, BackendRequests):
 
 
 #    def _compute_next_level_info(self) -> None:
-#        """Gibt (remaining_points, current_points, next_level_points) zurück."""
+#        """Gibt (remaining_points, current_points, next_level_points) zurück"""
 #        current_points = max(0, int(self.player_points or 0))
 #        ppl = max(1, int(self._points_per_level or 500))
 #        next_level_points = self.player_level * ppl
@@ -218,7 +218,7 @@ class PlayerCardState(AuthCookie, BackendRequests):
 #    def _compute_level_from_points_dynamic(self) -> None:
 #        """
 #        Berechnet player_level & level_percent aus player_points anhand der konfigurierten
-#        Punkte-pro-Level (linear). Robust gegen leere/ungültige Werte.
+#        Punkte-pro-Level (linear). Robust gegen leere/ungültige Werte
 #        """
 #        points = max(0, int(self.player_points or 0))
 #        ppl = max(1, int(self._points_per_level or 500))
@@ -234,10 +234,7 @@ class PlayerCardState(AuthCookie, BackendRequests):
 #        self.level_percent = max(0, min(100, percent))
 
     def _compute_level_from_points_dynamic(self) -> None:
-        """
-        Berechnet Level & Prozent basierend auf rank_thresholds.
-        Wenn keine Thresholds existieren → linearer Fallback.
-        """
+        """Berechnet Level & Prozent, linearer Fallback ohne Thresholds"""
         points = max(0, int(self.player_points or 0))
 
         # Wenn Thresholds existieren → thresholds-basierte Level-Logik
@@ -301,14 +298,7 @@ class PlayerCardState(AuthCookie, BackendRequests):
         self.player_rank = names[idx]
 
     async def update_levels(self) -> None:
-        """
-        Lädt das Feature-Flag (enable_player_levels) und die Leveldaten:
-        - /event/player_levels_mode
-        - /event/get_rank_config
-        - /user/{username}/level
-        Fallback: Wenn user/level nicht verfügbar ist, berechne Level & Rang lokal dynamisch
-        aus /score + Rank-Config.
-        """
+        """Laedt Feature-Flag + Leveldaten, Fallback auf lokale Berechnung"""
         if not self.enable_player_levels:
             return
         

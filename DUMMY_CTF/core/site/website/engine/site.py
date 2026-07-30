@@ -138,9 +138,6 @@ async def load_pages(app: "rx.App", root_path: str, warn_missing_builder=False) 
                     continue
 
                 if not page.hide_sidebar:
-                    # load sidebar with groups and page. Each group carries its
-                    # name so the sidebar can render a heading; empty groups
-                    # (all pages standalone) are dropped.
                     s_bars: rx.Component = sidebar.sidebar([
                         (g[0].group, [p.navigation_element(page) for p in g if not p.is_standalone])
                         for g in grouped_pages

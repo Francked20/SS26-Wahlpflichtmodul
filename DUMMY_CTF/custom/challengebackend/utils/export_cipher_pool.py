@@ -1,12 +1,4 @@
-"""Generates the fixed pool of Export-Cipher (day 3) challenge variants, and
-the pure per-stage answer comparators used by
-endpoints/export_cipher.py's `/check_answer` (called from core/backend's
-Challenge.check_answer `dynamic_check` branch over HTTP).
-
-Kept independent of Beanie/Mongo: DB lookups happen in endpoints/export_cipher.py,
-this module only does crypto + plain-value comparisons so it stays easy to
-unit-test in isolation (see scripts/verify_export_cipher_crypto.py).
-"""
+"""Pool der Export-Cipher (day 3) Varianten + Answer-Comparators fuer dynamic_check"""
 
 import hashlib
 import random
@@ -22,10 +14,7 @@ BITS_512_PRIME = 256  # two 256-bit primes -> the "captured" 512-bit modulus
 
 
 def variant_index_for_user(username: str) -> int:
-    """Pure function of username -> deterministically links every stage of
-    this challenge chain to the same pool entry, without any new per-user
-    persistence (see plan: "Variant-index linking design").
-    """
+    """Pure function username -> pool index"""
     digest = hashlib.sha256(username.lower().encode()).hexdigest()
     return int(digest, 16) % POOL_SIZE
 
@@ -71,7 +60,7 @@ def generate_variant(index: int) -> VariantData:
     )
 
 
-# --- per-stage answer comparators (pure, no DB access) ---
+# per-stage answer comparators (pure, no DB access)
 
 def check_factor256(stored_p256: str, stored_q256: str, answer: str) -> bool:
     try:

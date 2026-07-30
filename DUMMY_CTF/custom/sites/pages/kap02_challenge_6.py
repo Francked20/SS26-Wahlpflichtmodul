@@ -1,6 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 6 (Man-in-the-Middle).
-"""
+"""Kapitel 02 - Sub-page: Challenge 6 (Man-in-the-Middle)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

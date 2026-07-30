@@ -58,14 +58,7 @@ class ConvoDisplayState(BaseModel):
 
 
 class _PlayerConversationWidgetMeta(rx.ComponentState):
-    """
-    Create conversations with this widget between two characters displayed on left and right.
-    Define two Players and their conversation with .say().
-    Have at least one dialogue!
-    You can use this on top of other widgets too, probably.
-
-    Settings get stored in a local cookie.
-    """
+    """Conversation widget between two characters (left/right), via .say()"""
 
     # _all_speeches: list[PlayerSpeech] = []
 

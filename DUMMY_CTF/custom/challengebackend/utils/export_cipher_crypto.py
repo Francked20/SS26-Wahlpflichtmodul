@@ -1,14 +1,4 @@
-"""Hand-rolled TLS 1.0 RSA_EXPORT (FREAK-style) handshake crypto.
-
-Real OpenSSL cannot negotiate TLS_RSA_EXPORT_* cipher suites anymore (removed
-after the FREAK disclosure, CVE-2015-0204), so this module builds the wire
-bytes by hand, per RFC 2246 (TLS 1.0). Cipher suite used throughout:
-TLS_RSA_EXPORT_WITH_RC4_40_MD5 (0x00, 0x03).
-
-Reuses the same primality-test / extended-Euclid / DER-encoding approach as
-../../../RSA-generator/generator.py, extended with a minimal self-signed
-X.509 certificate and the TLS 1.0 record/handshake/PRF layers.
-"""
+"""TLS 1.0 RSA_EXPORT (FREAK-style) Handshake-Crypto, von Hand gebaut (RFC 2246)"""
 
 import hashlib
 import hmac
@@ -150,11 +140,7 @@ def encode_name(common_name: str) -> bytes:
 
 
 def build_self_signed_certificate_der(n: int, e: int, common_name: str = "legacy-export.local") -> bytes:
-    """A syntactically valid, DER-encoded self-signed X.509v1 certificate wrapping
-    the given (weak, export-grade) RSA public key. The signature is not a real
-    signature over the TBSCertificate (nothing validates a trust chain here) -
-    only the SubjectPublicKeyInfo needs to be genuine, and it is.
-    """
+    """DER-encoded self-signed X.509v1 certificate wrapping the RSA public key"""
     now = time.gmtime()
     later = time.gmtime(time.time() + 365 * 24 * 3600)
 
@@ -305,19 +291,12 @@ class ConnectionKeys:
 def derive_keys(pre_master_secret: bytes, client_random: bytes, server_random: bytes) -> ConnectionKeys:
     master_secret = tls10_prf(pre_master_secret, b"master secret", client_random + server_random, 48)
 
-    # hash_size=16 (MD5) per MAC secret, key_material_length=5 (40 bits) per
-    # write-key secret for the EXPORT cipher - this is the actual "weak key"
-    # mechanism (RFC 2246 6.3.1): only 40 bits of entropy feed the write keys.
     key_block = tls10_prf(master_secret, b"key expansion", server_random + client_random, 2 * 16 + 2 * 5)
     client_write_mac_secret = key_block[0:16]
     server_write_mac_secret = key_block[16:32]
     client_write_key_short = key_block[32:37]
     server_write_key_short = key_block[37:42]
 
-    # RFC 2246 6.3.1: TLS 1.0 replaced SSLv3's MD5-based export key expansion
-    # with the PRF, and both directions use the SAME seed order (client_random
-    # + server_random) - unlike key_block's PRF call just above, which uses
-    # server_random + client_random.
     final_client_write_key = tls10_prf(
         client_write_key_short, b"client write key", client_random + server_random, 16
     )
@@ -438,16 +417,10 @@ def decrypt_as_attacker(
     client_flight_1: bytes, server_flight_1: bytes, client_flight_2: bytes, server_flight_2: bytes,
     p512: int, q512: int,
 ) -> tuple[bytes, bytes]:
-    """Recovers the master secret and flag using only what a participant would
-    have: the recovered private-key factors and the captured wire bytes - never
-    touches any precomputed "expected" value. Used by the standalone
-    verification script to prove the crafted bytes are genuinely decryptable.
-    """
+    """Master Secret + Flag aus den privaten Faktoren und den Wire-Bytes rekonstruieren"""
     n = p512 * q512
     d = mod_inverse(E, (p512 - 1) * (q512 - 1))
 
-    # handshake message layout: type(1) + length(3) + body; body starts with
-    # client/server_version(2) then random(32) - random is at message offset 6.
     client_hello_records = iter_records(client_flight_1)
     client_hello_msg = client_hello_records[0][1]
     client_random = client_hello_msg[6:6 + 32]
@@ -466,7 +439,6 @@ def decrypt_as_attacker(
 
     server_rc4 = RC4Stream(keys.server_write_key)
     server_flight_2_records = iter_records(server_flight_2)
-    # records: ChangeCipherSpec, Finished(encrypted), ApplicationData(encrypted)
     _finished_plaintext = _mac_then_decrypt(
         CONTENT_TYPE_HANDSHAKE, server_flight_2_records[1][1], keys.server_write_mac_secret, server_rc4, seq_num=0
     )

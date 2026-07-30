@@ -10,12 +10,10 @@ from website.engine.challenge import CondState
 __all__ = ["player_card"]
 
 
-# ---------------------------------------------------------
 # ROOT COMPONENT
-# ---------------------------------------------------------
 
 def player_card() -> rx.Component:
-    """Generates the complete player card."""
+    """Generates the complete player card"""
     shadow_color = PlayerCardState.team_color
 
     return rx.vstack(
@@ -31,9 +29,7 @@ def player_card() -> rx.Component:
     )
 
 
-# ---------------------------------------------------------
 # PLAYER DISPLAY (Avatar + Name + Logout + Team)
-# ---------------------------------------------------------
 
 def player_display() -> rx.Component:
     background_color = PlayerCardState.team_color
@@ -106,12 +102,10 @@ def player_display() -> rx.Component:
     )
 
 
-# ---------------------------------------------------------
 # BADGES
-# ---------------------------------------------------------
 
 def badges_display() -> rx.Component:
-    """Displays badges with tooltips."""
+    """Displays badges with tooltips"""
     return rx.hstack(
         rx.foreach(
             PlayerCardState.badge_indices,
@@ -149,12 +143,10 @@ def badges_display() -> rx.Component:
     )
 
 
-# ---------------------------------------------------------
 # PROGRESS BAR (when levels disabled)
-# ---------------------------------------------------------
 
 def progress_display() -> rx.Component:
-    """Progress bar for the player's progress."""
+    """Progress bar for the player's progress"""
     return rx.hstack(
         rx.link(
             rx.progress(
@@ -172,12 +164,10 @@ def progress_display() -> rx.Component:
     )
 
 
-# ---------------------------------------------------------
 # LEVELS DISPLAY (if enabled)
-# ---------------------------------------------------------
 
 def levels_display() -> rx.Component:
-    """Level progress bar + meta info + optional rank."""
+    """Level progress bar + meta info + optional rank"""
     level_percent = PlayerCardState.level_percent
     remaining_points = PlayerCardState.remaining_points
     current_points = PlayerCardState.current_points

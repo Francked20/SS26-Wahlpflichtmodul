@@ -1,7 +1,4 @@
-"""Mongo connection + models for this service's own state. Uses Motor (not
-pymongo's newer async client) because that's what this service's
-requirements.txt pins beanie==1.30.0 against.
-"""
+"""Mongo connection + models fuer diesen Service."""
 
 import os
 import typing
@@ -32,13 +29,7 @@ class MongoDB:
 
 
 class DhExportVariant(Document):
-    """One entry of the fixed ~100-variant pool for the day-4 weak-DH
-    (Logjam-style) challenge chain. Populated by
-    scripts/generate_dh_export_pool.py. See utils/dh_export_pool.py for how a
-    username is mapped to a variant index.
-
-    The public DH values (p, g, Ys, Yc) are also on the wire in the player's
-    pcap; server_secret is private and used only by /check_answer."""
+    """Ein Eintrag des Varianten-Pools fuer day-4 (weak DH / Logjam)."""
 
     index: typing.Annotated[int, Indexed(unique=True)]
 
@@ -63,10 +54,7 @@ class DhExportVariant(Document):
 
 
 class ExportCipherVariant(Document):
-    """One entry of the fixed ~100-variant pool for the day-3 export-cipher
-    (FREAK-style) challenge chain. Populated by
-    scripts/generate_export_cipher_pool.py. See utils/export_cipher_pool.py
-    for how a username is mapped to a variant index."""
+    """Ein Eintrag des Varianten-Pools fuer day-3 (Export Cipher / FREAK)."""
 
     index: typing.Annotated[int, Indexed(unique=True)]
 

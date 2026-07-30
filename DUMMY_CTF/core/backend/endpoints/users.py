@@ -50,7 +50,7 @@ async def send_flags_with_retry(
     effective_username,
     timeout=10.0,
 ):
-    """Sendet Flags robust mit Retry bei Transportfehlern."""
+    """Sendet Flags robust mit Retry bei Transportfehlern"""
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             async with httpx.AsyncClient(timeout=timeout) as client:
@@ -114,47 +114,26 @@ allowed_symbols = string.ascii_lowercase + string.digits + r"""-_.~"""
 
 
 def extract_word_from_flag(flag, word_index):
-    """
-    Extracts the word at the given 1-based index from the flag content.
-    """
-    # Extract the content inside the curly braces
     content = re.search(r'{(.*?)}', flag).group(1)
-    # Split the content by underscores to get individual words
     words = content.split('_')
-    # Return the word at the specified index (1-based index)
     return words[word_index - 1]
 
 
 def assemble_master_flag(slave_flags, master_format, flag_prefix):
-    """
-    Assembles the master flag based on the instructions in the master format.
-    """
-    # Extract the content inside the curly braces of the master format
     master_content = re.search(r'{(.*?)}', master_format).group(1)
-    # Split the content by underscores to get individual task instructions
     instructions = master_content.split('_')
 
-    # Initialize an empty list to store the required words
     required_words = []
-
-    # Iterate over each instruction
     for instruction in instructions:
-        # Extract the task number and word index
         task_number, word_index = map(int, instruction.split(':'))
-        # Get the corresponding slave flag
         slave_flag = slave_flags[task_number - 1]
-        # Extract the required word and add it to the list
         required_words.append(extract_word_from_flag(slave_flag, word_index))
 
-    # Assemble the master flag
     master_flag = f"{flag_prefix}{{{'_'.join(required_words)}}}"
     return master_flag
 
 async def _resolve_effective_username(username: str) -> tuple[str, bool]:
-    """
-    Bestimmt den effektiven Username bei Team-Events mit Leader-Mode.
-    Gibt (effective_username, is_answerable) zurück.
-    """
+    """Bestimmt den effektiven Username bei Team-Events mit Leader-Mode"""
     username = (username or "").lower()
     is_answerable = True
 
@@ -173,12 +152,7 @@ async def _resolve_effective_username(username: str) -> tuple[str, bool]:
     return username, is_answerable
 
 def _normalize_rank_config(cfg: EventConfig | None) -> tuple[list[str], list[int], int]:
-    """
-    Liefert eine robuste, stets gültige Rank-Konfiguration zurück.
-    - Thresholds werden automatisch repariert (Typen, Sortierung, Länge).
-    - Thresholds werden niemals leer zurückgegeben.
-    - Backend fällt niemals in den Fallback-Modus.
-    """
+    """Liefert eine stets gueltige Rank-Konfiguration zurueck"""
 
     default_ppl = 500
 
@@ -239,9 +213,7 @@ def _compute_rank(points: int, names: list[str], thresholds: list[int]) -> str:
     return names[idx] or ""
 
 def _compute_level_and_percent(points: int, points_per_level: int) -> tuple[int, int]:
-    """
-    Berechnet Level (ab 1) und Fortschritt innerhalb des Levels (0–100%) mit linearer Kurve.
-    """
+    """Berechnet Level und Fortschritt innerhalb des Levels (linear)"""
     p = max(0, int(points))
     ppl = max(1, int(points_per_level))
     level = max(1, p // ppl + 1)
@@ -376,9 +348,7 @@ async def does_user_exist(username: str, check_forbidden: bool = False):
 
 @router.get("/level")
 async def get_user_level(username: str):
-    """
-    Liefert Punkte, Rang, Level, Badges sowie Team-Infos des Users.
-    """
+    """Liefert Punkte, Rang, Level, Badges sowie Team-Infos des Users"""
     # 1) Effektiven Username bestimmen (für Punkte/Rang/Level)
     effective_username, _ = await _resolve_effective_username(username)
 

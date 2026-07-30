@@ -33,9 +33,7 @@ FLAGS = [
 
 @router.get("/{index}/encrypt/{plaintext}/")
 def encrypt(index: int, plaintext: str):
-    """
-    ECB Oracle: prepends the secret flag to user input and encrypts with AES-ECB.
-    """
+    """ECB Oracle: haengt die Flag an die Eingabe und verschluesselt mit AES-ECB"""
     if index < 0 or index >= len(KEYS):
         return {"error": "invalid index"}
 

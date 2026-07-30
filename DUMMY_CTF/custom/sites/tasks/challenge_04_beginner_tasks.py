@@ -1,20 +1,5 @@
-"""Task definitions for the Beginner version of Chapter 4 ("Schwaches
-Diffie-Hellman" / Logjam).
-
-Same underlying attack, same variant pool, same dynamic_check backend as
-Francks's challenge_04_tasks.py (custom/challengebackend/dh_export_*) - only
-the explanation depth and the code scaffolding differ. Reuses the existing
-dynamic_check values ("dh_factors", "dh_server_secret", "dh_master_secret",
-"dh_flag") unmodified; no changes to core/backend or challengebackend needed
-for this file.
-
-Own day (94), separate from the advanced day=4, so a student can attempt
-either chapter independently without task_id collisions.
-
-  94.0 intro -> 94.1 spot the 512-bit p -> 94.2 name Pohlig-Hellman ->
-  94.3 factor p-1 (yafu) -> 94.4 discrete log s -> 94.5 TLS master secret ->
-  94.6 decrypt the flag.
-"""
+"""Beginner-Version von Kapitel 4 (Schwaches Diffie-Hellman / Logjam).
+Eigener day=94, unabhaengig von der Advanced-Version (day=4)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, TaskHint

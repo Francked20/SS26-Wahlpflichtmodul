@@ -1,7 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 3 (Die Falle).
-Chained unlock: the content is gated on Challenge 2's flag
-"""
+"""Kapitel 02 - Sub-page: Challenge 3 (Die Falle)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

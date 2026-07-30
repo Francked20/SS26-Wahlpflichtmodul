@@ -19,26 +19,12 @@ CHALLENGES = {
     "challenge_2": {"kind": "smooth",        "factor_bits": [40, 40, 41]},
     "challenge_3": {"kind": "almost_smooth", "smooth_bits": [30, 32, 34],
                                              "big_bits": 80},
-    # C4 small subgroup: p-1 = 2*q*R, ord(g)=q small, a < q. BSGS in the
-    # order-q subgroup (q=36 bits -> ~0.4 s).
     "challenge_4": {"kind": "small_subgroup", "q_bits": 36, "r_bits": 180},
-    # C5 Logjam/export: p ~508 bits, fully smooth order -> Pohlig-Hellman + CRT.
     "challenge_5": {"kind": "smooth",        "factor_bits": [32] * 16},
-    # C6 MITM: 256-bit safe prime, DLP infeasible. Student is Mallory and holds
-    # m1, m2 in the capture to recompute both session secrets directly.
     "challenge_6": {"kind": "mitm",          "prime_bits": 256},
-    # C7 ECDH intro: pre-verified curve bank (prime order, 40 bits), ECDLP
-    # breakable by BSGS on the curve.
     "challenge_7": {"kind": "ecdh"},
-    # C8 Invalid Curve: safe curve (prime order, 80 bits), but Bob computes d*P
-    # without checking P. b is unused in addition -> attacker moves P onto weak
-    # curves E'(b'), extracts d mod q_i (small BSGS) + CRT.
     "challenge_8": {"kind": "invalid_curve"},
-    # C9 ElGamal nonce reuse: (c1,c2)=(g^k, m*y^k). Same k for two messages ->
-    # the second leaks via c2_2*m1/c2_1, DLP untouched.
     "challenge_9": {"kind": "elgamal_reuse", "prime_bits": 256},
-    # C10 DSA nonce reuse: two signatures with the same k (same r) -> recover k
-    # then the private key x (PS3/Bitcoin flaw).
     "challenge_10": {"kind": "dsa_reuse", "q_bits": 160},
 }
 CHALLENGE_ORDER = ["challenge_1", "challenge_2", "challenge_3",
@@ -46,14 +32,12 @@ CHALLENGE_ORDER = ["challenge_1", "challenge_2", "challenge_3",
                    "challenge_7", "challenge_8",
                    "challenge_9", "challenge_10"]
 
-# Shared flags per challenge (identical across all variants).
 FLAGS = {
     "challenge_1": "hiy{dh_warmup_discrete_log_c0ffee}",
     "challenge_2": "hiy{dh_smooth_order_pohlig_hellman_1337}",
     "challenge_3": "hiy{dh_almost_smooth_the_prime_is_a_lie_4200}",
     "challenge_4": "hiy{dh_small_subgroup_the_generator_betrayed_you_5150}",
     "challenge_5": "hiy{dh_logjam_export_grade_is_a_backdoor_1996}",
-    # C6: two decrypted directions -> two fragments that compose the flag.
     "challenge_6": "hiy{dh_mitm_you_are_the_man_in_the_middle_2a2b}",
     "challenge_7": "hiy{ecdh_small_curve_order_bsgs_on_the_curve_e11c}",
     "challenge_8": "hiy{invalid_curve_bob_forgot_to_check_the_point_cr7}",
@@ -68,17 +52,11 @@ RECIPIENT = "a.bauer@nordwind.example"
 TIMESTAMP = "2026-01-15T09:24:11Z"
 
 
-# ======================================================================
-# Deterministic sub-seed per (master_seed, index, challenge)
-# ======================================================================
 def subseed(master_seed: int, index: int, challenge: str) -> int:
     h = hashlib.sha256(f"{master_seed}|{index}|{challenge}".encode()).digest()
     return int.from_bytes(h, "big")
 
 
-# ======================================================================
-# Crypto primitives
-# ======================================================================
 def rand_prime(bits, rng):
     return nextprime(rng.randrange(1 << (bits - 1), (1 << bits) - 1))
 
@@ -123,15 +101,13 @@ def find_generator(p, all_factors):
 
 
 def gen_small_subgroup(q_bits, r_bits, rng):
-    """C4: p-1 = 2*q*R with q small (subgroup order) and R large prime.
-    Returns (p, g, q, R) where g has order exactly q."""
+    """p-1 = 2*q*R, g hat Ordnung genau q."""
     while True:
         q = rand_prime(q_bits, rng)
         R = rand_prime(r_bits, rng)
         p = 2 * q * R + 1
         if not isprime(p):
             continue
-        # g of order exactly q: raise a base to (p-1)/q, check != 1
         for base in range(2, 200):
             g = pow(base, (p - 1) // q, p)
             if g != 1 and pow(g, q, p) == 1:
@@ -139,8 +115,7 @@ def gen_small_subgroup(q_bits, r_bits, rng):
 
 
 def gen_safe_prime(prime_bits, rng):
-    """C6: safe prime p = 2q+1 with p and q prime. DLP is infeasible here
-    (order = 2q, q large prime, no Pohlig-Hellman shortcut). Returns (p, q)."""
+    """Safe prime p = 2q+1."""
     while True:
         q = rand_prime(prime_bits - 1, rng)
         p = 2 * q + 1
@@ -148,9 +123,6 @@ def gen_safe_prime(prime_bits, rng):
             return p, q
 
 
-# ======================================================================
-# AEAD
-# ======================================================================
 def shared_secret_bytes(s, p):
     nbytes = (p.bit_length() + 7) // 8
     return s.to_bytes(nbytes, "big")
@@ -189,11 +161,7 @@ def build_capture(index, challenge, p, g, A, B, nonce, ct):
 
 def build_mitm_capture(index, p, g, A, B, M1, M2, m1, m2,
                        nonce_ab, ct_ab, nonce_ba, ct_ba):
-    """C6 MITM capture: two intercepted handshakes. The student is Mallory,
-    active between Anna and Bob. Contains the real public values A and B,
-    Mallory's injected values M1/M2, Mallory's secrets m1/m2 (given so the
-    student decrypts without breaking the DLP), and two encrypted records
-    (Anna->Bob and Bob->Anna)."""
+    """MITM-Capture: zwei abgefangene Handshakes."""
     lines = [
         "# ==== TCV-CAP v1: abgefangener MITM-Handshake ====",
         "# Format: KEY: WERT  (eine Angabe pro Zeile, # = Kommentar)",
@@ -231,15 +199,7 @@ def build_mitm_capture(index, p, g, A, B, M1, M2, m1, m2,
 
 
 
-# ======================================================================
-# Challenge 7 - ECDH: curve bank + elliptic arithmetic
-# ======================================================================
-# Short-Weierstrass curves y^2 = x^3 + a*x + b (mod p) with PRIME order n,
-# pre-verified offline (point counting via PARI/Schoof) and frozen here.
-# p ~ 40 bits, p % 4 == 3 (fast square root). Since #E = n is prime, every
-# point != O generates the whole group, so the ECDLP is breakable by BSGS on
-# the curve (~sqrt(n) ~ 2^20 steps). Variants run on these curves
-# (index % len(bank)) and differ by the generator G, secrets a,b, and traffic.
+# Challenge 7 - ECDH: Kurvenbank (prime order, offline vorverifiziert)
 CURVE_BANK = [
     {"p": 914179260187, "a": 240540860885, "b": 646526210858, "n": 914178540103},
     {"p": 648230001359, "a": 509558997370, "b": 207237248286, "n": 648229382629},
@@ -266,7 +226,7 @@ def ec_add(a, p, P, Q):
     x1, y1 = P
     x2, y2 = Q
     if x1 == x2 and (y1 + y2) % p == 0:
-        return None                      # P + (-P) = O
+        return None
     if x1 == x2 and y1 == y2:
         if y1 % p == 0:
             return None
@@ -293,15 +253,14 @@ def ec_mul(a, p, k, P):
 
 
 def ec_find_generator(a, b, p, rng):
-    """Find a point G on the curve (prime order -> ord(G) = n for any G != O).
-    Uses p % 4 == 3: square root = rhs^((p+1)/4) mod p."""
+    """Punkt G auf der Kurve finden (prime order, p % 4 == 3)."""
     for _ in range(10000):
         x = rng.randrange(0, p)
         rhs = (x * x * x + a * x + b) % p
         if rhs == 0:
             continue
         if pow(rhs, (p - 1) // 2, p) != 1:
-            continue                     # not a quadratic residue
+            continue
         y = pow(rhs, (p + 1) // 4, p)
         if (y * y) % p == rhs:
             return (x, y)
@@ -309,7 +268,7 @@ def ec_find_generator(a, b, p, rng):
 
 
 def ec_shared_secret_bytes(x_coord, p):
-    """HKDF IKM = x-coordinate of the shared point, big-endian (standard ECDH)."""
+    """HKDF-IKM = x-Koordinate des gemeinsamen Punktes."""
     nbytes = (p.bit_length() + 7) // 8
     return x_coord.to_bytes(nbytes, "big")
 
@@ -348,9 +307,7 @@ def build_ecdh_capture(index, curve_idx, a, b, p, n, G, A, B, nonce, ct):
 
 
 def _make_ecdh_instance(index, rng, flag):
-    """C7 ECDH on a small-prime-order curve. G base point; Alice a, Bob b;
-    A=a*G, B=b*G; S = a*B = b*A; key = HKDF(x(S)). Attack: BSGS on the curve
-    -> a (a < n), then S = a*B."""
+    """C7 ECDH auf einer prime-order Kurve."""
     curve = CURVE_BANK[index % len(CURVE_BANK)]
     a_c, b_c, p, n = curve["a"], curve["b"], curve["p"], curve["n"]
 
@@ -389,17 +346,7 @@ def _make_ecdh_instance(index, rng, flag):
 
 
 
-# ======================================================================
-# Challenge 8 - Invalid Curve Attack: curve bank + frozen probes
-# ======================================================================
-# Real curve E: y^2 = x^3 + a*x + b (mod p), PRIME order 80 bits -> the direct
-# ECDLP is infeasible (BSGS ~ 2^40). Bob has a long-term key d.
-# Vulnerability: Bob computes d*P without checking that P is on E. Since b is
-# NOT used in the addition formulas, a point on an invalid curve E'(b') (same a,
-# different b) is handled with the same arithmetic. On E' the order has small
-# factors -> extract d mod q_i by small BSGS, then CRT. The curves + probes
-# (b', point P of order q) are pre-computed offline and frozen; only R_i = d*P_i
-# is computed here.
+# Challenge 8 - Invalid Curve Attack: Kurvenbank + vorberechnete Probes
 C8_CURVE_BANK = [
     {
         "p": 709293641283581964155779, "a": 328433133229914153312022, "b": 474564864168908699848805, "n": 709293641283431154916751,
@@ -499,33 +446,27 @@ C8_CURVE_BANK = [
 
 
 def _make_invalid_curve_instance(index, rng, flag):
-    """C8 Invalid Curve. Bob: long-term key d, safe curve E (prime order).
-    Frozen probes: for each invalid curve E'(b'), a point P of order q.
-    Oracle: R = d*P (computed with Bob's arithmetic). Recover d -> S = d*A_eph
-    (Alice ephemeral on E) -> decrypt."""
+    """C8 Invalid Curve Attack."""
     curve = C8_CURVE_BANK[index % len(C8_CURVE_BANK)]
     a, b, p, n = curve["a"], curve["b"], curve["p"], curve["n"]
 
-    # Bob's long-term secret d and public key B = d*G
     G = ec_find_generator(a, b, p, rng)
     d = rng.randrange(2, n)
     Bpub = ec_mul(a, p, d, G)
 
-    # Oracle answers on the frozen probes: R_i = d * P_i (Bob's arithmetic).
     probes_out = []
     for pr in curve["probes"]:
         P = (pr["Px"], pr["Py"])
-        R = ec_mul(a, p, d, P)          # d*P using curve E's a (b unused)
+        R = ec_mul(a, p, d, P)
         probes_out.append({
             "b_invalid": pr["b_invalid"], "q": pr["q"],
             "Px": pr["Px"], "Py": pr["Py"],
             "Rx": (R[0] if R else 0), "Ry": (R[1] if R else 0),
         })
 
-    # Traffic on the REAL curve: Alice ephemeral A_eph = e*G, S = d*A_eph.
     e = rng.randrange(2, n)
     A_eph = ec_mul(a, p, e, G)
-    S = ec_mul(a, p, d, A_eph)          # = e * Bpub
+    S = ec_mul(a, p, d, A_eph)
     assert S == ec_mul(a, p, e, Bpub), "ECDH C8 mismatch"
 
     ikm = ec_shared_secret_bytes(S[0], p)
@@ -605,16 +546,10 @@ def _build_c8_capture(index, a, b, p, n, G, Bpub, A_eph, probes_out, nonce, ct):
 
 
 
-# ======================================================================
 # Challenge 9 - ElGamal with nonce reuse
-# ======================================================================
 def _make_elgamal_instance(index, cfg, rng, flag):
-    """ElGamal: (c1, c2) = (g^k, m * y^k mod p). The SAME nonce k encrypts two
-    messages m1 (known header) and m2 (secret, used as the AES key). Since c1
-    and y^k are identical, recover m2 = c2_2 * m1 * inv(c2_1) without breaking
-    the DLP. key = HKDF(m2) -> AES-256-GCM -> flag."""
+    """ElGamal, gleiches k fuer zwei Nachrichten."""
     bits = cfg["prime_bits"]
-    # safe prime p = 2q+1: DLP infeasible
     while True:
         q = rand_prime(bits - 1, rng)
         p = 2 * q + 1
@@ -622,10 +557,10 @@ def _make_elgamal_instance(index, cfg, rng, flag):
             break
     g = 2 if pow(2, q, p) != 1 else 3
     x = rng.randrange(2, p - 1)
-    y = pow(g, x, p)                       # public key
-    k = rng.randrange(2, p - 1)            # REUSED nonce
-    m1 = rng.randrange(2, p - 1)           # known message (header)
-    m2 = rng.randrange(2, p - 1)           # secret message (key material)
+    y = pow(g, x, p)
+    k = rng.randrange(2, p - 1)
+    m1 = rng.randrange(2, p - 1)
+    m2 = rng.randrange(2, p - 1)
     yk = pow(y, k, p)
     c1 = pow(g, k, p)
     c2_1 = (m1 * yk) % p
@@ -676,20 +611,15 @@ def _make_elgamal_instance(index, cfg, rng, flag):
     return capture, solution
 
 
-# ======================================================================
 # Challenge 10 - DSA with nonce reuse (PS3 / Bitcoin flaw)
-# ======================================================================
 def _dsa_hash(msg_bytes, q):
     return int.from_bytes(hashlib.sha256(msg_bytes).digest(), "big") % q
 
 
 def _make_dsa_instance(index, cfg, rng, flag):
-    """DSA: s = k^-1 (H(m) + x*r) mod q, r = (g^k mod p) mod q. Two signatures
-    with the SAME k (same r) -> k = (H(m1)-H(m2)) / (s1-s2) mod q, then
-    x = (s1*k - H(m1)) / r mod q. x = private key -> HKDF(x) -> AES -> flag."""
+    """DSA, gleiches k (r) in zwei Signaturen."""
     qbits = cfg["q_bits"]
     q = rand_prime(qbits, rng)
-    # p = q*t + 1 prime
     while True:
         t = rng.randrange(1 << 100, 1 << 101)
         p = q * t + 1
@@ -759,16 +689,12 @@ def _make_dsa_instance(index, cfg, rng, flag):
     return capture, solution
 
 
-# ======================================================================
 # Generate one instance (index, challenge)
-# ======================================================================
 def make_instance(master_seed, index, challenge):
     cfg = CHALLENGES[challenge]
     rng = random.Random(subseed(master_seed, index, challenge))
     flag = FLAGS[challenge]
 
-    # C6 MITM, C7 ECDH, C8 Invalid Curve, C9 ElGamal, C10 DSA: dedicated
-    # structures, handled with early returns.
     if cfg["kind"] == "mitm":
         return _make_mitm_instance(index, cfg, rng, flag)
     if cfg["kind"] == "ecdh":
@@ -795,13 +721,12 @@ def make_instance(master_seed, index, challenge):
         a = rng.randrange(2, M)                 # a < smooth part: solvable
     elif cfg["kind"] == "small_subgroup":
         p, g_sub, q, R = gen_small_subgroup(cfg["q_bits"], cfg["r_bits"], rng)
-        factors = [q]                            # exploitable (small) factor
+        factors = [q]
         all_factors = [2, q, R]
-        a = rng.randrange(2, q)                  # a < q: solvable by BSGS in <g>
+        a = rng.randrange(2, q)
     else:
         raise ValueError(f"unknown kind: {cfg['kind']}")
 
-    # For small_subgroup, g is fixed (order q). Otherwise search for it.
     if cfg["kind"] == "small_subgroup":
         g = g_sub
     else:
@@ -836,39 +761,29 @@ def make_instance(master_seed, index, challenge):
 
 
 def _make_mitm_instance(index, cfg, rng, flag):
-    """C6 MITM. Two active handshakes:
-      Anna <-> Mallory (M1): key s_left = A^m1 = M1^a
-      Bob  <-> Mallory (M2): key s_right = B^m2 = M2^b
-    The flag is SPLIT into two fragments, one per direction, to force the
-    student to decrypt BOTH messages: Anna->Bob carries the first half,
-    Bob->Anna the second half."""
+    """C6 MITM: zwei aktive Handshakes, Flagge auf beide Richtungen gesplittet."""
     p, q = gen_safe_prime(cfg["prime_bits"], rng)
-    # Generator: element of (large) order q -- enough for DH, DLP infeasible.
     g = 2 if pow(2, q, p) != 1 else 3
 
-    # Anna's and Bob's real secrets (never needed by the student).
     a = rng.randrange(2, p - 1)
     b = rng.randrange(2, p - 1)
     A, B = pow(g, a, p), pow(g, b, p)
 
-    # Mallory's secrets (one per side). The student receives them in the capture.
-    m1 = rng.randrange(2, p - 1)   # Anna side
-    m2 = rng.randrange(2, p - 1)   # Bob side
-    M1 = pow(g, m1, p)             # what Anna takes for Bob's key
-    M2 = pow(g, m2, p)             # what Bob takes for Anna's key
+    m1 = rng.randrange(2, p - 1)
+    m2 = rng.randrange(2, p - 1)
+    M1 = pow(g, m1, p)
+    M2 = pow(g, m2, p)
 
-    # Session keys as computed by each party:
-    s_left = pow(A, m1, p)         # = pow(M1, a, p), the Anna<->Mallory key
-    s_right = pow(B, m2, p)        # = pow(M2, b, p), the Bob<->Mallory key
+    s_left = pow(A, m1, p)
+    s_right = pow(B, m2, p)
     assert s_left == pow(M1, a, p) and s_right == pow(M2, b, p), "MITM mismatch"
 
     key_left = derive_key(s_left, p)
     key_right = derive_key(s_right, p)
 
-    # Flag split: one half per direction.
     half = len(flag) // 2
-    frag_ab = flag[:half]          # Anna -> Bob
-    frag_ba = flag[half:]          # Bob -> Anna
+    frag_ab = flag[:half]
+    frag_ba = flag[half:]
 
     rec_ab = json.dumps({
         "from": "a.bauer@nordwind.example", "to": "b.brandt@nordwind.example",
@@ -902,9 +817,7 @@ def _make_mitm_instance(index, cfg, rng, flag):
     return capture, solution
 
 
-# ======================================================================
 # Main driver
-# ======================================================================
 def generate(master_seed, n_variants, out_root):
     assets_root = os.path.join(out_root, "custom", "assets", "0200")
     tools_dir = os.path.join(out_root, "tools")

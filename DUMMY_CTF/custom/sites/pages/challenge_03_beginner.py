@@ -1,16 +1,5 @@
-"""Kapitel 03 - Beginner-Version: "Export Ciphers & FREAK".
-
-Gleicher Angriff, gleicher Varianten-Pool, gleiches Backend wie
-challenge_03.py (custom/challengebackend/export_cipher_*) - ruft dessen
-bereits bestehende Endpunkte unveraendert auf, keine einzige Zeile dort wird
-angefasst. Nur Erklaerungstiefe und Code-Geruest unterscheiden sich: jeder
-Fachbegriff hat eine eigene "Was ist X?"-Box, jedes Skript ist bis auf genau
-eine zentrale Luecke pro Schritt fertig vorgegeben (siehe
-challenge_03_beginner_tasks.py fuer die Aufgabendefinitionen).
-
-Eigener day-Wert 95 (siehe challenge_03_beginner_tasks.py), damit Beginner-
-und Advanced-Version unabhaengig voneinander loesbar sind.
-"""
+"""Kapitel 03 - Beginner-Version: Export Ciphers & FREAK.
+Eigener day=95, unabhaengig von der Advanced-Version (day=3)"""
 
 import hashlib
 from urllib.parse import quote
@@ -28,16 +17,11 @@ from ..tasks.challenge_03_beginner_tasks import (
     task_03b_04, task_03b_05,
 )
 
-# Muss zu challengebackend/utils/export_cipher_pool.py: POOL_SIZE passen.
+# Muss zu challengebackend/utils/export_cipher_pool.py: POOL_SIZE passen
 EXPORT_CIPHER_POOL_SIZE = 100
 
 
-# ---------------------------------------------------------------------------
-# Kleine, lokale UI-Helfer (nur diese Seite braucht sie - siehe
-# entscheidungen.md-Prinzip: Auslagerung erst ab der zweiten Seite, die sie
-# braucht - challenge_04_beginner.py hat identische Kopien, noch nicht
-# ausgelagert).
-# ---------------------------------------------------------------------------
+# Kleine, lokale UI-Helfer (challenge_04_beginner.py hat identische Kopien)
 _BOX_STYLE = {
     "maxWidth": "1200px", "width": "100%", "margin": "16px auto",
     "padding": "18px", "borderRadius": "12px", "color": "#F2F2F2",
@@ -91,7 +75,7 @@ def success_box(text, accent="#04B486"):
 
 def pcap_download_button(text, href):
     """rx.download() statt <a download> - Safari zerstoert Binaerdaten sonst
-    nachweislich beim direkten Anchor-Download (siehe challenge_04_beginner.py)."""
+    beim direkten Anchor-Download"""
     return rx.button(
         rx.hstack(
             rx.icon("download", size=18),
@@ -112,10 +96,7 @@ def pcap_download_button(text, href):
     )
 
 
-# ---------------------------------------------------------------------------
-# Backend-Zugriff: identisch zu MyVariantState in challenge_03.py, ruft
-# dieselben, unveraenderten Endpunkte auf.
-# ---------------------------------------------------------------------------
+# Backend-Zugriff: identisch zu MyVariantState in challenge_03.py
 class ChallengeBackendRequests(BackendRequests):
     url = "http://challenge:8000"
 
@@ -130,9 +111,7 @@ class BeginnerExportCipherState(AuthCookie):
 
     @rx.var
     def pcap_url(self) -> str:
-        """Berechnet den Download-Link direkt aus dem Usernamen (dieselbe
-        Formel wie challengebackend/utils/export_cipher_pool.py:
-        variant_index_for_user)."""
+        """Dieselbe Formel wie export_cipher_pool.py: variant_index_for_user"""
         try:
             username = self.data_cookie
             if not username:
@@ -426,7 +405,7 @@ p512 = None # <- Ihr geschenkter Faktor aus Schritt 3 (Belohnungs-Kasten)
 
 # TODO: q berechnen - wenn N = p * q und Sie p kennen, wie kommen Sie an q?
 # Achtung: n512 hat >150 Dezimalstellen - die normale Division "/" liefert
-# bei so großen Zahlen einen ungenauen Float. Es gibt eine Ganzzahl-Division.
+# bei so großen Zahlen einen ungenauen Float. Es gibt eine Ganzzahl-Division
 q512 = None
 
 print("gefunden: q =", q512)
@@ -484,7 +463,7 @@ alle eigentlichen Schlüssel kommen.
 import hmac, hashlib
 
 def p_hash(digestmod, secret, seed, length):
-    # Fertig vorgegeben.
+    # Fertig vorgegeben
     out = b""
     a = seed
     while len(out) < length:
@@ -493,7 +472,7 @@ def p_hash(digestmod, secret, seed, length):
     return out[:length]
 
 def tls10_prf(secret, label, seed, length):
-    # Fertig vorgegeben - die TLS-1.0-PRF aus RFC 2246.
+    # Fertig vorgegeben - die TLS-1.0-PRF aus RFC 2246
     half = (len(secret) + 1) // 2
     s1, s2 = secret[:half], secret[-half:]
     p_md5 = p_hash(hashlib.md5, s1, label + seed, length)
@@ -502,7 +481,7 @@ def tls10_prf(secret, label, seed, length):
 
 def rsa_pkcs1_decrypt(n, d, ciphertext):
     # Fertig vorgegeben - entfernt das PKCS#1-v1.5-Padding nach dem
-    # Entschluesseln: 0x00 0x02 [Zufallsbytes] 0x00 [Nachricht].
+    # Entschluesseln: 0x00 0x02 [Zufallsbytes] 0x00 [Nachricht]
     k = (n.bit_length() + 7) // 8
     c = int.from_bytes(ciphertext, "big")
     m = pow(c, d, n)
@@ -520,7 +499,7 @@ encrypted_pms = bytes.fromhex("HIER_HEX_EINFUEGEN")
 e = 65537
 phi = (p512 - 1) * (q512 - 1)
 
-# TODO: d ist das modulare Inverse von e modulo phi (siehe "Was ist RSA?" oben).
+# TODO: d ist das modulare Inverse von e modulo phi (siehe "Was ist RSA?" oben)
 d = None
 
 pms = rsa_pkcs1_decrypt(n512, d, encrypted_pms)
@@ -581,7 +560,7 @@ def final_write_key(write_key_raw, label):
 server_write_key = final_write_key(server_write_key_raw, b"server write key")
 
 class RC4:
-    # Fertig vorgegeben - der RC4-Stream-Cipher-Algorithmus.
+    # Fertig vorgegeben - der RC4-Stream-Cipher-Algorithmus
     def __init__(self, key):
         S = list(range(256))
         j = 0
@@ -602,7 +581,7 @@ class RC4:
         return bytes(out)
 
 def mac_then_decrypt(content_type, ciphertext, mac_secret, rc4, seq_num):
-    # Fertig vorgegeben - prueft die HMAC-MD5-Pruefsumme und entschluesselt.
+    # Fertig vorgegeben - prueft die HMAC-MD5-Pruefsumme und entschluesselt
     decrypted = rc4.crypt(ciphertext)
     plaintext, mac = decrypted[:-16], decrypted[-16:]
     mac_input = (seq_num.to_bytes(8, "big") + bytes([content_type]) +

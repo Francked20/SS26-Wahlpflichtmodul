@@ -1,31 +1,9 @@
 #!/usr/bin/env python3
-"""Companion script for the day-3 export-cipher (FREAK-style) challenge's
-training VM. Run this manually once the VM exists, then point
-EXPORT_CIPHER_VM_HOST/PORT (in DUMMY_CTF/.env) at this machine.
-
-custom/challengebackend's on-demand sender (triggered by a player's
-'gestartet' button, see custom/challengebackend/endpoints/export_cipher.py's
-POST /{index}/start_capture) plays the "client" role of a mock TLS handshake
-and connects out to this VM. This script plays the "server" role back -
-without it, participants only ever see one-directional (client-role) bytes
-on the wire, which won't dissect as a real conversation in Wireshark.
-
-No crypto knowledge needed here: this is a dumb byte-blob player. It fetches
-the precomputed server-role flight bytes ONCE from the challenge backend
-(GET /export_cipher/vm_replay_data) and just replays them for whichever
-variant the connecting sender asks for - it never parses or generates any
-TLS bytes itself. Each connection starts with a 2-byte big-endian variant
-index sent by the sender, before any TLS bytes, so this script knows which
-variant's server flights to reply with - since triggers are on-demand and
-per-player now (not a fixed round-robin), a plain "next in list" counter on
-this side could easily reply with the wrong player's variant.
+"""Server-role Companion-Skript fuer die day-3 export-cipher Trainings-VM.
 
 Usage:
-    CHALLENGE_API_KEY=<same value as in DUMMY_CTF/.env> \\
+    CHALLENGE_API_KEY=<Wert aus DUMMY_CTF/.env> \\
         python3 export_cipher_vm_listener.py --challenge-domain challenge.yourevent.example
-
-Use --insecure if the challenge backend is only reachable via a self-signed
-cert (e.g. local dev, see DUMMY_CTF/certs/).
 """
 import argparse
 import json
@@ -75,12 +53,7 @@ def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
                 continue
             print(f"Connection from {addr}, replaying variant #{index}")
 
-            # Wait for (and discard) the sender's ClientHello before replying
-            # - not needed to pick the right bytes (that's already decided by
-            # the index above), but without it this sends server_flight_1
-            # immediately after the index, so Wireshark shows the server
-            # replying before the client's ClientHello even arrives, which
-            # can't happen in a real TLS handshake.
+            # wait for ClientHello first, else server appears to reply before it
             try:
                 conn.recv(4096)
             except socket.timeout:

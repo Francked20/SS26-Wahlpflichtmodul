@@ -1,7 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 5 (Logjam-Echo).
-
-"""
+"""Kapitel 02 - Sub-page: Challenge 5 (Logjam-Echo)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

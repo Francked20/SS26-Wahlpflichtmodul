@@ -5,9 +5,7 @@ from .websocket_reader import ScoreBoardState
 scoreboard_title = os.getenv("SCOREBOARD_TITLE", "CTF@TCV - Scoreboard")
 
 
-# ---------------------------------------------------------
-#  TUG OF WAR (TEAMS)
-# ---------------------------------------------------------
+# TUG OF WAR (TEAMS)
 def tug_of_war():
     return rx.vstack(
         rx.text("⚖️", font_size="1.5em", text_align="center"),
@@ -66,9 +64,7 @@ def tug_of_war():
     )
 
 
-# ---------------------------------------------------------
-#  BOTTOM TEAM BARS
-# ---------------------------------------------------------
+# BOTTOM TEAM BARS
 def render_bottom_team_bar(index: int):
     return rx.hstack(
         rx.text(
@@ -104,9 +100,7 @@ def bottom_team_bars():
     )
 
 
-# ---------------------------------------------------------
-#  TEAM SCOREBOARD
-# ---------------------------------------------------------
+# TEAM SCOREBOARD
 def render_team_scoreboard(team_name, player_var, rank_var, color_var):
     return rx.vstack(
         rx.heading(f"{team_name} Scoreboard", size="5"),
@@ -214,9 +208,7 @@ def all_team_scoreboards():
     )
 
 
-# ---------------------------------------------------------
-#  TUG OF WAR (PLAYERS)
-# ---------------------------------------------------------
+# TUG OF WAR (PLAYERS)
 def tug_of_war_players():
     return rx.vstack(
         rx.text("⚖️", font_size="1.5em", text_align="center"),
@@ -275,9 +267,7 @@ def tug_of_war_players():
     )
 
 
-# ---------------------------------------------------------
-#  BOTTOM PLAYER BARS
-# ---------------------------------------------------------
+# BOTTOM PLAYER BARS
 def render_bottom_player_bar(index: int):
     return rx.hstack(
         rx.text(
@@ -313,9 +303,7 @@ def bottom_player_bars():
     )
 
 
-# ---------------------------------------------------------
-#  SOLO SCOREBOARD
-# ---------------------------------------------------------
+# SOLO SCOREBOARD
 def render_solo_scoreboard():
     return rx.vstack(
         rx.heading("Spieler-Scoreboard", size="5"),
@@ -406,9 +394,7 @@ def render_solo_scoreboard():
     )
 
 
-# ---------------------------------------------------------
-#  MAIN TABLE
-# ---------------------------------------------------------
+# MAIN TABLE
 def main_table() -> rx.Component:
     return rx.vstack(
         rx.center(

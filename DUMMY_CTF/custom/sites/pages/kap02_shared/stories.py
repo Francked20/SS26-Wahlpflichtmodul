@@ -1,12 +1,4 @@
-"""
-Narrative intros for Kapitel 02 — short spy/interception stories.
-
-Each story gives an intuitive, non-mathematical picture of the mechanism
-before the technical part begins, so that even students who struggle with
-the maths already grasp the idea.
-
-Style: Sie-Anrede, spy/interception scenario, self-contained, no maths.
-"""
+"""Narrative Intros fuer Kapitel 02"""
 
 import reflex as rx
 
@@ -33,9 +25,7 @@ def _story_box(title: str, body_md: str, color: str) -> rx.Component:
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: how Diffie-Hellman works (intro to the whole chapter)
-# ---------------------------------------------------------------------------
 def dh_intro(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Ein Geheimnis über eine offene Leitung",
@@ -63,9 +53,7 @@ Verfahren manchmal doch zu knacken ist.*
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 1 — small parameters
-# ---------------------------------------------------------------------------
 def challenge_1(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Ein zu kleines Zahlenschloss",
@@ -86,9 +74,7 @@ Geheimnis und entschlüsseln Sie die abgefangene Nachricht.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 2 — smooth order
-# ---------------------------------------------------------------------------
 def challenge_2(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Der Tresor mit den vielen kleinen Schlössern",
@@ -111,9 +97,7 @@ zusammen.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 3 — the trap
-# ---------------------------------------------------------------------------
 def challenge_3(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Die trügerische Festung",
@@ -135,9 +119,7 @@ und beweisen Sie, dass groß nicht gleich sicher bedeutet.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 4 — weak generator (small subgroup)
-# ---------------------------------------------------------------------------
 def challenge_4(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Der Schlüsseldienst mit dem Ladenhüter",
@@ -160,9 +142,7 @@ das Geheimnis lebt in einem kleinen Käfig. Bergen Sie es.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 5 — Logjam (export-grade)
-# ---------------------------------------------------------------------------
 def challenge_5(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Das absichtlich schwache Schloss",
@@ -185,9 +165,7 @@ schließen Sie den Bogen zum FREAK-Angriff.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 6 — Man-in-the-Middle
-# ---------------------------------------------------------------------------
 def challenge_6(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Die Frau in der Mitte",
@@ -216,9 +194,7 @@ Mathematik nichts nützt, wenn niemand prüft, **mit wem** er eigentlich spricht
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 7 — ECDH intro (elliptic curves)
-# ---------------------------------------------------------------------------
 def challenge_7(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Ein neues Spielfeld",
@@ -244,9 +220,7 @@ rechnen, und bergen Sie die Nachricht.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 8 — Invalid Curve Attack
-# ---------------------------------------------------------------------------
 def challenge_8(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Der Türsteher, der die Ausweise nicht liest",
@@ -271,9 +245,7 @@ Bobs geheimen Schlüssel und entschlüsseln Sie seine Nachricht.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 9 — ElGamal reused nonce
-# ---------------------------------------------------------------------------
 def challenge_9(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Zweimal derselbe Würfel",
@@ -297,9 +269,7 @@ Sie die geheime Nachricht.
     )
 
 
-# ---------------------------------------------------------------------------
 # Story: Challenge 10 — DSA reused nonce (the finale)
-# ---------------------------------------------------------------------------
 def challenge_10(color: str = "#EF9F27") -> rx.Component:
     return _story_box(
         "Die Geschichte: Der Fehler, der eine Spielkonsole knackte",

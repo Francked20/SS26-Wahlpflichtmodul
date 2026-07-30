@@ -1,12 +1,4 @@
-"""
-Tasks for Kapitel 02 — Challenge 8 (Invalid Curve Attack).
-
-The proof question (2.26) targets the CORE of the vulnerability: the probe point
-P_0 does NOT lie on Bob's real curve E (it lives on an invalid curve E'(b')).
-Checking y^2 == x^3 + a*x + b (mod p) for P_0 yields "Nein" for everyone — a
-common, non-guessable answer that forces the student to grasp why the attack
-works (b is not used in the addition formulas).
-"""
+"""Tasks fuer Kapitel 02 - Challenge 8 (Invalid Curve Attack)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint

@@ -1,22 +1,7 @@
 #!/usr/bin/env python3
-"""Offline alternative to the day-3 export-cipher (FREAK-style) challenge's
-live VM capture (see export_cipher_vm_listener.py): writes a single .pcap
-file instead of requiring a player to sniff a live connection.
+"""Offline .pcap-Generator fuer die day-3 export-cipher Challenge.
 
-Proof of concept / not wired into the challenge flow yet.
-
-The challenge backend's HTTP API never exposes client-role flight bytes
-(GET /export_cipher/vm_replay_data only returns server-role hex), so this
-reads the export_cipher_variants collection directly via pymongo - same
-approach as reset_task_progress.py, host's published 27017.
-
-The output pcap contains one TCP conversation carrying the real 4-flight TLS
-handshake for the given --index, plus a couple of synthetic decoy
-conversations (plain HTTP, one DNS query/response) so the TLS flow isn't the
-only traffic in the capture.
-
-Usage:
-    python3 pcap_generator.py --index 42 --out capture.pcap
+Usage: python3 pcap_generator.py --index 42 --out capture.pcap
 """
 import argparse
 import os
@@ -48,8 +33,7 @@ def fetch_variant(index: int) -> dict:
 
 
 def tcp_conversation(src_ip: str, dst_ip: str, sport: int, dport: int, flights: list) -> list:
-    """Builds a 3-way handshake, one PSH+ACK segment (+ ACK) per flight in
-    order, and a FIN teardown. flights: list of (is_from_client, payload)."""
+    """3-way handshake, ein PSH+ACK Segment pro Flight, FIN-Teardown"""
     packets = []
     seq_c, seq_s = 1000, 5000
 
@@ -84,14 +68,13 @@ def tcp_conversation(src_ip: str, dst_ip: str, sport: int, dport: int, flights: 
 
 
 def decoy_http() -> list:
-    """Synthetic HTTP GET/response between unrelated IPs - no real semantics,
-    just filler so the TLS flow isn't the only conversation in the capture."""
+    """Synthetischer HTTP GET/Response, reine Fuellverbindung"""
     req = b"GET /index.html HTTP/1.1\r\nHost: example.local\r\n\r\n"
     resp = b"HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello world!\n"
     return tcp_conversation("10.0.0.30", "10.0.0.40", 52000, 80, [(True, req), (False, resp)])
 
 def gen_random_ip() -> str:
-    """Pseudo random IP generator. Always of format: 192.rand.rand.rand"""
+    """Zufaellige IP im Format 192.rand.rand.rand"""
     first_three = "192"
     second_three = str(random.randint(1,254))
     third_three = str(random.randint(1,254))
@@ -110,7 +93,7 @@ def generator_decoy_http() -> list:
     return http_conv_list
 
 def decoy_dns() -> list:
-    """Single synthetic DNS query/response pair over UDP - filler traffic."""
+    """Synthetisches DNS Query/Response Paar ueber UDP"""
     eth = dict(src="02:00:00:00:00:01", dst="02:00:00:00:00:02")
     query = (Ether(**eth) / IP(src="10.0.0.30", dst="10.0.0.1") / UDP(sport=53000, dport=53) /
               Raw(bytes.fromhex("aaaa01000001000000000000") + b"\x07example\x03com\x00\x00\x01\x00\x01"))

@@ -1,14 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Kurs (Grundlagen).
-
-Always accessible. Teaches the DH basics (groups, DLP, handshake) with a spy
-story intro and split Wahr/Falsch comprehension questions. This is the entry
-point of the chapter; solving its questions is not required to start Challenge 1,
-but it is the recommended starting point.
-
-Sidebar grouping: all Kapitel-02 sub-pages share group="kapitel_02" and are
-ordered by position_priority (higher = higher in the list).
-"""
+"""Kapitel 02 - Sub-page: Kurs (Grundlagen)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

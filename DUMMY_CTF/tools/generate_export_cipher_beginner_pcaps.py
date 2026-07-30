@@ -1,15 +1,5 @@
-"""Generates one downloadable .pcap per export-cipher (day-95 beginner FREAK)
-pool variant, served statically from custom/assets/0300/<index>/capture.pcap
-(see challenge_03_beginner.py's download_button).
-
-Own script, own output folder (0300) - does not touch or depend on any
-Franck/Jonas file. Reads the same export_cipher_variants collection Jonas'
-challengebackend already populates
-(scripts/generate_export_cipher_pool.py) - read-only, no schema changes.
-
-Usage (from repo root, needs `pip install scapy pymongo`):
-    MONGO_HOST=localhost python3 tools/generate_export_cipher_beginner_pcaps.py
-"""
+"""Generiert je Variante ein .pcap fuer Kapitel 3 Beginner (day=95).
+Usage: MONGO_HOST=localhost python3 tools/generate_export_cipher_beginner_pcaps.py"""
 import os
 
 from pymongo import MongoClient

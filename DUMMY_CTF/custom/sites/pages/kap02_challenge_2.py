@@ -1,8 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 2 (Die glatte Ordnung).
-
-Chained unlock: the content is gated on Challenge 1's flag
-"""
+"""Kapitel 02 - Sub-page: Challenge 2 (Die glatte Ordnung)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

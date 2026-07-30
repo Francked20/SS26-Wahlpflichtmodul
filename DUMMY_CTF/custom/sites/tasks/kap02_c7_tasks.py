@@ -1,18 +1,11 @@
-"""
-Tasks for Kapitel 02 — Challenge 7 (ECDH intro).
-
-The proof question (2.23) forces the student to implement/use the curve
-membership test y^2 == x^3 + a*x + b (mod p) on a real point from their capture.
-The answer is the same for everyone (the public point IS on the curve), so it
-is not guessable and not variant-dependent — but it requires doing the EC work.
-"""
+"""Tasks fuer Kapitel 02 - Challenge 7 (ECDH intro)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint
 
 
 def _wf(day_idx, points, desc, question, further, correct_is_true):
-    """Single Wahr/Falsch question (matches the C1-C6 helper)."""
+    """Single Wahr/Falsch question (matches the C1-C6 helper)"""
     if correct_is_true:
         answers = [Correct.create("Wahr"), Incorrect.create("Falsch")]
     else:
@@ -32,7 +25,7 @@ def _wf(day_idx, points, desc, question, further, correct_is_true):
 
 
 def _jn(day_idx, points, desc, question, further, correct_is_yes):
-    """Single Ja/Nein question (matches the C6 helper)."""
+    """Single Ja/Nein question (matches the C6 helper)"""
     if correct_is_yes:
         answers = [Correct.create("Ja"), Incorrect.create("Nein")]
     else:

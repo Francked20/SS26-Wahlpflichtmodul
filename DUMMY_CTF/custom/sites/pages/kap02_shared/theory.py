@@ -1,10 +1,4 @@
-"""
-Theory building blocks for Kapitel 02.
-
-Each function returns an rx.Component. Content is in German (student-facing),
-anonymized (no personal names), and anchored on standard cryptographic
-definitions and the course curriculum.
-"""
+"""Theory-Bausteine fuer Kapitel 02"""
 
 import reflex as rx
 
@@ -35,9 +29,7 @@ def _svg(markup: str) -> rx.Component:
                                   "margin": "8px auto", "display": "block"})
 
 
-# ---------------------------------------------------------------------------
 # Groups, order, generators
-# ---------------------------------------------------------------------------
 def groups(color: str) -> rx.Component:
     return _box(
         _h("Das Fundament: Gruppen, Ordnung, Erzeuger", color),
@@ -63,9 +55,7 @@ Gruppe — jede Zahl in $\mathbb{Z}_p^*$ ist eine Potenz von $g$. Wichtig: $g$ d
     )
 
 
-# ---------------------------------------------------------------------------
 # The discrete logarithm problem
-# ---------------------------------------------------------------------------
 def dlp(color: str) -> rx.Component:
     return _box(
         _h("Das diskrete Logarithmusproblem (DLP)", color),
@@ -147,9 +137,7 @@ setzen Ihre Angriffe an.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 1 technical part
-# ---------------------------------------------------------------------------
 def challenge_1_technik(color: str) -> rx.Component:
     return _box(
         _h("Der Angriff: kleines p", color),
@@ -175,9 +163,7 @@ aber schon pures Durchprobieren.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 2: smooth order + Pohlig-Hellman
-# ---------------------------------------------------------------------------
 _PH_PROJECTION_SVG = r"""
 <svg width="100%" viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" role="img">
 <title>Pohlig-Hellman: Zerlegung des DLP in prime Untergruppen</title>
@@ -277,9 +263,7 @@ mit **yafu** faktorisieren, dann Pohlig-Hellman + CRT.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 3: almost smooth (the trap)
-# ---------------------------------------------------------------------------
 def challenge_3_technik(color: str) -> rx.Component:
     return _box(
         _h("Die Falle: fast glatt", color),
@@ -313,9 +297,7 @@ ohne $Q$ je berührt zu haben.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 4: weak generator / small subgroup
-# ---------------------------------------------------------------------------
 def challenge_4_technik(color: str) -> rx.Component:
     return _box(
         _h("Der schwache Erzeuger: Small-Subgroup", color),
@@ -352,9 +334,7 @@ Baby-Step-Giant-Step in Sekundenbruchteilen finden.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 5: Logjam / export-grade
-# ---------------------------------------------------------------------------
 def challenge_5_technik(color: str) -> rx.Component:
     return _box(
         _h("Logjam: die absichtlich schwache Gruppe", color),
@@ -393,9 +373,7 @@ der realen Schwachstelle.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 6 technical part — Man-in-the-Middle
-# ---------------------------------------------------------------------------
 _MITM_SVG = r"""
 <svg width="100%" viewBox="0 0 680 400" xmlns="http://www.w3.org/2000/svg" role="img">
 <title>Man-in-the-Middle-Angriff auf Diffie-Hellman</title>
@@ -494,9 +472,7 @@ Anna→Bob und Bob→Anna. Jede Richtung trägt eine **Hälfte** der Flagge.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 7 technical part — ECDH intro (elliptic curves)
-# ---------------------------------------------------------------------------
 _EC_ADDITION_SVG = r"""
 <svg width="100%" viewBox="0 0 680 380" xmlns="http://www.w3.org/2000/svg" role="img">
 <title>Punktaddition auf einer elliptischen Kurve</title>
@@ -612,9 +588,7 @@ aus $x(S)$ ableiten, entschlüsseln.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 8 technical part — Invalid Curve Attack
-# ---------------------------------------------------------------------------
 _INVALID_CURVE_SVG = r"""
 <svg width="100%" viewBox="0 0 680 340" xmlns="http://www.w3.org/2000/svg" role="img">
 <title>Invalid-Curve-Angriff</title>
@@ -700,9 +674,7 @@ ab und entschlüsseln.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 9 technical part — ElGamal reused nonce
-# ---------------------------------------------------------------------------
 def challenge_9_technik(color: str) -> rx.Component:
     return _box(
         _h("ElGamal und der wiederverwendete Nonce", color),
@@ -746,9 +718,7 @@ den AES-256-GCM-Datensatz.
     )
 
 
-# ---------------------------------------------------------------------------
 # Challenge 10 technical part — DSA reused nonce
-# ---------------------------------------------------------------------------
 def challenge_10_technik(color: str) -> rx.Component:
     return _box(
         _h("DSA und der wiederverwendete Nonce (PS3 / Bitcoin)", color),

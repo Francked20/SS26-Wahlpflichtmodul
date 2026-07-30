@@ -38,7 +38,7 @@ access_security = JwtAccessBearer(
 admin_token_header = APIKeyHeader(name="X-Admin-Token", auto_error=False)
 
 async def require_admin_token(x_admin_token: str = Security(admin_token_header)):
-    """Dependency to protect admin routes."""
+    """Dependency to protect admin routes"""
     if x_admin_token != admin_secret:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

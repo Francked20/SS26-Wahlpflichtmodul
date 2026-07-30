@@ -296,10 +296,6 @@ print(int(hashlib.sha256("<username>".encode()).hexdigest(), 16) % 100)
 > Wichtig: `start_capture` und die `dynamic_check` beziehen sich auf **diese**
 > Variante. Zum Testen den passenden Index mitschneiden.
 
-**Referenz-Solver** (End-to-End-Validierung ohne Frontend):
-`solve_dh_export_45_46.py` nutzt direkt `dh_export_crypto` und liefert
-Master Secret + Flagge byte-genau wie die Validatoren.
-
 ---
 
 ## 5. Offene Punkte / Design-Hinweise

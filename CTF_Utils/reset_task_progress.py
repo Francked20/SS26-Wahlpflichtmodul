@@ -3,20 +3,8 @@ import os
 
 from pymongo import MongoClient  # pip install pymongo
 
-# Why this script exists:
-# core/site/website/engine/tasks/meta.py's MetaTask hashes each task's full
-# serialized content and, if a task's checksum no longer matches anything
-# currently registered, deletes and recreates its `challenges` document with
-# a fresh ObjectId. Any `user_challenges` (RunningChallenge) doc created
-# before that edit still points (via DBRef) at the old, now-deleted
-# ObjectId - the backend crashes with AttributeError on 'NoneType' when it
-# tries to resolve that link. Editing task content in custom/sites/tasks/
-# while a test user already has progress on that day reliably triggers this.
-# Fix: delete that user's (or all users') RunningChallenge docs for the
-# affected day, so they get recreated fresh against the current challenges.
-
-# How to use (mongo's 27017 is published to the host for local dev, see
-# DUMMY_CTF/CLAUDE.md):
+# Fix fuer stale DBRef-Links, wenn ein Task-Checksum-Update den Challenge-
+# Dokument-ObjectId aendert. Usage:
 # python reset_task_progress.py --day 3
 # python reset_task_progress.py --day 3 --username D3f@nzor
 # python reset_task_progress.py --day 3 --dry_run
@@ -29,10 +17,7 @@ MONGO_DB = os.getenv("MONGO_DB", "ctf_database")
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Reset RunningChallenge (user_challenges) progress for a day, "
-                     "so stale DBRef links to recreated challenge docs get cleared."
-    )
+    parser = argparse.ArgumentParser(description="Reset RunningChallenge progress for a day")
     parser.add_argument("--day", type=int, required=True, help="day_id to reset")
     parser.add_argument("--username", help="only reset this user (default: all users)")
     parser.add_argument("--dry_run", action="store_true", help="show what would be deleted, don't delete")

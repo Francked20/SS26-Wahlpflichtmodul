@@ -26,24 +26,16 @@ async def _get_variant_for_user(username: str) -> ExportCipherVariant:
 
 @router.get("/variant/{username}")
 async def get_variant(username: str):
-    """Tells the day-3 page which pool entry a player was assigned (a pure
-    function of username) and their practice 256-bit modulus to factor with
-    YAFU - unauthenticated like this service's other player-facing endpoints
-    (e.g. primes.py); knowing another player's N/variant index doesn't help
-    solve YOUR OWN (differently-indexed) challenge. n512 is the real RSA
-    modulus - public by definition (part of the public key), so exposing it
-    here (mirroring dh_export.py's p/g/Ys) is not a leak; it lets the
-    Beginner page show it as decimal without requiring a manual Wireshark
-    hex->decimal conversion."""
+    """Which pool entry a player was assigned, plus their practice 256-bit
+    modulus. n512 is public by definition (part of the RSA public key)"""
     variant = await _get_variant_for_user(username)
     return {"index": variant.index, "n256": variant.n256, "n512": variant.n512}
 
 
 @router.get("/reveal_factor/{username}", dependencies=[Depends(require_challenge_api_key)])
 async def get_reveal_factor(username: str):
-    """Internal-only: called by core/backend's /challenges/solve after a
-    correct export_factor256 answer, to reveal one factor of the real
-    512-bit N."""
+    """Called after a correct export_factor256 answer to reveal one factor
+    of the real 512-bit N"""
     variant = await _get_variant_for_user(username)
     return {"factor": variant.p512}
 
@@ -56,7 +48,7 @@ class CheckAnswerRequest(BaseModel):
 
 @router.post("/check_answer", dependencies=[Depends(require_challenge_api_key)])
 async def check_answer(body: CheckAnswerRequest):
-    """Internal-only: called from core/backend's Challenge.check_answer()."""
+    """Internal-only: called from core/backend's Challenge.check_answer()"""
     variant = await _get_variant_for_user(body.username)
 
     if body.dynamic_check == "export_factor256":
@@ -73,10 +65,8 @@ async def check_answer(body: CheckAnswerRequest):
 
 @router.get("/vm_replay_data", dependencies=[Depends(require_challenge_api_key)])
 async def get_vm_replay_data():
-    """Fetched once (and cached) by CTF_Utils/export_cipher_vm_listener.py -
-    the companion script run manually on the training VM. Only the
-    server-role flight bytes are exposed here: that's all the VM-side
-    listener ever needs to play back."""
+    """Fetched by CTF_Utils/export_cipher_vm_listener.py, run manually on
+    the training VM"""
     variants = await ExportCipherVariant.find_all().to_list()
     return {
         "variants": [
@@ -92,12 +82,8 @@ async def get_vm_replay_data():
 
 @router.post("/{index}/start_capture")
 async def start_capture(index: int):
-    """Triggered by the player's 'gestartet' button on challenge_03.py once
-    they've started their own Wireshark capture on the training VM. Sends
-    THIS player's variant's client-role flights over a real TCP connection to
-    EXPORT_CIPHER_VM_HOST/PORT, so what ends up in their capture is a genuine,
-    self-contained conversation - unlike the old periodic sender (removed),
-    this is on-demand and targeted, so no other player's variant is mixed in."""
+    """Sends this player's variant's client-role flights to
+    EXPORT_CIPHER_VM_HOST/PORT once they start their Wireshark capture"""
     variant = await ExportCipherVariant.find_one(ExportCipherVariant.index == index)
     if variant is None:
         raise HTTPException(status_code=404, detail="Unknown variant index")

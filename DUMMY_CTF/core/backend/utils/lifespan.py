@@ -13,7 +13,7 @@ from database.connection import MongoDB
 
 @contextlib.asynccontextmanager
 async def fastapi_lifespan(app: fastapi.FastAPI):
-    """Ensure clean startup and shutdown."""
+    """Ensure clean startup and shutdown"""
 
     # Before startup
     if MongoDB.instance is None:

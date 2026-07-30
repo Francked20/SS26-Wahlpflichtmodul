@@ -1,21 +1,15 @@
-"""
-Shared state for Kapitel 02 sub-pages.
-
-Derives each student's personal variant index from their username
-(deterministic, no stored state) and builds the download URLs for their
-personal captures. Used by every challenge sub-page.
-"""
+"""Shared State fuer Kapitel 02 Sub-pages"""
 
 import hashlib
 import reflex as rx
 from website.auth_lib import AuthCookie
 
-# Must match the generator (--variants).
+# Must match the generator (--variants)
 N_VARIANTS = 200
 
 
 class DhVariantState(AuthCookie):
-    """Derives the personal variant index from the username."""
+    """Derives the personal variant index from the username"""
 
     @rx.var
     def variant_index(self) -> int:
@@ -75,7 +69,7 @@ class DhVariantState(AuthCookie):
 
 
 def index_banner(color: str) -> rx.Component:
-    """Small banner showing the student's personal index."""
+    """Small banner showing the student's personal index"""
     return rx.box(
         rx.hstack(
             rx.icon("fingerprint", size=20),
@@ -95,14 +89,7 @@ def index_banner(color: str) -> rx.Component:
 
 
 def download_button(text: str, href) -> rx.Component:
-    """
-    Capture download link, styled as a button.
-
-    Uses a native HTML anchor (rx.el.a) rather than rx.link. rx.link treats
-    the href as an internal Reflex route (SPA navigation), which 404s on a
-    static asset path. A native <a download> does a real HTTP request and
-    forces the browser to save the .tcvcap file instead of opening it.
-    """
+    """Capture-Download-Link, als Button gestylt"""
     return rx.el.a(
         rx.hstack(
             rx.icon("download", size=18),

@@ -1,9 +1,4 @@
-"""Reflex page for Kapitel 02 - Challenge 1 ("Das Zahlenschloss").
-
-Renders the story intro, theory, the player's personal capture download, and the
-two tasks; gating each section on the previous one being solved and revealing a
-pointer to Challenge 2 on success.
-"""
+"""Kapitel 02 - Sub-page: Challenge 1 (Das Zahlenschloss)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder
@@ -23,7 +18,6 @@ class Kapitel_02_Challenge_1(AbstractSiteBuilder):
     PAGE_ID = "challenge_02"
 
     def _content(self) -> rx.Component:
-        """The unlocked challenge body: story, theory, capture, and tasks."""
         c = self.main_color
         return rx.vstack(
             # spy story intro
@@ -60,8 +54,6 @@ class Kapitel_02_Challenge_1(AbstractSiteBuilder):
         )
 
     def page(self) -> rx.Component:
-        """Full page: heading plus the nested unlock gate that decides whether to
-        show the content, a locked hint, a wait message, or a loading spinner."""
         return rx.vstack(
             rx.hstack(
                 rx.heading("Challenge 1: Das Zahlenschloss", color=self.main_color, size="8",
@@ -72,13 +64,13 @@ class Kapitel_02_Challenge_1(AbstractSiteBuilder):
                 align_items="center", width="100%", spacing="2",
                 style={"marginBottom": "24px"},
             ),
-            # Gate 1: page state loaded? else show a spinner.
+            # Gate 1: page state loaded? else show a spinner
             rx.cond(
                 CondState.is_ready & PlayerCardState.update_day_ready[2],
                 # Gate 2: has the game master started the event?
                 rx.cond(
                     CondState.event_enabled,
-                    # Gate 3: previous chapter completed? else show the locked hint.
+                    # Gate 3: previous chapter completed? else show the locked hint
                     rx.cond(
                         PlayerCardState.tasks_solved["day_01_task_09"] | PlayerCardState.enable_test_mode,
                         self._content(),
@@ -91,12 +83,12 @@ class Kapitel_02_Challenge_1(AbstractSiteBuilder):
                 ),
                 rx.vstack(rx.spinner()),
             ),
-            # Initialise the accordion state for this page (34 sections).
+            # Initialise the accordion state for this page (34 sections)
             on_mount=lambda: AccordionState.init(self.PAGE_ID, 34),
         )
 
     def configure(self) -> None:
-        """Page metadata: route, sidebar name/icon/colour, load hooks, and auth."""
+        """Page metadata: route, sidebar name/icon/colour, load hooks, and auth"""
         self.url = "/challenge_02_c1"
         self.name = "Challenge 1: Das Zahlenschloss"
         self.icon = "flame"

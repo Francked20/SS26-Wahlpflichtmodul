@@ -1,10 +1,4 @@
-"""
-Shared component for Kapitel 02 sub-pages: shows the "Muster-Löser" (starter
-code) for a challenge, a short Anleitung, and a button that opens SageMathCell.
-
-The student copies the code, opens SageCell, pastes it, replaces the TODO
-values with the ones from their own capture, and runs it to obtain the flag.
-"""
+"""Muster-Loeser-Panel fuer Kapitel 02 Sub-pages"""
 
 import reflex as rx
 from website.widgets.typography import code_block
@@ -13,7 +7,7 @@ SAGECELL_URL = "https://sagecell.sagemath.org/"
 
 
 def muster_panel(color: str, code: str) -> rx.Component:
-    """Renders the Anleitung + starter code (copyable) + SageCell button."""
+    """Renders the Anleitung + starter code (copyable) + SageCell button"""
     return rx.box(
         rx.hstack(
             rx.icon("terminal", size=20),

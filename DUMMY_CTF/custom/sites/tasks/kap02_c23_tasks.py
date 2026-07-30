@@ -1,14 +1,11 @@
-"""
-Tasks for Kapitel 02 — Challenge 2 and Challenge 3 sub-pages.
-
-"""
+"""Tasks fuer Kapitel 02 - Challenge 2 und 3"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint
 
 
 def _wf(day_idx, points, desc, question, further, correct_is_true):
-    """Helper: a single Wahr/Falsch question."""
+    """Helper: a single Wahr/Falsch question"""
     if correct_is_true:
         answers = [Correct.create("Wahr"), Incorrect.create("Falsch")]
     else:

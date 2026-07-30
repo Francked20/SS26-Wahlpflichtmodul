@@ -1,7 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 9 (ElGamal, wiederverwendeter Nonce).
-
-"""
+"""Kapitel 02 - Sub-page: Challenge 9 (ElGamal, wiederverwendeter Nonce)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

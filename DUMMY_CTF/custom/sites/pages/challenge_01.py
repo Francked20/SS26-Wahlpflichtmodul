@@ -1,11 +1,4 @@
-"""
-Startseite / Willkommen — die erste Seite, die beim Öffnen der App erscheint.
-
-Keine Aufgaben: ein einladender Überblick über das gesamte CTF, die zwei
-Lernpfade (Road to Diffie-Hellman & FREAK), die Lernziele und eine kurze
-Anleitung. is_standalone=True -> erscheint nicht in der Seitenleiste, bleibt
-aber die Landing-Page unter /challenge_01.
-"""
+"""Startseite / Willkommen"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

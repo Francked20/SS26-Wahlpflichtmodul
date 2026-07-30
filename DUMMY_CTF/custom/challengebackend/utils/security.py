@@ -11,9 +11,7 @@ challenge_api_key_header = APIKeyHeader(name="X-Challenge-Api-Key", auto_error=F
 
 
 async def require_challenge_api_key(x_challenge_api_key: str = Security(challenge_api_key_header)):
-    """Protects internal-only endpoints (core/backend -> this service calls,
-    the VM companion script) - mirrors core/backend/utils/security.py's
-    require_admin_token, just scoped to this service's own API key."""
+    """Schuetzt interne Endpunkte per API-Key"""
     if x_challenge_api_key != challenge_api_key:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

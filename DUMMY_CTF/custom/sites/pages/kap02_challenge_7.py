@@ -1,6 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 7 (ECDH — Diffie-Hellman auf Kurven).
-"""
+"""Kapitel 02 - Sub-page: Challenge 7 (ECDH)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

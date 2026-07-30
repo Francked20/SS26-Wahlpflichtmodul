@@ -1,20 +1,10 @@
-"""Task definitions for Chapter 4 ("Schwache Diffie-Hellman-Parameter" / Logjam).
-
-Each `task_04_XX` is a `TaskData` object describing one step of the Logjam attack
-chain, from concept to captured flag:
-  4.0 intro -> 4.1 spot the 512-bit p in the capture -> 4.2 why it is breakable
-  (Pohlig-Hellman) -> 4.3 factor p-1 (yafu) -> 4.4 discrete log s -> 4.5 TLS
-  master secret -> 4.6 decrypt the flag.
-Tasks 4.3-4.6 use per-player `dynamic_check` validators (see dh_export_pool.py)
-instead of a fixed answer. All learner-facing text is intentionally in German.
-These objects are imported and rendered by the Chapter 4 site pages.
-"""
+"""Task definitions for Chapter 4 (Schwache Diffie-Hellman-Parameter / Logjam)"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, TaskHint
 
 
-# Shared day_description reused by every task in this chapter.
+# Shared day_description reused by every task in this chapter
 DAY_DESC = "Schwache Diffie-Hellman-Parameter (Logjam)"
 
 

@@ -5,15 +5,7 @@ def generate_user_insert_command(password: str,
                                  team: str,
                                  team_color: str,
                                  is_leader: bool) -> str:
-    """
-    Build a MongoDB insertOne command for a single user.
-    
-    Args:
-      password: full password (e.g. "D3f@nzorb00")
-      team: team key (e.g. "blue", "red")
-      team_color: rgba color string for this team
-      is_leader: whether this user is the team leader
-    """
+    """Baut ein MongoDB insertOne Command fuer einen einzelnen User"""
     # Remove the trailing two-digit index to get the base name + team initial
     trimmed = password[:-3]
     

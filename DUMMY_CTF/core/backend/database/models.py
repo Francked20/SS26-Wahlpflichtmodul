@@ -22,50 +22,30 @@ solution_obj = Union[
 ]
 
 def has_solved_all_tasks(challenges, day):
-    # Filter challenges for the specific day
     user_day_challenges = [challenge for challenge in challenges if challenge.day_id == day]
 
     if not user_day_challenges:
         return False
 
-    # Check if all tasks are solved
     all_solved = all(challenge.solved for challenge in user_day_challenges)
 
     return all_solved
 
 def extract_word_from_flag(flag, word_index):
-    """
-    Extracts the word at the given 1-based index from the flag content.
-    """
-    # Extract the content inside the curly braces
     content = re.search(r'{(.*?)}', flag).group(1)
-    # Split the content by underscores to get individual words
     words = content.split('_')
-    # Return the word at the specified index (1-based index)
     return words[word_index - 1]
 
 def assemble_master_flag(slave_flags, master_format, flag_prefix):
-    """
-    Assembles the master flag based on the instructions in the master format.
-    """
-    # Extract the content inside the curly braces of the master format
     master_content = re.search(r'{(.*?)}', master_format).group(1)
-    # Split the content by underscores to get individual task instructions
     instructions = master_content.split('_')
 
-    # Initialize an empty list to store the required words
     required_words = []
-
-    # Iterate over each instruction
     for instruction in instructions:
-        # Extract the task number and word index
         task_number, word_index = map(int, instruction.split(':'))
-        # Get the corresponding slave flag
         slave_flag = slave_flags[task_number - 1]
-        # Extract the required word and add it to the list
         required_words.append(extract_word_from_flag(slave_flag, word_index))
 
-    # Assemble the master flag
     master_flag = f"{flag_prefix}{{{'_'.join(required_words)}}}"
     return master_flag
 
@@ -732,14 +712,11 @@ class Challenge(Document):
     async def get_day_tasks_solved(cls, username: str, day: int) -> Dict[str, bool]:
         username = username.lower()
 
-        # Fetch all RunningChallenges for the user
         challenges = [c for c in await RunningChallenge.get_all(username) if
                       c.username == username and c.day_id == day]
 
-        # Fetch all challenges definitions for the specified day
         chs = [chal for chal in await cls.all().to_list() if chal.day_id == day]
 
-        # Dictionary to hold solved status
         tasks_solved = {}
 
         for chal in chs:
@@ -758,11 +735,9 @@ class Challenge(Document):
 
         task_points = {}
         for day in days:
-            # Get all challenge definitions for the day
             day_challenges = [chal for chal in chs if chal.day_id == day]
             max_points = sum(chal.points for chal in day_challenges)
 
-            # Get all user challenge entries for the day
             user_day_challenges = [c for c in challenges if c.day_id == day]
             earned_points = sum(c.points_earned or 0 for c in user_day_challenges)
 
@@ -773,26 +748,22 @@ class Challenge(Document):
 
     @classmethod
     async def reset_day(cls, username: str, day: int) -> Dict[str, bool]:
-        # Get all challenges for the specified day
         challenges = await cls.find(cls.day_id == day).to_list()
 
         if not challenges:
             return {"day_reset": False}
 
-        # Get all user challenge entries for the user
         user_challenges = await RunningChallenge.find(
             RunningChallenge.username == username,
             RunningChallenge.day_id == day
         ).to_list()
 
-        # Create a set of (day, task) for solved challenges
         solved_tasks = {
             (uc.day_id, uc.task_id)
             for uc in user_challenges
             if uc.solved
         }
 
-        # Only reset challenges that are marked as solved
         for ch in challenges:
             if (ch.day_id, ch.task_id) in solved_tasks:
                 await ch.delete_answer(username)
@@ -971,8 +942,6 @@ class Challenge(Document):
             return True
 
         try:
-            # Dynamic validation (day-3 export-cipher / day-4 weak-DH tasks):
-            # delegate to the challenge backend, which owns this user's variant.
             if self.dynamic_check:
                 if self.dynamic_check.startswith("export_"):
                     from utils.export_cipher_client import check_dynamic_answer
@@ -1006,15 +975,13 @@ class Challenge(Document):
 
                     for rc in sorted_user_challenges:
                         challenge_obj = rc.challenge
-                        solutions = challenge_obj.solutions  # This is a list of possible solutions
+                        solutions = challenge_obj.solutions
 
-                        # Determine the correct index based on allow_random_order
                         if challenge_obj.allow_random_order:
                             challenge_index = rc.random_index
                         else:
                             challenge_index = rc.resets % len(solutions)
 
-                        # Get the correct solution string
                         slave_flag = solutions[challenge_index]
                         slave_flags.append(slave_flag)
 

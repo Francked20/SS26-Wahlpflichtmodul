@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
-"""One-off operator script: (re)populates the ExportCipherVariant pool for the
-day-3 export-cipher challenge chain. REPLACES all existing variants - since a
-participant's variant is a deterministic function of their username (see
-utils/export_cipher_pool.variant_index_for_user), rotating the pool changes
-what every in-progress participant is working on.
+"""Seeding-Skript: (re)baut den Export-Cipher (day-3) Varianten-Pool in MongoDB.
 
-Run inside the `challenge` container:
-    docker compose exec challenge python3 scripts/generate_export_cipher_pool.py
+Usage: docker compose exec challenge python3 scripts/generate_export_cipher_pool.py
 """
 import asyncio
 import os

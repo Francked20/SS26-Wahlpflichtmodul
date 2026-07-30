@@ -1,6 +1,4 @@
-"""
-Kapitel 02 — Sub-page: Challenge 10 (DSA, wiederverwendeter Nonce). FINALE.
-"""
+"""Kapitel 02 - Sub-page: Challenge 10 (DSA, wiederverwendeter Nonce)"""
 
 import reflex as rx
 from website.engine.site import AbstractSiteBuilder

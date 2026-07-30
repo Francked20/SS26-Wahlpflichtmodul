@@ -76,8 +76,6 @@ async def solve_challenge(
 
     response = {"answer_correct": res}
 
-    # Reward for correctly factoring the 256-bit practice modulus: reveal one
-    # factor of the "captured" 512-bit N (data lives in custom/challengebackend).
     if res and ch.dynamic_check == "export_factor256":
         from utils.export_cipher_client import get_reveal_factor
         response["reveal_factor"] = await get_reveal_factor(username)
@@ -91,9 +89,7 @@ async def get_export_cipher_reveal_factor_if_solved(
         task: int,
         auth: JwtAuthorizationCredentials = Security(access_security)
 ):
-    """Lets a player re-fetch their already-earned export-cipher reward after
-    a page reload - /solve's `reveal_factor` is only included once, transiently,
-    in the response to the solving request itself."""
+    """Re-fetch des export-cipher reveal_factor nach einem Page-Reload"""
     username: str = auth.subject["username"].lower()
 
     ch = await Challenge.get_challenge(day, task)

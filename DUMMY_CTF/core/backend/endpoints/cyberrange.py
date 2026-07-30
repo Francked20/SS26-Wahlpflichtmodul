@@ -31,7 +31,7 @@ MAX_RETRIES = 3
 RETRY_DELAY = 1.0  # Sekunden
 
 async def post_with_retry(url, headers, params, json_payload, effective_username, timeout=10.0):
-    """Robuster POST mit Retry bei TLS/Transportfehlern."""
+    """Robuster POST mit Retry bei TLS/Transportfehlern"""
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             async with httpx.AsyncClient(timeout=timeout) as client:

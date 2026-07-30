@@ -33,12 +33,7 @@ async def _get_variant_for_user(username: str) -> DhExportVariant:
 
 @router.get("/variant/{username}")
 async def get_variant(username: str):
-    """Tells the day-4 page which pool entry a player was assigned (a pure
-    function of username) and the public DH values they need to start the
-    attack: p, g and the server public value Ys (all visible in their pcap's
-    ServerKeyExchange anyway). Unauthenticated like this service's other
-    player-facing endpoints - knowing another player's variant doesn't help
-    solve YOUR OWN (differently-indexed) challenge."""
+    """Which pool entry a player was assigned, plus die oeffentlichen DH-Werte"""
     variant = await _get_variant_for_user(username)
     return {"index": variant.index, "p": variant.p, "g": variant.g, "Ys": variant.Ys}
 
@@ -53,8 +48,7 @@ class CheckAnswerRequest(BaseModel):
 
 @router.post("/check_answer", dependencies=[Depends(require_challenge_api_key)])
 async def check_answer(body: CheckAnswerRequest):
-    """Internal-only: called from core/backend's Challenge.check_answer() when a
-    task on day 4 has a dynamic_check set."""
+    """Internal-only: called from core/backend's Challenge.check_answer()"""
     variant = await _get_variant_for_user(body.username)
 
     if body.dynamic_check == "dh_factors":
@@ -71,10 +65,7 @@ async def check_answer(body: CheckAnswerRequest):
 
 @router.get("/vm_replay_data", dependencies=[Depends(require_challenge_api_key)])
 async def get_vm_replay_data():
-    """Fetched once (and cached) by CTF_Utils/dh_export_vm_listener.py - the
-    companion script run manually on the training VM. Only the server-role
-    flight bytes are exposed here: that's all the VM-side listener needs to
-    play back."""
+    """Fetched by CTF_Utils/dh_export_vm_listener.py, run manually auf der Trainings-VM"""
     variants = await DhExportVariant.find_all().to_list()
     return {
         "variants": [
@@ -90,11 +81,7 @@ async def get_vm_replay_data():
 
 @router.post("/{index}/start_capture")
 async def start_capture(index: int):
-    """Triggered by the player's 'gestartet' button on challenge_04.py once
-    they've started their own Wireshark capture on the training VM. Sends THIS
-    player's variant's client-role flights over a real TCP connection to
-    DH_EXPORT_VM_HOST/PORT, so their capture is a genuine, self-contained
-    DHE_EXPORT conversation."""
+    """Sendet die client-role Flights an DH_EXPORT_VM_HOST/PORT"""
     variant = await DhExportVariant.find_one(DhExportVariant.index == index)
     if variant is None:
         raise HTTPException(status_code=404, detail="Unknown variant index")

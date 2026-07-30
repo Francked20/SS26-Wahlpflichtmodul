@@ -1,10 +1,4 @@
-"""
-Tasks for Kapitel 02 — Challenge 4 and 5.
-
-Numbering: task_02_13 .. task_02_18.
-  Challenge 4 (small subgroup): 13 (WF), 14 (proof: order of g), 15 (flag)
-  Challenge 5 (Logjam):         16 (WF), 17 (WF), 18 (flag)
-"""
+"""Tasks fuer Kapitel 02 - Challenge 4 und 5"""
 
 from website.engine.tasks.models import TaskData
 from website.engine.tasks.helpers import Correct, Incorrect, TaskHint
@@ -43,9 +37,6 @@ task_02_13 = _wf(
 )
 
 # 2.14 — proof: order of g (common answer: q, the small subgroup order)
-# The student must actually compute ord(g); the ANSWER is the numeric order,
-# which is variant-dependent... so instead we ask a CONCEPT-level proof with a
-# common answer: the relationship g^q = 1.
 task_02_14 = TaskData(
     day=2, points=15, day_description="Diffie-Hellman",
     task_description="Challenge 4 — Die Ordnung von g", error_cost=1,
