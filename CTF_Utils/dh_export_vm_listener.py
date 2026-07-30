@@ -42,6 +42,7 @@ import socket
 import ssl
 import struct
 import sys
+import time
 import urllib.request
 
 
@@ -122,14 +123,32 @@ def serve(listen_port: int, variants_by_index: dict[int, dict]) -> None:
                 continue
             print(f"Connection from {addr}, replaying variant #{index}")
 
+            # Wait for (and discard) the sender's ClientHello before replying
+            # - without it, this sends server_flight_1 immediately after the
+            # index, so Wireshark shows the server replying before the
+            # client's ClientHello even arrives, which can't happen in a
+            # real TLS handshake.
+            try:
+                conn.recv(4096)
+            except socket.timeout:
+                pass
+
+            # A real sleep between sends, not just separate sendall() calls
+            # per record: TCP_NODELAY alone wasn't enough in testing (Docker
+            # Desktop's vpnkit relay to the LAN can still coalesce two fast
+            # back-to-back sends into one TCP segment), which shifts a
+            # later record's TLS header into the middle of a segment and
+            # breaks Wireshark's heuristic TLS dissection of it.
             for record in split_records(bytes.fromhex(variant["server_flight_1_hex"])):
                 conn.sendall(record)
+                time.sleep(0.05)
             try:
                 conn.recv(4096)
             except socket.timeout:
                 pass
             for record in split_records(bytes.fromhex(variant["server_flight_2_hex"])):
                 conn.sendall(record)
+                time.sleep(0.05)
         except OSError as e:
             print(f"Connection to {addr} failed mid-replay: {e}", file=sys.stderr)
         finally:
